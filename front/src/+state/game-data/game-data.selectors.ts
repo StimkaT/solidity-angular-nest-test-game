@@ -1,0 +1,8 @@
+import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {GAME_DATA_FEATURE_KEY, GameDataState} from './game-data.reducer';
+
+export const selectGameDataState = createFeatureSelector<GameDataState>(GAME_DATA_FEATURE_KEY);
+// export const selectFeatureCount = createSelector(
+//   selectFeature,
+//   (state: FeatureState) => state.counter
+// );

@@ -10,7 +10,7 @@
       }
     </mat-select-trigger>
     @for (topping of toppingList; track topping) {
-      <mat-option [value]="topping" (onSelectionChange)="clickEv()">{{topping}}</mat-option>
+      <mat-option [value]="topping">{{topping}}</mat-option>
     }
   </mat-select>
 </mat-form-field>
