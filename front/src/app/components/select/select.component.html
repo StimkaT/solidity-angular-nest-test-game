@@ -1,0 +1,9 @@
+<h4>{{ title }}</h4>
+<mat-form-field>
+  <mat-label>{{ label }}</mat-label>
+  <mat-select>
+    @for (item of list; track item) {
+      <mat-option [value]="item.value">{{item.viewValue}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
