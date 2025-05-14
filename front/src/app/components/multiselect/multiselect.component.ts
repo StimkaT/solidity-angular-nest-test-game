@@ -15,10 +15,9 @@ import {MatSelectModule} from '@angular/material/select';
   styleUrl: './multiselect.component.scss'
 })
 export class MultiselectComponent implements OnInit {
-  // @Input() toppingList: any = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  @Input() toppingList: any = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
   // @Input() toppings: any;
   toppings = new FormControl('');
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
 
   ngOnInit() {
     this.toppings.valueChanges.subscribe(selected => {
@@ -27,6 +26,6 @@ export class MultiselectComponent implements OnInit {
   }
 
   clickEv() {
-
+    console.log('Выбранные toppings:', this.toppings.value);
   }
 }

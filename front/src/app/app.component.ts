@@ -6,7 +6,7 @@ import {MultiselectComponent} from './components/multiselect/multiselect.compone
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, PlayerProfileComponent, ButtonComponent, MultiselectComponent],
+  imports: [PlayerProfileComponent, ButtonComponent, MultiselectComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
