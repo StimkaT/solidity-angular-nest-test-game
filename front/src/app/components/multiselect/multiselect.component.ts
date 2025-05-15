@@ -5,6 +5,7 @@ import {MatSelectModule} from '@angular/material/select';
 
 @Component({
   selector: 'app-multiselect',
+  standalone: true,
   imports: [
     MatFormFieldModule,
     MatSelectModule,

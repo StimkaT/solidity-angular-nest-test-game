@@ -29,3 +29,10 @@
 label {
   font-weight: bold;
 }
+
+mat-form-field {
+  width: 100%;
+  max-width: 400px;
+  min-width: 200px;
+  margin: auto;
+}

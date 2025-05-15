@@ -1,5 +1,75 @@
 <div class="game-page">
-  @for (player of playerList; track player) {
-    <app-player-profile></app-player-profile>
-  }
+
+  <div class="players-select">
+    <app-multiselect></app-multiselect>
+  </div>
+
+  <div class="players">
+    @for (player of playerList; track player) {
+      <div>
+        <app-player-profile
+          [title]="player.name"
+          [address]="player.address"
+          [balance]="player.balance"
+          [bet]="player.bet"
+          (emitter)="events($event)"
+        ></app-player-profile>
+        <form class="example-form">
+          <mat-form-field class="input-field">
+            <mat-label>Favorite food</mat-label>
+            <input
+              matInput
+              placeholder="Set percentage for winners"
+              value="Sushi"
+              [(ngModel)]="player.percentage"
+            >
+          </mat-form-field>
+        </form>
+      </div>
+    }
+  </div>
+
+  <div class="start-button">
+    <app-button
+      [buttonLabel]="'Start'"
+    >
+    </app-button>
+  </div>
+
+  <div class="bank">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <span>
+          <b>Main bank:</b> {{gameData.bank}} {{gameData.currency}}
+        </span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="info-form">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Game info</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="content-info">
+        @for (item of infoList; track item) {
+          <span class="info-row">
+            <b>-{{ item.title }}</b>
+  <span class="example-spacer"></span>
+            <span class="info-data">
+            {{ item.data }}
+            </span>
+          </span>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="start-button">
+    <app-button
+      [buttonLabel]="'Finish'"
+    >
+    </app-button>
+  </div>
+
 </div>

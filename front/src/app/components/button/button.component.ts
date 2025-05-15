@@ -5,6 +5,7 @@ import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-button',
+  standalone: true,
   imports: [
     MatButtonModule,
     MatDividerModule,
@@ -14,7 +15,7 @@ import {MatIconModule} from '@angular/material/icon';
   styleUrl: './button.component.scss'
 })
 export class ButtonComponent {
-  @Input() buttonLabel: string = 'start';
+  @Input() buttonLabel: string = '';
 
   @Output() emitter = new EventEmitter();
 

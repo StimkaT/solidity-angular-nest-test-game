@@ -7,6 +7,7 @@ import {SelectComponent} from '../select/select.component';
 
 @Component({
   selector: 'app-player-profile',
+  standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
@@ -18,10 +19,10 @@ import {SelectComponent} from '../select/select.component';
   styleUrl: './player-profile.component.scss'
 })
 export class PlayerProfileComponent {
-  @Input() title = 'Player';
-  @Input() address = '333qwe123';
-  @Input() balance = 0;
-  @Input() cost = 0;
+  @Input() title = '';
+  @Input() address = '';
+  @Input() balance: number | null = null;
+  @Input() bet: number | null = null;
 
   @Output() emitter = new EventEmitter();
 

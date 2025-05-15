@@ -6,6 +6,7 @@ import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-select',
+  standalone: true,
   imports: [
     MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule
   ],

@@ -1,34 +1,31 @@
-.player-card {
-  min-width: 280px;
-  margin: 16px;
-  background-color: #f5f5f5;
+:host {
+  display: flex;
+  min-width: 200px;
+  width: 100%;
+
+  mat-divider {
+    margin: 0 16px;
+  }
 }
-.player-title {
-  color: #3f51b5;
-  margin: 0;
-  font-size: 1.5em;
-}
-.player-content {
-  padding: 16px;
-}
+
 .info-row {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin: 12px 0;
 }
 .label {
   font-weight: 500;
   color: #666;
+  margin-bottom: 4px;
 }
 .value {
   color: #333;
   font-family: monospace;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
-mat-divider {
-  margin: 0 16px;
-}
-
-
 
 .example-card {
   max-width: 400px;
@@ -50,12 +47,12 @@ mat-card-header {
 
 }
 
-
-mat-card-avatar {
-  margin: 5px !important;
+mat-card-content {
+  mat-divider {
+    margin: 12px 0;
+  }
 }
 
 .mat-mdc-card-avatar {
   margin: 5px !important;
 }
-

@@ -5,8 +5,8 @@ import { routes } from './app.routes';
 import {provideStore, StoreModule} from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import {GAME_DATA_FEATURE_KEY, gameDataReducer} from '../+state/game-data/game-data.reducer';
-import {GameDataEffects} from '../+state/game-data/game-data.effects';
+import {GAME_DATA_FEATURE_KEY, gameDataReducer} from './+state/game-data/game-data.reducer';
+import {GameDataEffects} from './+state/game-data/game-data.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
