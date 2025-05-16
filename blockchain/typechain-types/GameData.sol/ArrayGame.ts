@@ -17,26 +17,43 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "./common";
+} from "../common";
 
-export interface TestContractInterface extends Interface {
-  getFunction(nameOrSignature: "getMessage" | "setMessage"): FunctionFragment;
+export declare namespace ArrayGame {
+  export type PlayerStruct = {
+    id: string;
+    wallet: string;
+    amount: string;
+    ready: boolean;
+  };
 
-  encodeFunctionData(
-    functionFragment: "getMessage",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "setMessage", values: [string]): string;
-
-  decodeFunctionResult(functionFragment: "getMessage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMessage", data: BytesLike): Result;
+  export type PlayerStructOutput = [
+    id: string,
+    wallet: string,
+    amount: string,
+    ready: boolean
+  ] & { id: string; wallet: string; amount: string; ready: boolean };
 }
 
-export interface TestContract extends BaseContract {
-  connect(runner?: ContractRunner | null): TestContract;
+export interface ArrayGameInterface extends Interface {
+  getFunction(nameOrSignature: "getGameData"): FunctionFragment;
+
+  encodeFunctionData(
+    functionFragment: "getGameData",
+    values?: undefined
+  ): string;
+
+  decodeFunctionResult(
+    functionFragment: "getGameData",
+    data: BytesLike
+  ): Result;
+}
+
+export interface ArrayGame extends BaseContract {
+  connect(runner?: ContractRunner | null): ArrayGame;
   waitForDeployment(): Promise<this>;
 
-  interface: TestContractInterface;
+  interface: ArrayGameInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -75,20 +92,23 @@ export interface TestContract extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  getMessage: TypedContractMethod<[], [string], "view">;
-
-  setMessage: TypedContractMethod<[_newMessage: string], [void], "nonpayable">;
+  getGameData: TypedContractMethod<
+    [],
+    [[string, string[], string[], string[], boolean[]]],
+    "view"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "getMessage"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "setMessage"
-  ): TypedContractMethod<[_newMessage: string], [void], "nonpayable">;
+    nameOrSignature: "getGameData"
+  ): TypedContractMethod<
+    [],
+    [[string, string[], string[], string[], boolean[]]],
+    "view"
+  >;
 
   filters: {};
 }

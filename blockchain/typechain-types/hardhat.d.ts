@@ -14,44 +14,80 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Lock",
+      name: "ArrayGame",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
+    ): Promise<Contracts.ArrayGame__factory>;
     getContractFactory(
       name: "Game",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Game__factory>;
+    getContractFactory(
+      name: "ArrayGame",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ArrayGame__factory>;
+    getContractFactory(
+      name: "Lock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Lock__factory>;
 
+    getContractAt(
+      name: "ArrayGame",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ArrayGame>;
+    getContractAt(
+      name: "Game",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Game>;
+    getContractAt(
+      name: "ArrayGame",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ArrayGame>;
     getContractAt(
       name: "Lock",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "Game",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Game>;
 
+    deployContract(
+      name: "ArrayGame",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArrayGame>;
+    deployContract(
+      name: "Game",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Game>;
+    deployContract(
+      name: "ArrayGame",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArrayGame>;
     deployContract(
       name: "Lock",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Lock>;
+
+    deployContract(
+      name: "ArrayGame",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArrayGame>;
     deployContract(
       name: "Game",
+      args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Game>;
-
+    deployContract(
+      name: "ArrayGame",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ArrayGame>;
     deployContract(
       name: "Lock",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "Game",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Game>;
 
     // default types
     getContractFactory(

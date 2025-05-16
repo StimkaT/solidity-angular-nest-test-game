@@ -6,3 +6,7 @@ export const selectPlayerList = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.playerList
 );
+export const selectGameDataAddress = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.gameDataAddress
+);

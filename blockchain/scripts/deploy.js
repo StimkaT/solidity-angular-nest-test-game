@@ -1,11 +1,19 @@
 const hre = require("hardhat");
+const {string} = require("hardhat/internal/core/params/argumentTypes");
 
 async function main() {
-    const TestContract = await hre.ethers.getContractFactory("Game");
-    const contract = await TestContract.deploy("Hello, Blockchain!");
-    await contract.waitForDeployment();
+    // Деплой контракта Game
+    const Game = await hre.ethers.getContractFactory("Game");
+    const game = await Game.deploy("Hello, Blockchain!"); // Если конструктор принимает (string, uint)
+    await game.waitForDeployment();
+    console.log("Game deployed to:", await game.getAddress());
 
-    console.log("Contract deployed to:", await contract.getAddress());
+    // Деплой контракта GameArray (из соседней папки)
+    const GameArray = await hre.ethers.getContractFactory("ArrayGame");
+
+    const gameArray = await GameArray.deploy(); // (укажите аргументы конструктора, если нужно)
+    await gameArray.waitForDeployment();
+    console.log("GameArray deployed to:", await gameArray.getAddress());
 }
 
 main().catch((error) => {

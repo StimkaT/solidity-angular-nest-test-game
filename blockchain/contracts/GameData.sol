@@ -1,42 +1,39 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Game {
-    struct GameOptions {
+contract ArrayGame {
+    struct Player {
         string id;
+        string wallet;
+        string amount;
+        bool ready;
     }
 
-    GameOptions[] private gameData;
-
-    constructor(string memory _initialId) {
-        gameData.push(GameOptions(_initialId));
+    struct Game {
+        string id;
+        Player[] players;
     }
 
-    function getGameData() public view returns (GameOptions[] memory) {
-        return gameData;
-    }
+    Game private gameData;
 
-    function addGame(string memory _id) public {
-        gameData.push(GameOptions(_id));
-    }
-
-    function updateGame(uint index, string memory _newId) public {
-        require(index < gameData.length, "Index out of bounds");
-        gameData[index].id = _newId;
+    constructor(string memory _initialId, Player[] memory _initialPlayers) {
+        gameData.id = _initialId;
+        for (uint i = 0; i < _initialPlayers.length; i++) {
+            gameData.players.push(_initialPlayers[i]);
+        }
     }
 
     function getGameData() public view returns (
         string memory,
         string[] memory,
         string[] memory,
-        uint256[] memory,
+        string[] memory,
         bool[] memory
     ) {
         uint length = gameData.players.length;
-
         string[] memory ids = new string[](length);
         string[] memory wallets = new string[](length);
-        uint256[] memory amounts = new uint256[](length);
+        string[] memory amounts = new string[](length);
         bool[] memory readyFlags = new bool[](length);
 
         for (uint i = 0; i < length; i++) {
@@ -49,5 +46,4 @@ contract Game {
 
         return (gameData.id, ids, wallets, amounts, readyFlags);
     }
-
 }

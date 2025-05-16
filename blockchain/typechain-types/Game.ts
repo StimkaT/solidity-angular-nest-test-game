@@ -18,12 +18,12 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "../common";
+} from "./common";
 
 export declare namespace Game {
-  export type GameStruct = { id: string };
+  export type GameOptionsStruct = { id: string };
 
-  export type GameStructOutput = [id: string] & { id: string };
+  export type GameOptionsStructOutput = [id: string] & { id: string };
 }
 
 export interface GameInterface extends Interface {
@@ -101,7 +101,11 @@ export interface Game extends BaseContract {
 
   getGame: TypedContractMethod<[index: BigNumberish], [string], "view">;
 
-  getGameData: TypedContractMethod<[], [Game.GameStructOutput[]], "view">;
+  getGameData: TypedContractMethod<
+    [],
+    [Game.GameOptionsStructOutput[]],
+    "view"
+  >;
 
   updateGame: TypedContractMethod<
     [index: BigNumberish, _newId: string],
@@ -121,7 +125,7 @@ export interface Game extends BaseContract {
   ): TypedContractMethod<[index: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "getGameData"
-  ): TypedContractMethod<[], [Game.GameStructOutput[]], "view">;
+  ): TypedContractMethod<[], [Game.GameOptionsStructOutput[]], "view">;
   getFunction(
     nameOrSignature: "updateGame"
   ): TypedContractMethod<

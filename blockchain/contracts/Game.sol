@@ -2,22 +2,22 @@
 pragma solidity ^0.8.0;
 
 contract Game {
-    struct Game {
+    struct GameOptions {
         string id;
     }
 
-    Game[] private gameData;
+    GameOptions[] private gameData;
 
     constructor(string memory _initialId) {
-        gameData.push(Game(_initialId));
+        gameData.push(GameOptions(_initialId));
     }
 
-    function getGameData() public view returns (Game[] memory) {
+    function getGameData() public view returns (GameOptions[] memory) {
         return gameData;
     }
 
     function addGame(string memory _id) public {
-        gameData.push(Game(_id));
+        gameData.push(GameOptions(_id));
     }
 
     function updateGame(uint index, string memory _newId) public {

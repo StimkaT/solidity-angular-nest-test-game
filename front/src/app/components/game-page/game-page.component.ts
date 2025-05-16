@@ -26,7 +26,12 @@ export class GamePageComponent {
   @Input() playerList: any;
   @Input() gameData: any = {
     bank: 1,
-    currency: 'SepoliaETH'
+    currency: 'SepoliaETH',
+    id: '1233',
+    players: [
+      { id: 'p1', wallet: '0x...', amount: '10', ready: true },
+      { id: 'p2', wallet: '0x...123213', amount: '4324', ready: false }
+    ],
   };
   @Input() infoList: any = [
     {
@@ -42,15 +47,26 @@ export class GamePageComponent {
       data: 120000
     },
   ];
+  @Input() gameDataAddress: any;
+
 
   @Output() emitter = new EventEmitter();
 
   events(event: any) {
-    const message = {
-      event: event.event,
-      data: this.infoList,
-      note: event.data
+    if (event.data === 'Start') {
+      const message = {
+        event: event.event,
+        data:event.data,
+        gameData: this.gameData
+      }
+      this.emitter.emit(message)
+    } else if (event.data === 'Finish') {
+      const message = {
+        event: event.event,
+        data: event.data,
+        gameData: this.gameDataAddress,
+      }
+      this.emitter.emit(message)
     }
-    this.emitter.emit(message)
   }
 }

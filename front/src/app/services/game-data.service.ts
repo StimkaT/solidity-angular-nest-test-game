@@ -7,9 +7,10 @@ export class GameDataService {
   constructor(private http: HttpClient) {}
 
   setGameData(data: any): Observable<any> {
-    return this.http.post('http://localhost:3000/game/start', {id: data.data} );
+    return this.http.post('http://localhost:3000/game/startArray', data );
   }
-  getGameData(): Observable<any> {
-    return this.http.get('http://localhost:3000/game/get');
+  getGameData(data: string): Observable<any> {
+    return this.http.get('http://localhost:3000/game/getArray', { params: { data } });
   }
+
 }

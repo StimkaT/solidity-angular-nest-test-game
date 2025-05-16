@@ -1,9 +1,9 @@
 import {Component, inject} from '@angular/core';
-import {selectPlayerList} from '../../+state/game-data/game-data.selectors';
+import {selectGameDataAddress, selectPlayerList} from '../../+state/game-data/game-data.selectors';
 import {Store} from '@ngrx/store';
 import {GamePageComponent} from '../../components/game-page/game-page.component';
 import {AsyncPipe} from '@angular/common';
-import {loadGameData} from '../../+state/game-data/game-data.actions';
+import {getGameData, loadGameData} from '../../+state/game-data/game-data.actions';
 
 @Component({
   selector: 'app-game-page-container',
@@ -19,11 +19,16 @@ export class GamePageContainerComponent {
   private store = inject(Store);
 
   playerList$ = this.store.select(selectPlayerList);
+  selectGameDataAddress$ = this.store.select(selectGameDataAddress);
 
   events(event: any) {
     if (event.event === 'ButtonComponent:CLICK') {
-      if (event.note === 'Start') {
-        this.store.dispatch(loadGameData({data: 'hie'}));
+      console.log(event)
+      if (event.data === 'Start') {
+        this.store.dispatch(loadGameData({data: event.gameData}));
+      }
+      if (event.data === 'Finish') {
+        this.store.dispatch(getGameData({data: event.gameData}));
       }
     }
   }

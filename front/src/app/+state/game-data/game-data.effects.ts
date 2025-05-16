@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap} from 'rxjs';
-import {loadGameData, loadGameDataFailure, loadGameDataSuccess} from './game-data.actions';
+import {getGameData, loadGameData, loadGameDataFailure, loadGameDataSuccess} from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
 
@@ -15,11 +15,25 @@ export class GameDataEffects {
       this.actions$.pipe(
         ofType(loadGameData),
         tap((action) => {
-          this.gameDataService.setGameData(action).subscribe({
-            next: (data) => this.store.dispatch(loadGameDataSuccess({ data })),
+          console.log('WAIT', action)
+          this.gameDataService.setGameData(action.data).subscribe({
+            next: (data) => {
+              this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
+              console.log(data)
+            },
             error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
           });
-          this.gameDataService.getGameData().subscribe({
+        })
+      ),
+    { dispatch: false }
+  );
+
+
+  getGameData$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(getGameData),
+        tap(async (action) => {
+          this.gameDataService.getGameData(action.data).subscribe({
             next: (data) =>console.log(data),
             error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
           });

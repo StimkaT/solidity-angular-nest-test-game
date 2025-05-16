@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
+import {loadGameDataSuccess} from './game-data.actions';
 
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
@@ -17,6 +18,7 @@ interface IPlayer {
 export interface GameDataState {
   playerList: IPlayer[];
   selectedPlayerList: string[];
+  gameDataAddress: string;
 }
 
 export interface SettingsPartialState {
@@ -42,9 +44,14 @@ export const initialState: GameDataState = {
       bet: 0
     },
   ],
-  selectedPlayerList: ['0x4cCE85dA450fC8D96B87671683B07297F13C13ff']
+  selectedPlayerList: ['0x4cCE85dA450fC8D96B87671683B07297F13C13ff'],
+  gameDataAddress: ''
 };
 
 export const gameDataReducer = createReducer(
   initialState,
+  on(GameDataActions.loadGameDataSuccess, (state, {data}) => ({
+    ...state,
+    gameDataAddress: data
+  })),
 );
