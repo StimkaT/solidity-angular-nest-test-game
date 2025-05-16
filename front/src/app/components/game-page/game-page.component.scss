@@ -25,6 +25,8 @@
 
   .players {
     display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
 
     app-player-profile {
       margin: 16px;

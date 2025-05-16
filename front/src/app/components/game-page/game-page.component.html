@@ -1,18 +1,20 @@
 <div class="game-page">
   <div class="players-select">
     <app-multiselect
-      (emitter)="events($event)"
+      [toppingList]="playerList"
+      [selectedToppings]="activePlayerList"
+      (emitter)="emitter.emit($event)"
     ></app-multiselect>
   </div>
 
   <div class="players">
-    @for (player of playerList; track player) {
+    @for (player of activePlayerListData; track player) {
       <div>
         <app-player-profile
           [title]="player.name"
           [address]="player.address"
-          [balance]="player.balance"
-          [bet]="player.bet"
+          [balance]="player.balance ?? null"
+          [bet]="player.bet ?? null"
           (emitter)="events($event)"
         ></app-player-profile>
         <form class="example-form">

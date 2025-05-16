@@ -1,9 +1,16 @@
 import {Component, inject} from '@angular/core';
-import {selectGameDataAddress, selectPlayerList} from '../../+state/game-data/game-data.selectors';
+import {
+  selectGameDataAddress,
+  selectPlayerList, selectSelectedPlayerList
+} from '../../+state/game-data/game-data.selectors';
 import {Store} from '@ngrx/store';
 import {GamePageComponent} from '../../components/game-page/game-page.component';
 import {AsyncPipe} from '@angular/common';
-import {getGameData, loadGameData} from '../../+state/game-data/game-data.actions';
+import {
+  getGameData,
+  loadGameData,
+  setSelectedPlayerList
+} from '../../+state/game-data/game-data.actions';
 
 @Component({
   selector: 'app-game-page-container',
@@ -19,6 +26,7 @@ export class GamePageContainerComponent {
   private store = inject(Store);
 
   playerList$ = this.store.select(selectPlayerList);
+  selectSelectedPlayerList$ = this.store.select(selectSelectedPlayerList);
   selectGameDataAddress$ = this.store.select(selectGameDataAddress);
 
   events(event: any) {
@@ -30,6 +38,8 @@ export class GamePageContainerComponent {
       if (event.data === 'Finish') {
         this.store.dispatch(getGameData({data: event.gameData}));
       }
+    } else if (event.event === 'MultiselectComponent:CHANGE') {
+      this.store.dispatch(setSelectedPlayerList({selectedPlayerList: event.data}));
     }
   }
 }

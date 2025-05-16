@@ -16,8 +16,8 @@ import {MatSelectModule} from '@angular/material/select';
   styleUrl: './multiselect.component.scss'
 })
 export class MultiselectComponent implements OnInit, OnChanges{
-  @Input() toppingList: any = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
-  @Input() selectedToppings: any =  ['Extra cheese',];
+  @Input() toppingList: any;
+  @Input() selectedToppings: any;
 
   @Output() emitter = new EventEmitter();
 
@@ -25,9 +25,12 @@ export class MultiselectComponent implements OnInit, OnChanges{
 
   ngOnInit() {
     this.toppings.setValue(this.selectedToppings);
-
     this.toppings.valueChanges.subscribe(selected => {
-      this.emitter.emit(selected);
+      const message = {
+        event: 'MultiselectComponent:CHANGE',
+        data: selected
+      }
+      this.emitter.emit(message);
     });
   }
 

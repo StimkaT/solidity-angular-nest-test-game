@@ -1,5 +1,6 @@
 <app-game-page
-  [playerList]="playerList$ | async"
-  [gameDataAddress]="selectGameDataAddress$ | async"
+  [playerList]="(playerList$ | async) ?? []"
+  [activePlayerList]="(selectSelectedPlayerList$ | async) ?? []"
+  [gameDataAddress]="(selectGameDataAddress$ | async) ?? {}"
   (emitter)="events($event)"
 ></app-game-page>
