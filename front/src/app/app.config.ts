@@ -7,10 +7,12 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import {GAME_DATA_FEATURE_KEY, gameDataReducer} from './+state/game-data/game-data.reducer';
 import {GameDataEffects} from './+state/game-data/game-data.effects';
+import {provideHttpClient} from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient(),
     provideRouter(routes),
     provideStore(),
     provideEffects([

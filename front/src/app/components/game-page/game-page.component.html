@@ -1,7 +1,8 @@
 <div class="game-page">
-
   <div class="players-select">
-    <app-multiselect></app-multiselect>
+    <app-multiselect
+      (emitter)="events($event)"
+    ></app-multiselect>
   </div>
 
   <div class="players">
@@ -16,12 +17,12 @@
         ></app-player-profile>
         <form class="example-form">
           <mat-form-field class="input-field">
-            <mat-label>Favorite food</mat-label>
+            <mat-label>Set percentage</mat-label>
             <input
               matInput
               placeholder="Set percentage for winners"
-              value="Sushi"
               [(ngModel)]="player.percentage"
+              [ngModelOptions]="{standalone: true}"
             >
           </mat-form-field>
         </form>
@@ -32,6 +33,7 @@
   <div class="start-button">
     <app-button
       [buttonLabel]="'Start'"
+      (emitter)="events($event)"
     >
     </app-button>
   </div>
@@ -55,10 +57,8 @@
         @for (item of infoList; track item) {
           <span class="info-row">
             <b>-{{ item.title }}</b>
-  <span class="example-spacer"></span>
-            <span class="info-data">
-            {{ item.data }}
-            </span>
+            <span class="example-spacer"></span>
+            <span class="info-data">{{ item.data }}</span>
           </span>
         }
       </mat-card-content>
@@ -68,8 +68,8 @@
   <div class="start-button">
     <app-button
       [buttonLabel]="'Finish'"
+      (emitter)="events($event)"
     >
     </app-button>
   </div>
-
 </div>

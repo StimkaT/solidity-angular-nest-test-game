@@ -21,7 +21,7 @@ export class ButtonComponent {
 
   action($event: any) {
     const message = {
-      event: 'PlayerProfileComponent:CHANGE',
+      event: 'ButtonComponent:CLICK',
       data: $event
     }
     this.emitter.emit(message)

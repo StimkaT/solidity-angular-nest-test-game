@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {PlayerProfileComponent} from '../player-profile/player-profile.component';
 import {MultiselectComponent} from '../multiselect/multiselect.component';
 import {ButtonComponent} from '../button/button.component';
@@ -43,7 +43,14 @@ export class GamePageComponent {
     },
   ];
 
-  events(event: any) {
+  @Output() emitter = new EventEmitter();
 
+  events(event: any) {
+    const message = {
+      event: event.event,
+      data: this.infoList,
+      note: event.data
+    }
+    this.emitter.emit(message)
   }
 }
