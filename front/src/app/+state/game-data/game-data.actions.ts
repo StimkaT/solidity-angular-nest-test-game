@@ -17,9 +17,17 @@ export const setSelectedPlayerList = createAction(
   '[GameData] setSelectedPlayerList',
   props<{ selectedPlayerList: string[] }>()
 );
+export const setLaunchTime = createAction(
+  '[GameData] setLaunchTime',
+  props<{ launchTime: string }>()
+);
 export const getGameData = createAction(
   '[GameData] getGameData',
   props<{ data: string }>()
+);
+export const setSelectedPlayerListData = createAction(
+  '[GameData] setSelectedPlayerListData',
+  props<{ playerList: IPlayer[] }>()
 );
 // export const loadGameDataSuccess = createAction(
 //   '[GameData] loadGameDataSuccess',

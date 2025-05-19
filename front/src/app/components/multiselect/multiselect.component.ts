@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
@@ -15,7 +15,7 @@ import {MatSelectModule} from '@angular/material/select';
   templateUrl: './multiselect.component.html',
   styleUrl: './multiselect.component.scss'
 })
-export class MultiselectComponent implements OnInit, OnChanges{
+export class MultiselectComponent implements OnInit {
   @Input() toppingList: any;
   @Input() selectedToppings: any;
 
@@ -34,9 +34,4 @@ export class MultiselectComponent implements OnInit, OnChanges{
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedToppings']) {
-      this.toppings.setValue(this.selectedToppings);
-    }
-  }
 }

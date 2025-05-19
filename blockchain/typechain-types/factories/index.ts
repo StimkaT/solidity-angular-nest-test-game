@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as gameDataSol from "./GameData.sol";
+export * as testGameSol from "./testGame.sol";
 export { ArrayGame__factory } from "./ArrayGame__factory";
 export { Game__factory } from "./Game__factory";
 export { Lock__factory } from "./Lock__factory";

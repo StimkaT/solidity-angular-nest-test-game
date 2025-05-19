@@ -22,14 +22,7 @@ export class PlayerProfileComponent {
   @Input() title = '';
   @Input() address = '';
   @Input() balance: number | null = null;
-  @Input() bet: number | null = null;
 
   @Output() emitter = new EventEmitter();
 
-  change() {
-    const message = {
-      event: 'PlayerProfileComponent:CHANGE'
-    }
-    this.emitter.emit(message)
-  }
 }

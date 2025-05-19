@@ -1,14 +1,15 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {
+  selectGameData,
   selectGameDataAddress,
-  selectPlayerList, selectSelectedPlayerList
+  selectPlayerList
 } from '../../+state/game-data/game-data.selectors';
 import {Store} from '@ngrx/store';
 import {GamePageComponent} from '../../components/game-page/game-page.component';
 import {AsyncPipe} from '@angular/common';
 import {
   getGameData,
-  loadGameData,
+  loadGameData, setLaunchTime,
   setSelectedPlayerList
 } from '../../+state/game-data/game-data.actions';
 
@@ -22,12 +23,17 @@ import {
   templateUrl: './game-page-container.component.html',
   styleUrl: './game-page-container.component.scss'
 })
-export class GamePageContainerComponent {
+export class GamePageContainerComponent implements OnInit {
   private store = inject(Store);
 
   playerList$ = this.store.select(selectPlayerList);
-  selectSelectedPlayerList$ = this.store.select(selectSelectedPlayerList);
   selectGameDataAddress$ = this.store.select(selectGameDataAddress);
+  selectGameData$ = this.store.select(selectGameData);
+
+  ngOnInit() {
+    const currentTime = new Date().toISOString();
+    this.store.dispatch(setLaunchTime({ launchTime: currentTime }))
+  }
 
   events(event: any) {
     if (event.event === 'ButtonComponent:CLICK') {

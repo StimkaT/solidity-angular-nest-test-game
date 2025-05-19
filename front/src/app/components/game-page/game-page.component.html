@@ -1,35 +1,23 @@
-<mat-spinner></mat-spinner>
+<!--<mat-spinner></mat-spinner>-->
 
 <div class="game-page">
   <div class="players-select">
     <app-multiselect
       [toppingList]="playerList"
-      [selectedToppings]="activePlayerList"
+      [selectedToppings]="gameData.playerList"
       (emitter)="emitter.emit($event)"
     ></app-multiselect>
   </div>
 
   <div class="players">
-    @for (player of activePlayerListData; track player) {
+    @for (player of gameData.playerList; track player) {
       <div>
         <app-player-profile
           [title]="player.name"
           [address]="player.address"
           [balance]="player.balance ?? null"
-          [bet]="player.bet ?? null"
           (emitter)="events($event)"
         ></app-player-profile>
-<!--        <form class="example-form">-->
-<!--          <mat-form-field class="input-field">-->
-<!--            <mat-label>Set percentage</mat-label>-->
-<!--            <input-->
-<!--              matInput-->
-<!--              placeholder="Set percentage for winners"-->
-<!--              [(ngModel)]="player.percentage"-->
-<!--              [ngModelOptions]="{standalone: true}"-->
-<!--            >-->
-<!--          </mat-form-field>-->
-<!--        </form>-->
       </div>
     }
   </div>
@@ -40,6 +28,15 @@
       (emitter)="events($event)"
     >
     </app-button>
+  </div>
+
+  <div class="players-pay">
+    @for (player of gameData.playerList; track player) {
+      <app-button
+        [buttonLabel]="player.name + ': Pay 3 ETH'"
+      >
+      </app-button>
+    }
   </div>
 
   <div class="bank">
@@ -53,7 +50,7 @@
   </div>
 
   <div class="players">
-    @for (player of activePlayerListData; track player) {
+    @for (player of gameData.playerList; track player) {
       <div class="percentage">
         <mat-label>{{ player.name }} in game</mat-label>
         <form class="example-form">

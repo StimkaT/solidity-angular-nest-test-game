@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
-import * as contractJson from '../../build/Game/Game.json';
+import * as contractJson from '../../build/Game.sol/Game.json';
 // import * as contractArrayJson from '../../build/ArrayGame/ArrayGame.json';
 import * as contractArrayJson from '../../build/GameData.sol/ArrayGame.json';
 import { JsonRpcProvider, Wallet } from 'ethers';

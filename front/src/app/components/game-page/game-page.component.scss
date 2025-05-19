@@ -37,6 +37,7 @@
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
+    justify-content: center;
 
     app-player-profile {
       margin: 16px;
@@ -108,4 +109,18 @@ mat-card-header {
 
 .info-row {
   display: flex;
+}
+
+
+.players-pay {
+  display: flex;
+  flex-direction: row;
+  margin: 16px 0 0 0;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  app-button {
+    margin: 8px;
+  }
 }
