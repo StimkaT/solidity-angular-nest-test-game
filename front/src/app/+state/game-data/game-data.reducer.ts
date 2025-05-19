@@ -4,13 +4,25 @@ import * as GameDataActions from './game-data.actions';
 export const GAME_DATA_FEATURE_KEY = 'game-data';
 
 export interface IPlayer {
-  name: string;
-  address: string;
-  privateKey: string;
-  balance?: number | null;
-  isReady?: boolean;
-  bet?: number | null;
-  percentage?: number | null;
+  name: string; // имя
+  address: string; // номер кошелька
+  privateKey: string; // приватный ключ для платежа
+  balance?: number | null; // текущий баланс
+  isReady?: boolean; //сделал ли ставку и готов к игре?
+  bet?: number | null; // сумма ожидаемой ставки к оплате?
+  isPaid?: boolean; // Была ли оплата от этого кошелька в смарт контракте?
+  amountPaid?: number | null; // Какая фактическая сумма пришла к оплате?
+  percentage?: number | null; // процент выплат данному игроку от общего банка?
+}
+export interface IGameData {
+  gameId: string; // id игры
+  launchTime: string; // время создания игры
+  startTime: string; // время старта игры
+  finishTime: string; // время завершения игры
+  conditionToStartDone: boolean; //условия для старта выполнены?
+  isFinish: boolean; // игра окончена?
+  gameTookPlace: boolean; //игра состоялась?
+  playerList: IPlayer[]; // список игроков и их условия
 }
 
 export interface GameDataState {

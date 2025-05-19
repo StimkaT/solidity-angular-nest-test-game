@@ -8,6 +8,7 @@ import {FormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {IPlayer} from '../../+state/game-data/game-data.reducer';
 import {ethers} from 'ethers';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-game-page',
@@ -19,7 +20,9 @@ import {ethers} from 'ethers';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    MatProgressSpinnerModule
+
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss'
@@ -38,17 +41,41 @@ export class GamePageComponent implements OnChanges {
   };
   @Input() infoList: any = [
     {
-      title: 'first',
-      data: 123123
+      title: 'launchTime',
+      data: '11.11.2025, 13:35:00'
     },
     {
-      title: 'second',
-      data: 55
+      title: 'startTime',
+      data: '11.11.2025, 13:35:00'
     },
     {
-      title: 'third',
-      data: 120000
+      title: 'finishTime',
+      data: '11.11.2025, 13:35:00'
     },
+    {
+      title: 'gasForContractStart',
+      data: 0.005
+    },
+    {
+      title: 'gasForContractFinish',
+      data: 0.005
+    },
+    {
+      title: 'gasForTransactions',
+      data: 5
+    },
+    {
+      title: 'Player 1 received:',
+      data: 33.033
+    },
+    {
+      title: 'Player 2 received:',
+      data: 44.001
+    },
+    {
+      title: 'Player 3 received:',
+      data: 0.101
+    }
   ];
   @Input() gameDataAddress: any;
 
