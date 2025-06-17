@@ -21,7 +21,7 @@ export class RegistrationFormComponent {
 
   onRegistration() {
     const message = {
-      event: 'RegistrationFormComponent:registration',
+      event: 'RegistrationFormComponent:addAccount',
       data: {
         login: this.login,
         password: this.password

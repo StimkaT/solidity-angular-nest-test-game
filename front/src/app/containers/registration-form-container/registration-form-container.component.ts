@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {RegistrationFormComponent} from '../../components/registration-form/registration-form.component';
 import {LoginFormContainerComponent} from '../login-form-container/login-form-container.component';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {addAccount} from '../../+state/auth/auth.actions';
 
 @Component({
   selector: 'app-registration-form-container',
@@ -15,13 +17,17 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 export class RegistrationFormContainerComponent {
   constructor(
     public dialogRef: MatDialogRef<RegistrationFormComponent>,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public store: Store
   ) {}
 
   events($event: any) {
     if ($event.event === 'RegistrationFormComponent:login') {
       this.close();
       this.openLoginModal()
+    }
+    if ($event.event === 'RegistrationFormComponent:addAccount') {
+      this.store.dispatch(addAccount({data: $event.data}))
     }
   }
 

@@ -8,6 +8,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import {GAME_DATA_FEATURE_KEY, gameDataReducer} from './+state/game-data/game-data.reducer';
 import {GameDataEffects} from './+state/game-data/game-data.effects';
 import {provideHttpClient} from '@angular/common/http';
+import {AuthEffects} from './+state/auth/auth.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideStore(),
     provideEffects([
       GameDataEffects,
+      AuthEffects
     ]),
     provideStore({
       [GAME_DATA_FEATURE_KEY]: gameDataReducer,
