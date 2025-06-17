@@ -1,0 +1,18 @@
+<div class="input-container">
+  <mat-form-field class="custom-input">
+    <mat-label></mat-label>
+    <input matInput placeholder="Login" [(ngModel)]="login">
+  </mat-form-field>
+</div>
+<div class="input-container">
+  <mat-form-field class="custom-input">
+    <mat-label></mat-label>
+    <input matInput placeholder="Password" [(ngModel)]="password">
+  </mat-form-field>
+</div>
+<app-register-button [label]="'Registration'" (click)="onRegistration()"></app-register-button>
+<div class="new-gamer">
+  <span>  Already have an account? </span>
+  <span (click)="loginForm()" class="create">Login</span>
+</div>
+

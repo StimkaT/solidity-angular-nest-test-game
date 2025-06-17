@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import {GamePageContainerComponent} from './containers/game-page-container/game-page-container.component';
+import { RouterOutlet } from '@angular/router';
+import {MainContainerComponent} from './containers/main-container/main-container.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    GamePageContainerComponent
-  ],
+  imports: [RouterOutlet, MainContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -1,0 +1,25 @@
+.games-panel {
+  align-items: center;
+  border: 0px solid rgb(255, 255, 255);
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  display: flex;
+  font-family: avertastd;
+  font-feature-settings: normal;
+  font-size: 14px;
+  font-variation-settings: normal;
+  height: 32px;
+  line-height: 21px;
+  margin: 24px 0 6px 0;
+  tab-size: 4;
+  text-size-adjust: 100%;
+  unicode-bidi: isolate;
+  width: 710px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+} 

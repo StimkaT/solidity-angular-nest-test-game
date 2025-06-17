@@ -1,0 +1,92 @@
+.login-button {
+  align-items: center;
+  appearance: button;
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: none;
+  background-origin: padding-box;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-repeat: repeat;
+  background-size: auto;
+  border-bottom-color: rgba(228, 234, 240, 0.098);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 100%;
+  border-image-source: none;
+  border-image-width: 1;
+  border-left-color: rgba(228, 234, 240, 0.098);
+  border-left-style: solid;
+  border-left-width: 2px;
+  border-right-color: rgba(228, 234, 240, 0.098);
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-top-color: rgba(228, 234, 240, 0.098);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: flex;
+  font-family: avertastd;
+  font-feature-settings: normal;
+  font-kerning: auto;
+  font-optical-sizing: auto;
+  font-size: 16px;
+  font-size-adjust: none;
+  font-stretch: 100%;
+  font-style: normal;
+  font-variant-alternates: normal;
+  font-variant-caps: normal;
+  font-variant-east-asian: normal;
+  font-variant-emoji: normal;
+  font-variant-ligatures: normal;
+  font-variant-numeric: normal;
+  font-variant-position: normal;
+  font-variation-settings: normal;
+  font-weight: 400;
+  height: 40px;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 24px;
+  margin-bottom: 0px;
+  margin-left: 12px;
+  margin-right: 0px;
+  margin-top: 0px;
+  padding-block-end: 0px;
+  padding-block-start: 0px;
+  padding-bottom: 0px;
+  padding-inline-end: 16px;
+  padding-inline-start: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 0px;
+  tab-size: 4;
+  text-align: center;
+  text-indent: 0px;
+  text-rendering: auto;
+  text-shadow: none;
+  text-size-adjust: 100%;
+  text-transform: none;
+  touch-action: manipulation;
+  user-select: none;
+  width: 78.4844px;
+  word-spacing: 0px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-border-image: none;
+
+  &:hover {
+    background-color: rgba(228, 234, 240, 0.05);
+  }
+
+  &:active {
+    background-color: rgba(228, 234, 240, 0.1);
+  }
+} 

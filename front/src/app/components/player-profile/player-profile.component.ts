@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
-import {SelectComponent} from '../select/select.component';
 
 @Component({
   selector: 'app-player-profile',
@@ -13,7 +12,6 @@ import {SelectComponent} from '../select/select.component';
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
-    SelectComponent
   ],
   templateUrl: './player-profile.component.html',
   styleUrl: './player-profile.component.scss'

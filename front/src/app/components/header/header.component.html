@@ -1,0 +1,10 @@
+<mat-toolbar class="header">
+  <div class="header-content">
+    <button mat-icon-button class="sidebar-toggle" (click)="sidebarService.toggleSidebar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="spacer"></div>
+    <app-login-button (click)="login()"></app-login-button>
+    <app-register-button (click)="registration()" [label]="'Registration'"></app-register-button>
+  </div>
+</mat-toolbar>

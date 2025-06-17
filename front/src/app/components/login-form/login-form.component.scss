@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  background-color: transparent;
+}
+
+.custom-input {
+  width: 100%;
+  height: 40px;
+  background-color: rgb(30, 33, 33);
+  border: 1px solid rgb(36, 238, 137);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  font-feature-settings: normal;
+  font-size: 14px;
+  font-variation-settings: normal;
+  line-height: 21px;
+  padding: 0 8px;
+  transition: all 0.35s cubic-bezier(0.36, 0.66, 0.04, 1);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  ::ng-deep {
+    .mat-mdc-form-field-flex {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding: 0;
+      min-height: 40px;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mat-mdc-form-field-underline {
+      display: none;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      display: none;
+    }
+
+    input {
+      color: rgb(255, 255, 255) !important;
+      font-size: 14px;
+      line-height: 21px;
+      height: 40px;
+      caret-color: rgb(255, 255, 255);
+
+      &::placeholder {
+        color: rgb(179, 190, 193) !important;
+        opacity: 1;
+        transition: color 0.35s cubic-bezier(0.36, 0.66, 0.04, 1);
+      }
+
+      &::-webkit-input-placeholder {
+        color: rgb(179, 190, 193) !important;
+        opacity: 1;
+        transition: color 0.35s cubic-bezier(0.36, 0.66, 0.04, 1);
+      }
+
+      &:-ms-input-placeholder {
+        color: rgb(179, 190, 193) !important;
+        opacity: 1;
+        transition: color 0.35s cubic-bezier(0.36, 0.66, 0.04, 1);
+      }
+
+    }
+
+    .mat-mdc-form-field-label {
+      color: rgb(255, 255, 255) !important;
+      font-size: 14px;
+      line-height: 21px;
+      transform: translateY(-1.5em) scale(0.75);
+      transform-origin: left top;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mat-mdc-form-field-label-wrapper {
+      top: -1.5em;
+      padding-top: 1.5em;
+    }
+
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      background-color: transparent !important;
+    }
+
+    .mdc-text-field--filled .mdc-line-ripple::before {
+      border-bottom-color: transparent !important;
+    }
+
+    .mdc-text-field--filled .mdc-line-ripple::after {
+      border-bottom-color: transparent !important;
+    }
+  }
+}
+
+mat-label {
+  color: rgb(255, 255, 255);
+}
+
+app-register-button ::ng-deep {
+  width: 100%;
+
+  .register-button {
+    margin-top: 16px;
+  }
+}
+
+.check-pass {
+  display: inline-block;
+  margin-top: 16px;
+  text-align: right;
+  width: 100%;
+  color: rgb(179, 190, 193);
+
+  span {
+    cursor: pointer;
+  }
+}
+
+.new-gamer {
+  display: inline-block;
+  margin-top: 16px;
+  width: 100%;
+  color: rgb(179, 190, 193);
+
+  .create {
+    cursor: pointer;
+    color: rgb(36, 238, 137);
+    font-weight: 800;
+    font-size: 14px;
+  }
+}
