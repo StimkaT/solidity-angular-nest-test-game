@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: mysql:3306
--- Время создания: Июн 17 2025 г., 08:34
+-- Время создания: Июн 17 2025 г., 13:11
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- База данных: `game`
 --
+CREATE DATABASE IF NOT EXISTS `game` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `game`;
 
 -- --------------------------------------------------------
 
