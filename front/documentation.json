@@ -890,7 +890,7 @@
             ],
             "stylesData": "",
             "extends": [],
-            "templateData": "<div class=\"game-card\">\n  <div class=\"game-content\">\n    <h2>Камень-Ножницы-Бумага</h2>\n    <div class=\"game-options\">\n      <button class=\"game-option\">\n        <mat-icon>pan_tool</mat-icon>\n      </button>\n      <button class=\"game-option\">\n        <mat-icon>content_cut</mat-icon>\n      </button>\n      <button class=\"game-option\">\n        <mat-icon>description</mat-icon>\n      </button>\n    </div>\n  </div>\n</div>\n"
+            "templateData": "<div class=\"game-card\">\n  <div class=\"game-content\">\n    <h2>Rock-Paper-Scissors</h2>\n    <div class=\"game-options\">\n      <button class=\"game-option\">\n        <mat-icon>pan_tool</mat-icon>\n      </button>\n      <button class=\"game-option\">\n        <mat-icon>content_cut</mat-icon>\n      </button>\n      <button class=\"game-option\">\n        <mat-icon>description</mat-icon>\n      </button>\n    </div>\n  </div>\n</div>\n"
         },
         {
             "name": "GamePageComponent",
@@ -1571,7 +1571,7 @@
         },
         {
             "name": "LoginFormComponent",
-            "id": "component-LoginFormComponent-bcc0b3d864b7d4ef8b8512a15b1bf5e5b58a0a75efada3f1a5aa65d10e4669edb35b5f59e974dbc7c113651c76bb4a84b7529199095badde14e83e28d4c27b10",
+            "id": "component-LoginFormComponent-dcfc6f9b7d246810fe0ec0dcee020810a7986671c4f23e34124cfc83177e5285cb0aa0adf4129efdacf8e4616df812cf8ad2f73e95ca16f4d1aed39bcfa37d13",
             "file": "src/app/components/login-form/login-form.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -1628,7 +1628,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 46,
+                    "line": 38,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
@@ -1638,65 +1638,9 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 28,
-                    "deprecated": false,
-                    "deprecationMessage": ""
-                },
-                {
-                    "name": "onLoginChange",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
                     "line": 20,
                     "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "onPasswordChange",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 24,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
+                    "deprecationMessage": ""
                 },
                 {
                     "name": "registration",
@@ -1704,7 +1648,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 39,
+                    "line": 31,
                     "deprecated": false,
                     "deprecationMessage": ""
                 }
@@ -1735,13 +1679,13 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import {Component, EventEmitter, Output} from '@angular/core';\nimport {MatInputModule} from '@angular/material/input';\nimport {MatFormFieldModule} from '@angular/material/form-field';\nimport {FormsModule} from '@angular/forms';\nimport {RegisterButtonComponent} from '../register-button/register-button.component';\n\n@Component({\n  selector: 'app-login-form',\n  imports: [FormsModule, MatFormFieldModule, MatInputModule, RegisterButtonComponent],\n  standalone: true,\n  templateUrl: './login-form.component.html',\n  styleUrl: './login-form.component.scss'\n})\nexport class LoginFormComponent {\n  @Output() emitter = new EventEmitter()\n\n  login: string = '';\n  password: string = '';\n\n  onLoginChange(value: string) {\n    this.login = value;\n  }\n\n  onPasswordChange(value: string) {\n    this.password = value;\n  }\n\n  onLogin() {\n    const message = {\n      event: 'LoginFormComponent:login',\n      data: {\n        login: this.login,\n        password: this.password\n      }\n    };\n    this.emitter.emit(message);\n  }\n\n  registration() {\n    const message = {\n      event: 'LoginFormComponent:registration',\n    };\n    this.emitter.emit(message);\n  }\n\n  checkPass() {\n    const message = {\n      event: 'LoginFormComponent:checkPass',\n      data: {\n        login: this.login,\n      }\n    };\n    this.emitter.emit(message);\n  }\n}\n",
+            "sourceCode": "import {Component, EventEmitter, Output} from '@angular/core';\nimport {MatInputModule} from '@angular/material/input';\nimport {MatFormFieldModule} from '@angular/material/form-field';\nimport {FormsModule} from '@angular/forms';\nimport {RegisterButtonComponent} from '../register-button/register-button.component';\n\n@Component({\n  selector: 'app-login-form',\n  imports: [FormsModule, MatFormFieldModule, MatInputModule, RegisterButtonComponent],\n  standalone: true,\n  templateUrl: './login-form.component.html',\n  styleUrl: './login-form.component.scss'\n})\nexport class LoginFormComponent {\n  @Output() emitter = new EventEmitter()\n\n  login: string = '';\n  password: string = '';\n\n  onLogin() {\n    const message = {\n      event: 'LoginFormComponent:login',\n      data: {\n        login: this.login,\n        password: this.password\n      }\n    };\n    this.emitter.emit(message);\n  }\n\n  registration() {\n    const message = {\n      event: 'LoginFormComponent:registration',\n    };\n    this.emitter.emit(message);\n  }\n\n  checkPass() {\n    const message = {\n      event: 'LoginFormComponent:checkPass',\n      data: {\n        login: this.login,\n      }\n    };\n    this.emitter.emit(message);\n  }\n}\n",
             "styleUrl": "./login-form.component.scss",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": "",
             "extends": [],
-            "templateData": "<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Login\" [(ngModel)]=\"login\" (ngModelChange)=\"onLoginChange($event)\">\n  </mat-form-field>\n</div>\n<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Password\" type=\"password\" [(ngModel)]=\"password\" (ngModelChange)=\"onPasswordChange($event)\">\n  </mat-form-field>\n</div>\n<div (click)=\"checkPass()\" class=\"check-pass\"> <span>Forgot your password?</span> </div>\n<app-register-button [label]=\"'Login'\" (click)=\"onLogin()\"></app-register-button>\n<div class=\"new-gamer\">\n  <span>Newbie? </span>\n  <span (click)=\"registration()\" class=\"create\">Create account</span>\n</div>\n"
+            "templateData": "<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Login\" [(ngModel)]=\"login\">\n  </mat-form-field>\n</div>\n<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Password\" type=\"password\" [(ngModel)]=\"password\">\n  </mat-form-field>\n</div>\n<div (click)=\"checkPass()\" class=\"check-pass\"> <span>Forgot your password?</span> </div>\n<app-register-button [label]=\"'Login'\" (click)=\"onLogin()\"></app-register-button>\n<div class=\"new-gamer\">\n  <span>Newbie? </span>\n  <span (click)=\"registration()\" class=\"create\">Create account</span>\n</div>\n"
         },
         {
             "name": "LoginFormContainerComponent",
@@ -1909,7 +1853,7 @@
                 ]
             },
             "extends": [],
-            "templateData": "<div class=\"container\">\n  <div class=\"left-side\">\n    <img src=\"../../../assets/images/img.png\" alt=\"logo\" class=\"logo-image\">\n  </div>\n\n  <div class=\"form\">\n    <div class=\"tool\">\n\n      <span class=\"login\">\n        Login\n      </span>\n\n      <span class=\"example-spacer\"></span>\n\n      <button class=\"close-button\" type=\"button\" aria-label=\"close\" (click)=\"close()\">\n        <svg class=\"close-icon\" viewBox=\"0 0 32 32\" aria-hidden=\"true\">\n          <path d=\"M6.32 9.23L13.09 16l-6.77 6.77L9.23 25.68 16 18.91l6.77 6.77 2.91-2.91-6.77-6.77 6.77-6.77-2.91-2.91L16 13.09 9.23 6.32 6.32 9.23z\"/>\n        </svg>\n      </button>\n\n    </div>\n\n    <app-login-form (emitter)=\"events($event)\"></app-login-form>\n  </div>\n</div>\n"
+            "templateData": "<div class=\"container\">\n  <div class=\"left-side\">\n    <img src=\"../../../../public/images/img.png\" alt=\"logo\" class=\"logo-image\">\n  </div>\n\n  <div class=\"form\">\n    <div class=\"tool\">\n\n      <span class=\"login\">\n        Login\n      </span>\n\n      <span class=\"example-spacer\"></span>\n\n      <button class=\"close-button\" type=\"button\" aria-label=\"close\" (click)=\"close()\">\n        <svg class=\"close-icon\" viewBox=\"0 0 32 32\" aria-hidden=\"true\">\n          <path d=\"M6.32 9.23L13.09 16l-6.77 6.77L9.23 25.68 16 18.91l6.77 6.77 2.91-2.91-6.77-6.77 6.77-6.77-2.91-2.91L16 13.09 9.23 6.32 6.32 9.23z\"/>\n        </svg>\n      </button>\n\n    </div>\n\n    <app-login-form (emitter)=\"events($event)\"></app-login-form>\n  </div>\n</div>\n"
         },
         {
             "name": "MainContainerComponent",
@@ -2491,7 +2435,7 @@
         },
         {
             "name": "RegistrationFormComponent",
-            "id": "component-RegistrationFormComponent-611352c7281c3f1f366f4c1f7ab8f12f3f5de7ccf1cadfdb815105c4479ba6adf0a422aeec71dbf44cd32dcb20fd62beb0ddc6bf44970f06b24e21557bed0a7a",
+            "id": "component-RegistrationFormComponent-f9c45f6498c66d437fc534299265bbf750501f6b0b74f83098f5229462e08ea23ac7e526003618d51f5acdf698a125c96bbe7cc5db69cd79442a41cbd9a559dc",
             "file": "src/app/components/registration-form/registration-form.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -2548,65 +2492,9 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 33,
                     "deprecated": false,
                     "deprecationMessage": ""
-                },
-                {
-                    "name": "onLoginChange",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 22,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "onPasswordChange",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 26,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "string",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
                 },
                 {
                     "name": "onRegistration",
@@ -2614,7 +2502,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 30,
+                    "line": 22,
                     "deprecated": false,
                     "deprecationMessage": ""
                 }
@@ -2645,13 +2533,13 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import {Component, EventEmitter, Output} from '@angular/core';\nimport {MatInputModule} from '@angular/material/input';\nimport {RegisterButtonComponent} from '../register-button/register-button.component';\nimport {FormsModule} from '@angular/forms';\nimport {MatFormFieldModule} from '@angular/material/form-field';\n\n@Component({\n  selector: 'app-registration-form',\n  imports: [\n    FormsModule, MatFormFieldModule, MatInputModule, RegisterButtonComponent\n  ],\n  standalone: true,\n  templateUrl: './registration-form.component.html',\n  styleUrl: './registration-form.component.scss'\n})\nexport class RegistrationFormComponent {\n  @Output() emitter = new EventEmitter()\n\n  login: string = '';\n  password: string = '';\n\n  onLoginChange(value: string) {\n    this.login = value;\n  }\n\n  onPasswordChange(value: string) {\n    this.password = value;\n  }\n\n  onRegistration() {\n    const message = {\n      event: 'RegistrationFormComponent:registration',\n      data: {\n        login: this.login,\n        password: this.password\n      }\n    };\n    this.emitter.emit(message);\n  }\n\n  loginForm() {\n    const message = {\n      event: 'RegistrationFormComponent:login',\n    };\n    this.emitter.emit(message);\n  }\n\n}\n",
+            "sourceCode": "import {Component, EventEmitter, Output} from '@angular/core';\nimport {MatInputModule} from '@angular/material/input';\nimport {RegisterButtonComponent} from '../register-button/register-button.component';\nimport {FormsModule} from '@angular/forms';\nimport {MatFormFieldModule} from '@angular/material/form-field';\n\n@Component({\n  selector: 'app-registration-form',\n  imports: [\n    FormsModule, MatFormFieldModule, MatInputModule, RegisterButtonComponent\n  ],\n  standalone: true,\n  templateUrl: './registration-form.component.html',\n  styleUrl: './registration-form.component.scss'\n})\nexport class RegistrationFormComponent {\n  @Output() emitter = new EventEmitter()\n\n  login: string = '';\n  password: string = '';\n\n  onRegistration() {\n    const message = {\n      event: 'RegistrationFormComponent:registration',\n      data: {\n        login: this.login,\n        password: this.password\n      }\n    };\n    this.emitter.emit(message);\n  }\n\n  loginForm() {\n    const message = {\n      event: 'RegistrationFormComponent:login',\n    };\n    this.emitter.emit(message);\n  }\n\n}\n",
             "styleUrl": "./registration-form.component.scss",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": "",
             "extends": [],
-            "templateData": "<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Login\" [(ngModel)]=\"login\" (ngModelChange)=\"onLoginChange($event)\">\n  </mat-form-field>\n</div>\n<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Password\" [(ngModel)]=\"password\" (ngModelChange)=\"onPasswordChange($event)\">\n  </mat-form-field>\n</div>\n<app-register-button [label]=\"'Registration'\" (click)=\"onRegistration()\"></app-register-button>\n<div class=\"new-gamer\">\n  <span>  Already have an account? </span>\n  <span (click)=\"loginForm()\" class=\"create\">Login</span>\n</div>\n\n"
+            "templateData": "<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Login\" [(ngModel)]=\"login\">\n  </mat-form-field>\n</div>\n<div class=\"input-container\">\n  <mat-form-field class=\"custom-input\">\n    <mat-label></mat-label>\n    <input matInput placeholder=\"Password\" [(ngModel)]=\"password\">\n  </mat-form-field>\n</div>\n<app-register-button [label]=\"'Registration'\" (click)=\"onRegistration()\"></app-register-button>\n<div class=\"new-gamer\">\n  <span>  Already have an account? </span>\n  <span (click)=\"loginForm()\" class=\"create\">Login</span>\n</div>\n\n"
         },
         {
             "name": "RegistrationFormContainerComponent",
@@ -2811,7 +2699,7 @@
                 ]
             },
             "extends": [],
-            "templateData": "<div class=\"container\">\n  <div class=\"left-side\">\n    <img src=\"../../../assets/images/img.png\" alt=\"logo\" class=\"logo-image\">\n  </div>\n\n  <div class=\"form\">\n    <div class=\"tool\">\n\n      <span class=\"login\">\n        Registration\n      </span>\n\n      <span class=\"example-spacer\"></span>\n\n      <button class=\"close-button\" type=\"button\" aria-label=\"close\" (click)=\"close()\">\n        <svg class=\"close-icon\" viewBox=\"0 0 32 32\" aria-hidden=\"true\">\n          <path d=\"M6.32 9.23L13.09 16l-6.77 6.77L9.23 25.68 16 18.91l6.77 6.77 2.91-2.91-6.77-6.77 6.77-6.77-2.91-2.91L16 13.09 9.23 6.32 6.32 9.23z\"/>\n        </svg>\n      </button>\n\n    </div>\n\n    <app-registration-form (emitter)=\"events($event)\"></app-registration-form>\n\n  </div>\n</div>\n"
+            "templateData": "<div class=\"container\">\n  <div class=\"left-side\">\n    <img src=\"../../../../public/images/img.png\" alt=\"logo\" class=\"logo-image\">\n  </div>\n\n  <div class=\"form\">\n    <div class=\"tool\">\n\n      <span class=\"login\">\n        Registration\n      </span>\n\n      <span class=\"example-spacer\"></span>\n\n      <button class=\"close-button\" type=\"button\" aria-label=\"close\" (click)=\"close()\">\n        <svg class=\"close-icon\" viewBox=\"0 0 32 32\" aria-hidden=\"true\">\n          <path d=\"M6.32 9.23L13.09 16l-6.77 6.77L9.23 25.68 16 18.91l6.77 6.77 2.91-2.91-6.77-6.77 6.77-6.77-2.91-2.91L16 13.09 9.23 6.32 6.32 9.23z\"/>\n        </svg>\n      </button>\n\n    </div>\n\n    <app-registration-form (emitter)=\"events($event)\"></app-registration-form>\n\n  </div>\n</div>\n"
         },
         {
             "name": "SelectComponent",
@@ -3710,7 +3598,7 @@
                 "linktype": "component",
                 "name": "LoginFormComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/9",
+                "coverageCount": "0/7",
                 "status": "low"
             },
             {
@@ -3755,7 +3643,7 @@
                 "linktype": "component",
                 "name": "RegistrationFormComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/8",
+                "coverageCount": "0/6",
                 "status": "low"
             },
             {
