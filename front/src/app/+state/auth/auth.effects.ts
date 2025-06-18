@@ -3,12 +3,13 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
 import {addAccount} from './auth.actions';
-import {tap} from 'rxjs/operators';
+import {tap, switchMap} from 'rxjs/operators';
+import {RegistrationService} from '../../services/registration.service';
 
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
-  private gameDataService = inject(GameDataService);
+  private registrationService = inject(RegistrationService);
   private store = inject(Store);
 
   addAccount$ = createEffect(() =>
@@ -16,11 +17,14 @@ export class AuthEffects {
         ofType(addAccount),
         tap((action) => {
           console.log('Данные из эффекта:', action.data);
+        }),
+        switchMap((action) => {
+          // const jsonData = JSON.stringify(action.data);
+          return this.registrationService.addNewUser(action.data).pipe(
+            tap(response => console.log('Пользователь создан:', response))
+          );
         })
       ),
-    {
-      dispatch: false
-    }
+    { dispatch: false }
   );
-
 }

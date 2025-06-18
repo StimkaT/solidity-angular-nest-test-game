@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GameController } from './game/game.controller';
-import { BlockchainService } from './services/blockchain.service';
+// import { GameController } from './game/game.controller';
+// import { BlockchainService } from './services/blockchain.service';
 import { GameService } from './services/deploy';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegistrationModule } from './registration/registration.module';
 
 @Module({
   imports: [
@@ -14,12 +15,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 3306,
       username: 'user',
       password: 'password',
-      database: 'testdb',
+      database: 'game',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    RegistrationModule,
   ],
-  controllers: [AppController, GameController],
-  providers: [AppService, BlockchainService, GameService],
+  controllers: [AppController],
+  providers: [AppService, GameService],
 })
 export class AppModule {}
