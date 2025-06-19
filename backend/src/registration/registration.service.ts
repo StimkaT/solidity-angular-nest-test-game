@@ -45,7 +45,6 @@ export class RegistrationService {
     }
 
     const payload = { login: user.login, sub: user.id };
-    console.log('payload', payload)
     return this.jwtService.sign(payload);
   }
 
