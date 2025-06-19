@@ -1,7 +1,7 @@
 .sidebar {
   position: fixed;
   left: -240px;
-  top: 0;
+  top: 60px;
   width: 240px;
   height: 100vh;
   background-color: rgb(41, 45, 46);
@@ -28,7 +28,6 @@
   &-menu {
     flex: 1;
     overflow-y: auto;
-    padding-top: 60px;
   }
 }
 
