@@ -31,13 +31,18 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(login),
         tap((action) => {
-            this.registrationService.checkAuth(action.data)
-          }
-        )
+          this.registrationService.checkAuth(action.data).subscribe(
+            res => {
+              console.log('Успешный логин:', res);
+            },
+            err => {
+              console.error('Ошибка логина:', err);
+            }
+          );
+        })
       ),
-    {
-      dispatch: false
-    }
+    { dispatch: false }
   );
+
 
 }
