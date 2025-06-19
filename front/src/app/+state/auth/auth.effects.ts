@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
-import {addAccount} from './auth.actions';
-import {tap, switchMap} from 'rxjs/operators';
+import {addAccount, login} from './auth.actions';
+import {switchMap, tap} from 'rxjs/operators';
 import {RegistrationService} from '../../services/registration.service';
 
 @Injectable()
@@ -27,4 +26,18 @@ export class AuthEffects {
       ),
     { dispatch: false }
   );
+
+  auth$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(login),
+        tap((action) => {
+            this.registrationService.checkAuth(action.data)
+          }
+        )
+      ),
+    {
+      dispatch: false
+    }
+  );
+
 }

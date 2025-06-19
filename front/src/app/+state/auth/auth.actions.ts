@@ -9,3 +9,7 @@ export const addAccount = createAction(
   '[Auth] addAccount',
   props<{ data: IPlayer }>()
 );
+export const login = createAction(
+  '[Auth] login',
+  props<{ data: {login: string, password: string} }>()
+);
