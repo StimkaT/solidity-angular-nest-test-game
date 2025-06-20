@@ -1,5 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
+import * as AuthActions from './auth.actions'
 export const AUTH_FEATURE_KEY = 'auth';
+
+export interface API {
+  startTime: number | null;
+  loadingTime: number | null;
+  isLoading: boolean;
+  isLoaded: boolean;
+  error?: any;
+}
+
+export interface IAuthApi extends API {
+  response: any;
+}
 
 export interface IPlayer {
   id?: string;
@@ -11,6 +24,7 @@ export interface IPlayer {
 
 export interface AuthState {
   player: IPlayer;
+  authApi: IAuthApi;
 }
 
 export interface SettingsPartialState {
@@ -24,8 +38,56 @@ export const initialState: AuthState = {
     password: '',
     isLogin: false
   },
+  authApi: {
+    startTime: null,
+    loadingTime: null,
+    isLoading: false,
+    isLoaded: false,
+    response: null
+  }
 };
 
 export const authReducer = createReducer(
   initialState,
+  on(AuthActions.login, (state) => ({
+    ...state,
+    authApi: {
+      ...state.authApi,
+      isLoading: true,
+      isLoaded: false,
+      loadingStart: Date.now(),
+    }
+  })),
+  on(AuthActions.loginSuccess, (state, {response}) => ({
+    ...state,
+    authApi: {
+      ...state.authApi,
+      isLoading: false,
+      isLoaded: true,
+      loadingTime: Date.now() - (state.authApi.startTime || 0),
+      response: response
+    }
+  })),
+  on(AuthActions.loginSuccess, (state, {response}) => ({
+    ...state,
+    player: {
+      ...state.player,
+      id: response.id,
+      login: response.login,
+      password: response.password,
+      wallet: response.wallet,
+      isLogin: true
+    }
+  })),
+  on(AuthActions.loginError, (state, {error}) => ({
+    ...state,
+    authApi: {
+      ...state.authApi,
+      isLoading: false,
+      isLoaded: false,
+      loadingTime: Date.now() - (state.authApi.startTime || 0),
+      response: error
+    }
+  })),
+
 );

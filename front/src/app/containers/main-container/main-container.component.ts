@@ -36,9 +36,6 @@ export class MainContainerComponent {
       hasBackdrop: true,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('Модальное окно закрыто');
-    });
   }
 
   openRegistrationModal(): void {
@@ -48,8 +45,5 @@ export class MainContainerComponent {
       hasBackdrop: true,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('Модальное окно закрыто');
-    });
   }
 }

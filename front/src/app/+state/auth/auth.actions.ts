@@ -13,3 +13,11 @@ export const login = createAction(
   '[Auth] login',
   props<{ data: {login: string, password: string} }>()
 );
+export const loginSuccess = createAction(
+  '[Auth] loginSuccess',
+  props<{ response: IPlayer }>()
+);
+export const loginError = createAction(
+  '[Auth] loginError',
+  props<{ error: string }>()
+);

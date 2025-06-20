@@ -44,9 +44,5 @@ export class LoginFormContainerComponent {
       height: '70%',
       hasBackdrop: true,
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('Модальное окно закрыто');
-    });
   }
 }

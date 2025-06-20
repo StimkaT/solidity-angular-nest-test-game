@@ -1,15 +1,9 @@
 <aside class="sidebar" [class.expanded]="sidebarService.isExpanded$ | async">
   <div class="sidebar-content">
-    <div class="sidebar-menu">
-      <app-profile [name]="''"></app-profile>
-
-      <div>
-        wehqwbiweferighoekrjwfoiewjgn
+    @if (name !== '') {
+      <div class="sidebar-menu">
+        <app-profile [name]="name"></app-profile>
       </div>
-      <div>
-        wehqwbiweferighoekrjwfoiewjgn
-      </div>
-
-    </div>
+    }
   </div>
 </aside>

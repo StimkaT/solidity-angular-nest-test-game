@@ -12,7 +12,6 @@ export class RegistrationService {
     return this.http.post(`${this.apiUrl}/register`, data );
   }
   checkAuth(data: any): Observable<any> {
-    console.log('data', data)
     return this.http.post(`${this.apiUrl}/login`, data );
   }
 }

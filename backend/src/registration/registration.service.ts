@@ -28,9 +28,13 @@ export class RegistrationService {
     return this.usersRepository.save(user);
   }
 
-  async validateUser(
-    registrationDto: RegistrationDto,
-  ): Promise<{ token: string; login: string }> {
+  async validateUser(registrationDto: RegistrationDto): Promise<{
+    token: string;
+    login: string;
+    id: any;
+    password: string;
+    wallet?: string;
+  }> {
     const { login, password } = registrationDto;
 
     const user = await this.usersRepository.findOne({ where: { login } });
@@ -47,10 +51,12 @@ export class RegistrationService {
 
     const payload = { login: user.login, sub: user.id };
     const token = this.jwtService.sign(payload);
-
     return {
       token,
+      id: user.id,
       login: user.login,
+      password: user.password,
+      wallet: user.wallet,
     };
   }
 }

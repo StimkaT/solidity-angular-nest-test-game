@@ -6,9 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegistrationModule } from './registration/registration.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './services/jwt.strategy';
 
 @Module({
   imports: [
+    PassportModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -31,6 +34,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, GameService],
+  providers: [AppService, GameService, JwtStrategy],
+  exports: [JwtModule, PassportModule],
 })
 export class AppModule {}

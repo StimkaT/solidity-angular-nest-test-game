@@ -4,7 +4,12 @@
       <mat-icon>menu</mat-icon>
     </button>
     <div class="spacer"></div>
-    <app-login-button (click)="login()"></app-login-button>
-    <app-register-button (click)="registration()" [label]="'Registration'"></app-register-button>
+    @if (loginName === '') {
+      <app-login-button (click)="login()"></app-login-button>
+      <app-register-button (click)="registration()" [label]="'Registration'"></app-register-button>
+    }
+    @if (loginName !== '') {
+      <mat-icon>account_circle</mat-icon>
+    }
   </div>
 </mat-toolbar>

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +22,8 @@ import { SidebarService } from '../../services/sidebar.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  @Output() emitter = new EventEmitter()
+  @Input() loginName: string = '';
+  @Output() emitter = new EventEmitter();
 
   constructor(
     public sidebarService: SidebarService
