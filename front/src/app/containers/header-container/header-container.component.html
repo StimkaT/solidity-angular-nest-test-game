@@ -1,0 +1,4 @@
+<app-header
+  [player]="(getUserData$ | async)"
+  (emitter)="emitter.emit($event)"
+></app-header>

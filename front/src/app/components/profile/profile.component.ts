@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {IPlayer} from '../../+state/auth/auth.reducer';
 
 @Component({
   selector: 'app-profile',
@@ -10,7 +11,7 @@ import {MatCardModule} from '@angular/material/card';
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
-  @Input() name: string = '';
+  @Input() user: IPlayer | null = null;
   @Input() balance: string = '';
 
 }

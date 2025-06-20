@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { LoginButtonComponent } from '../login-button/login-button.component';
 import { RegisterButtonComponent } from '../register-button/register-button.component';
 import { SidebarService } from '../../services/sidebar.service';
+import {IPlayer} from '../../+state/auth/auth.reducer';
+import {LogoutButtonComponent} from '../logout-button/logout-button.component';
 
 @Component({
   selector: 'app-header',
@@ -16,30 +18,26 @@ import { SidebarService } from '../../services/sidebar.service';
     MatIconModule,
     MatToolbarModule,
     LoginButtonComponent,
-    RegisterButtonComponent
+    RegisterButtonComponent,
+    LogoutButtonComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  @Input() loginName: string = '';
+  @Input() player: IPlayer | null = null;
   @Output() emitter = new EventEmitter();
 
-  constructor(
-    public sidebarService: SidebarService
-  ) {}
+  private sidebarService = inject(SidebarService);
 
-  login() {
+  events(event: string) {
     const message = {
-      event: 'HeaderComponent:login',
+      event: `HeaderComponent:${event}`,
     };
     this.emitter.emit(message);
   }
 
-  registration() {
-    const message = {
-      event: 'HeaderComponent:registration',
-    };
-    this.emitter.emit(message);
+  toggleSidebar(): void {
+    this.sidebarService.toggleSidebar();
   }
 }

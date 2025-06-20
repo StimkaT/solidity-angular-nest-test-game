@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SidebarService } from '../../services/sidebar.service';
+import {ProfileContainerComponent} from '../../containers/profile-container/profile-container.component';
+import {IPlayer} from '../../+state/auth/auth.reducer';
 import {ProfileComponent} from '../profile/profile.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, ProfileComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, ProfileContainerComponent, ProfileComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  @Input() name: string = '';
+  @Input() user: IPlayer | null = null
   constructor(
     public sidebarService: SidebarService
   ) {}

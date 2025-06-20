@@ -1,8 +1,8 @@
 <aside class="sidebar" [class.expanded]="sidebarService.isExpanded$ | async">
   <div class="sidebar-content">
-    @if (name !== '') {
+    @if (user?.isLogin) {
       <div class="sidebar-menu">
-        <app-profile [name]="name"></app-profile>
+        <app-profile-container></app-profile-container>
       </div>
     }
   </div>

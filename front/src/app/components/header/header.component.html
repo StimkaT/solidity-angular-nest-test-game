@@ -1,15 +1,16 @@
 <mat-toolbar class="header">
   <div class="header-content">
-    <button mat-icon-button class="sidebar-toggle" (click)="sidebarService.toggleSidebar()">
+    <button mat-icon-button class="sidebar-toggle" (click)="toggleSidebar()">
       <mat-icon>menu</mat-icon>
     </button>
     <div class="spacer"></div>
-    @if (loginName === '') {
-      <app-login-button (click)="login()"></app-login-button>
-      <app-register-button (click)="registration()" [label]="'Registration'"></app-register-button>
+    @if (!player?.isLogin) {
+      <app-login-button (click)="events('login')"></app-login-button>
+      <app-register-button (click)="events('registration')" [label]="'Registration'"></app-register-button>
     }
-    @if (loginName !== '') {
+    @if (player?.isLogin) {
       <mat-icon>account_circle</mat-icon>
+      <app-logout-button (click)="events('logout')" [label]="'Logout'"></app-logout-button>
     }
   </div>
 </mat-toolbar>

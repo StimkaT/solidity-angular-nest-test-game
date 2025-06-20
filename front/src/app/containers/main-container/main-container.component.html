@@ -1,7 +1,7 @@
 <div class="main-container">
-  <app-header (emitter)="events($event)"></app-header>
+  <app-header-container (emitter)="events($event)"></app-header-container>
   <div class="content">
-    <app-sidebar></app-sidebar>
+    <app-sidebar [user]="getUserData$ | async"></app-sidebar>
     <div class="main-content">
       <app-card-game></app-card-game>
     </div>

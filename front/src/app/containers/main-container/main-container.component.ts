@@ -1,31 +1,42 @@
-import { Component } from '@angular/core';
-import {HeaderComponent} from '../../components/header/header.component';
+import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {SidebarComponent} from '../../components/sidebar/sidebar.component';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginFormContainerComponent} from '../login-form-container/login-form-container.component';
 import {RegistrationFormContainerComponent} from '../registration-form-container/registration-form-container.component';
 import {CardGameComponent} from '../../components/card-game/card-game.component';
+import {HeaderContainerComponent} from '../header-container/header-container.component';
+import {Store} from '@ngrx/store';
+import {getUserData} from '../../+state/auth/auth.selectors';
+import {AsyncPipe} from '@angular/common';
+import {logout} from '../../+state/auth/auth.actions';
 
 @Component({
   selector: 'app-main-container',
   imports: [
-    HeaderComponent,
     SidebarComponent,
-    CardGameComponent
+    CardGameComponent,
+    HeaderContainerComponent,
+    AsyncPipe
   ],
   standalone: true,
   templateUrl: './main-container.component.html',
   styleUrl: './main-container.component.scss'
 })
 export class MainContainerComponent {
-  constructor(public dialog: MatDialog) {}
+  @Output() emitter = new EventEmitter();
+
+  private store = inject(Store);
+  private dialog = inject(MatDialog);
+
+  getUserData$ = this.store.select(getUserData);
 
   events($event: any) {
     if ($event.event === 'HeaderComponent:login') {
       this.openLoginModal()
-    }
-    if ($event.event === 'HeaderComponent:registration') {
+    } else if ($event.event === 'HeaderComponent:registration') {
       this.openRegistrationModal()
+    } else if ($event.event === 'HeaderComponent:logout') {
+      this.store.dispatch(logout())
     }
   }
 
