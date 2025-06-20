@@ -25,11 +25,19 @@ export interface IGameData {
   playerList: IPlayer[]; // список игроков и их условия
 }
 
+export interface IGameList {
+  iconList: string[];
+  title: string;
+  linkGame: string;
+}
+
 export interface GameDataState {
   playerList: IPlayer[];
   selectedPlayerList: string[];
   gameData: IGameData;
   gameDataAddress: string;
+
+  gameList: IGameList[];
 }
 
 export interface SettingsPartialState {
@@ -50,7 +58,28 @@ export const initialState: GameDataState = {
     gameTookPlace: null,
     bank: 0,
     playerList: [],
-  }
+  },
+
+  gameList: [
+    {
+      iconList: [
+        'pan_tool',
+        'content_cut',
+        'description'
+      ],
+      title: 'Rock-Paper-Scissors',
+      linkGame: 'rock-paper-scissors'
+    },
+    {
+      iconList: [
+        'pan_tool',
+        'content_cut',
+        'description'
+      ],
+      title: 'Rock-Paper-Scissors',
+      linkGame: ''
+    }
+  ]
 };
 
 // start и finish Смарт контракт создается с основного кошелька - player 10.

@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions'
+import {clearPlayer} from './auth.actions';
 export const AUTH_FEATURE_KEY = 'auth';
 
 export interface API {
@@ -25,6 +26,7 @@ export interface IPlayer {
 export interface AuthState {
   player: IPlayer;
   authApi: IAuthApi;
+  sidebarValue: boolean;
 }
 
 export interface SettingsPartialState {
@@ -44,7 +46,8 @@ export const initialState: AuthState = {
     isLoading: false,
     isLoaded: false,
     response: null
-  }
+  },
+  sidebarValue: false,
 };
 
 export const authReducer = createReducer(
@@ -88,6 +91,16 @@ export const authReducer = createReducer(
       loadingTime: Date.now() - (state.authApi.startTime || 0),
       response: error
     }
+  })),
+
+  on(AuthActions.setSidebar, (state, {sidebarValue}) => ({
+    ...state,
+    sidebarValue
+  })),
+
+  on(AuthActions.clearPlayer, (state) => ({
+    ...state,
+    player: initialState.player
   })),
 
 );

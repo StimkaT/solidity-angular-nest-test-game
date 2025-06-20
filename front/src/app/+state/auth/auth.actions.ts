@@ -21,7 +21,12 @@ export const loginError = createAction(
   '[Auth] loginError',
   props<{ error: string }>()
 );
-
-export const logout = createAction(
-  '[Auth] logout',
+export const setSidebar = createAction(
+  '[Auth] setSidebar',
+  props<{ sidebarValue: boolean }>()
 );
+
+export const logout = createAction( '[Auth] logout');
+export const checkAuth = createAction('[Auth] checkAuth');
+export const clearPlayer = createAction('[Auth] clearPlayer');
+

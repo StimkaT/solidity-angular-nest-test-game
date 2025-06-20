@@ -22,3 +22,7 @@ export const selectGameDataAddress = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.gameDataAddress
 );
+export const getGameList = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.gameList
+);

@@ -7,3 +7,7 @@ export const getUserData = createSelector(
   selectAuthState,
   (state) => state.player
 );
+export const getSidebarValue = createSelector(
+  selectAuthState,
+  (state) => state.sidebarValue
+);

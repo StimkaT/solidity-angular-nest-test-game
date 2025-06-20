@@ -1,16 +1,12 @@
 <div class="game-card">
   <div class="game-content">
-    <h2>Rock-Paper-Scissors</h2>
+    <h2>{{ title }}</h2>
     <div class="game-options">
-      <button class="game-option">
-        <mat-icon>pan_tool</mat-icon>
-      </button>
-      <button class="game-option">
-        <mat-icon>content_cut</mat-icon>
-      </button>
-      <button class="game-option">
-        <mat-icon>description</mat-icon>
-      </button>
+      @for (icon of iconList; track icon) {
+        <button class="game-option">
+          <mat-icon>{{ icon }}</mat-icon>
+        </button>
+      }
     </div>
   </div>
 </div>

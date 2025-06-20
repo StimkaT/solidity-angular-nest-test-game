@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Output} from '@angular/core';
+import {Component, EventEmitter, inject, OnInit, Output} from '@angular/core';
 import {SidebarComponent} from '../../components/sidebar/sidebar.component';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginFormContainerComponent} from '../login-form-container/login-form-container.component';
@@ -6,9 +6,10 @@ import {RegistrationFormContainerComponent} from '../registration-form-container
 import {CardGameComponent} from '../../components/card-game/card-game.component';
 import {HeaderContainerComponent} from '../header-container/header-container.component';
 import {Store} from '@ngrx/store';
-import {getUserData} from '../../+state/auth/auth.selectors';
+import {getSidebarValue, getUserData} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
-import {logout} from '../../+state/auth/auth.actions';
+import {checkAuth, logout} from '../../+state/auth/auth.actions';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-main-container',
@@ -16,19 +17,25 @@ import {logout} from '../../+state/auth/auth.actions';
     SidebarComponent,
     CardGameComponent,
     HeaderContainerComponent,
-    AsyncPipe
+    AsyncPipe,
+    RouterOutlet
   ],
   standalone: true,
   templateUrl: './main-container.component.html',
   styleUrl: './main-container.component.scss'
 })
-export class MainContainerComponent {
+export class MainContainerComponent implements OnInit {
   @Output() emitter = new EventEmitter();
 
   private store = inject(Store);
   private dialog = inject(MatDialog);
 
   getUserData$ = this.store.select(getUserData);
+  getSidebarValue$ = this.store.select(getSidebarValue);
+
+  ngOnInit() {
+    this.store.dispatch(checkAuth())
+  }
 
   events($event: any) {
     if ($event.event === 'HeaderComponent:login') {
@@ -46,7 +53,6 @@ export class MainContainerComponent {
       height: '70%',
       hasBackdrop: true,
     });
-
   }
 
   openRegistrationModal(): void {
