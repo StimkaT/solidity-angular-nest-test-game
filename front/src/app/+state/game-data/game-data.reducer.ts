@@ -30,6 +30,12 @@ export interface IGameList {
   title: string;
   linkGame: string;
 }
+export interface IActiveGameList {
+  id: string;
+  needPlayers: number;
+  registeredPlayers: number;
+  bet: number;
+}
 
 export interface GameDataState {
   playerList: IPlayer[];
@@ -38,6 +44,7 @@ export interface GameDataState {
   gameDataAddress: string;
 
   gameList: IGameList[];
+  activeGameList: IActiveGameList[];
 }
 
 export interface SettingsPartialState {
@@ -79,26 +86,34 @@ export const initialState: GameDataState = {
       title: 'Rock-Paper-Scissors',
       linkGame: ''
     }
+  ],
+  activeGameList: [
+    {
+      id: '11',
+      needPlayers: 3213,
+      registeredPlayers: 4332,
+      bet: 1123
+    },
+    {
+      id: '11',
+      needPlayers: 3213,
+      registeredPlayers: 4332,
+      bet: 1123
+    },
+    {
+      id: '11',
+      needPlayers: 3213,
+      registeredPlayers: 4332,
+      bet: 1123
+    },
+    {
+      id: '11',
+      needPlayers: 3213,
+      registeredPlayers: 4332,
+      bet: 1123
+    },
   ]
 };
-
-// start и finish Смарт контракт создается с основного кошелька - player 10.
-
-// при старте - создается id смартконтракта и он же сразу кладется при помощи функции в этот же
-// смарт контракт + до этого создается отдельный wallet - куда мы будем переводить кэш.
-// Как только приходят данные от смарт контракта с id - раздизейбливаются кнопки оплаты.
-// Оплата: берем сторонний кошелек созданный смарт контрактом - и платим с указанного кошелька.
-// После оплаты: смарт контракт - отслеживает платежи в блокчейне с указанных кошельков и проверяет
-// была ли произведена оплата со всех кошельков
-// Да была: раздизейбливаются поля для задания процентажа и finish кнопка.
-// После нажатия finish: создается смартконтракт который сравнивает все кошельки из startContract
-// и текущие пришедшие - если кошельки совпали - производит перевод токенов с ОБЩЕГО банка(кошелька)
-// по расчетам процентажа и комиссий. И закрывает игру в startContract.
-// После отдает ответ на back - success и завершает и свою работу.
-// с бэка отправляются запросы о новых балансах использовавшихся кошельков и затратах на газ для всех
-// операций - эта информация уходит на фронт и отображается на фронте
-
-// для повтора игры - обновить страницу
 
 export const gameDataReducer = createReducer(
   initialState,

@@ -1,0 +1,32 @@
+.example-card {
+  max-width: 400px;
+}
+
+.example-card-footer {
+  padding: 16px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.example-form {
+  margin-right: 16px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+app-register-button {
+  width: 150px;
+}
+
+app-login-button{
+  margin-right: 16px;
+}
+//mdc-text-field--filled:not(.mdc-text-field--disabled) {?
+.mdc-text-field--filled {
+  border: black 1px solid !important;
+}

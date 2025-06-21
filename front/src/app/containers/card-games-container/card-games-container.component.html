@@ -2,7 +2,7 @@
   <app-card-game
     [title]="game.title"
     [iconList]="game.iconList"
-    (click)="navigateTo(game.linkGame)"
+    (click)="navigateTo(game.linkGame, game.title)"
   ></app-card-game>
 }
 

@@ -1,0 +1,23 @@
+<div class="container">
+  <form class="example-form">
+    <div>Players</div>
+    <mat-form-field class="example-full-width">
+      <!--      <mat-label>max player</mat-label>-->
+      <input matInput>
+    </mat-form-field>
+  </form>
+
+  <form class="example-form">
+    <div>Bet</div>
+    <mat-form-field class="example-full-width">
+      <input matInput>
+    </mat-form-field>
+  </form>
+</div>
+<div class="container">
+  <div class="spacer"></div>
+  <app-login-button (click)="events('cancel')" [label]="'Cancel'"></app-login-button>
+  <app-register-button (click)="events('create')" [label]="'Create'"></app-register-button>
+</div>
+
+

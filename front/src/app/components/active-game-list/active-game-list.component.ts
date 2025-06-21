@@ -1,16 +1,27 @@
-import { Component } from '@angular/core';
-import {MatButton} from '@angular/material/button';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-active-game-list',
-  imports: [
-    MatButton
-  ],
   standalone: true,
+  imports: [
+    MatButton,
+  ],
   templateUrl: './active-game-list.component.html',
   styleUrl: './active-game-list.component.scss'
 })
 export class ActiveGameListComponent {
-  rows = Array.from({ length: 15 });
+  @Input() title: string = '';
+  @Input() link: string = '';
+  @Input() activeGamesList: any;
+
+  @Output() emitter = new EventEmitter();
+
+  openCreateGameModal() {
+    const message = {
+      event: 'ActiveGameListComponent:create'
+    }
+    this.emitter.emit(message)
+  }
 
 }

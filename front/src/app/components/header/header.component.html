@@ -5,11 +5,10 @@
     </button>
     <div class="spacer"></div>
     @if (!player?.isLogin) {
-      <app-login-button (click)="events('login')"></app-login-button>
+      <app-login-button (click)="events('login')" [label]="'Login'"></app-login-button>
       <app-register-button (click)="events('registration')" [label]="'Registration'"></app-register-button>
     }
     @if (player?.isLogin) {
-      <mat-icon>account_circle</mat-icon>
       <app-logout-button (click)="events('logout')" [label]="'Logout'"></app-logout-button>
     }
   </div>

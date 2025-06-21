@@ -29,11 +29,7 @@ export const setSelectedPlayerListData = createAction(
   '[GameData] setSelectedPlayerListData',
   props<{ playerList: IPlayer[] }>()
 );
-// export const loadGameDataSuccess = createAction(
-//   '[GameData] loadGameDataSuccess',
-//   props<{ data: any }>()
-// );
-// export const loadGameDataFailure = createAction(
-//   '[GameData] loadGameDataFailure',
-//   props<{ error: any }>()
-// );
+export const getActiveGames = createAction(
+  '[GameData] getActiveGames',
+  props<{ game: string }>()
+);

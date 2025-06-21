@@ -26,3 +26,7 @@ export const getGameList = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.gameList
 );
+export const selectActiveGames = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.activeGameList
+);

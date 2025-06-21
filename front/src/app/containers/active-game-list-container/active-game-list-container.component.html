@@ -1,0 +1,6 @@
+<app-active-game-list
+  [title]="title"
+  [link]="link"
+  [activeGamesList]="selectActiveGames$ | async"
+  (emitter)="events($event)"
+></app-active-game-list>

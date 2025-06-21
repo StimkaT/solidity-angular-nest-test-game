@@ -1,0 +1,25 @@
+import {Component, EventEmitter, inject, Output} from '@angular/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {RegisterButtonComponent} from '../register-button/register-button.component';
+import {LoginButtonComponent} from '../login-button/login-button.component';
+
+@Component({
+  selector: 'app-create-game-form',
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, RegisterButtonComponent, LoginButtonComponent],
+  standalone: true,
+  templateUrl: './create-game-form.component.html',
+  styleUrl: './create-game-form.component.scss'
+})
+export class CreateGameFormComponent {
+  @Output() emitter = new EventEmitter();
+
+  events(event: string) {
+    const message = {
+      event: `CreateGameFormComponent:${event}`,
+    };
+    this.emitter.emit(message);
+  }
+
+}

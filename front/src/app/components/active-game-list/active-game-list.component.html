@@ -1,12 +1,34 @@
-<!--<div class="container">-->
-<!--  <div class="header">Шапка</div>-->
+<div class="container">
+  <div class="header">{{ title }}</div>
 
-<!--  <div class="table">-->
-<!--    @for (i of rows; track i) {-->
-<!--      <div class="table-row"-->
-<!--           [ngClass]="{'row-dark': i % 2 === 0, 'row-light': i % 2 !== 0}">-->
-<!--        Содержимое строки {{i + 1}}-->
-<!--      </div>-->
-<!--    }-->
-<!--  </div>-->
-<!--</div>-->
+  <div class="table-container">
+    <table class="table">
+      <thead>
+      <tr class="table-header">
+        <th class="header-cell">#</th>
+        <th class="header-cell">ID</th>
+        <th class="header-cell">Кол-во игроков</th>
+        <th class="header-cell">Нужные ставки</th>
+        <th class="header-cell"></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (game of (activeGamesList); track game.id; let i = $index) {
+          <tr class="table-row">
+            <td class="table-cell">{{ i + 1 }}</td>
+            <td class="table-cell">{{ game.id }}</td>
+            <td class="table-cell">{{ game.registeredPlayers }}/{{ game.needPlayers }}</td>
+            <td class="table-cell">{{ game.bet }}</td>
+            <td class="table-cell action-cell">
+              <button mat-raised-button class="join-button">Войти</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <button mat-raised-button (click)="openCreateGameModal()">Create</button>
+  </div>
+</div>

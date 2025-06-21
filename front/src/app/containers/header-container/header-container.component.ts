@@ -20,5 +20,4 @@ export class HeaderContainerComponent {
   private store = inject(Store);
 
   getUserData$ = this.store.select(getUserData);
-
 }

@@ -3,7 +3,6 @@ import {SidebarComponent} from '../../components/sidebar/sidebar.component';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginFormContainerComponent} from '../login-form-container/login-form-container.component';
 import {RegistrationFormContainerComponent} from '../registration-form-container/registration-form-container.component';
-import {CardGameComponent} from '../../components/card-game/card-game.component';
 import {HeaderContainerComponent} from '../header-container/header-container.component';
 import {Store} from '@ngrx/store';
 import {getSidebarValue, getUserData} from '../../+state/auth/auth.selectors';
@@ -15,7 +14,6 @@ import {RouterOutlet} from '@angular/router';
   selector: 'app-main-container',
   imports: [
     SidebarComponent,
-    CardGameComponent,
     HeaderContainerComponent,
     AsyncPipe,
     RouterOutlet
@@ -61,6 +59,5 @@ export class MainContainerComponent implements OnInit {
       height: '70%',
       hasBackdrop: true,
     });
-
   }
 }

@@ -21,7 +21,9 @@ export class CardGamesContainerComponent {
 
   getGameList$ = this.store.select(getGameList);
 
-  navigateTo(link: string) {
-    this.router.navigate([link]);
+  navigateTo(link: string, title: string) {
+    this.router.navigate(['/game-list'], {
+      queryParams: { link: link, title: title }
+    });
   }
 }

@@ -5,12 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { SidebarService } from '../../services/sidebar.service';
 import {ProfileContainerComponent} from '../../containers/profile-container/profile-container.component';
 import {IPlayer} from '../../+state/auth/auth.reducer';
-import {ProfileComponent} from '../profile/profile.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, ProfileContainerComponent, ProfileComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, ProfileContainerComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
