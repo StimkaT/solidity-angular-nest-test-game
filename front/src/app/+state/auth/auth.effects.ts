@@ -1,11 +1,21 @@
 import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {addAccount, checkAuth, clearPlayer, login, loginError, loginSuccess, logout} from './auth.actions';
+import {
+  addAccount,
+  checkAuth,
+  clearPlayer,
+  login,
+  loginError,
+  loginSuccess,
+  logout,
+  sendNewAccount
+} from './auth.actions';
 import {tap} from 'rxjs/operators';
 import {RegistrationService} from '../../services/registration.service';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
+import {ethers} from 'ethers';
 
 @Injectable()
 export class AuthEffects {
@@ -16,17 +26,30 @@ export class AuthEffects {
   private store = inject(Store);
 
 
+
   addAccount$ = createEffect(() =>
       this.actions$.pipe(
         ofType(addAccount),
-        tap((action) => {
-          this.registrationService.addNewUser(action.data).subscribe({
+        tap(async (action) => {
+          const data = { ...action.data };
+
+          if (!data.wallet || data.wallet === '') {
+            try {
+              const wallet = ethers.Wallet.createRandom();
+              data.wallet = wallet.address;
+              data.encrypted_private_key = wallet.privateKey;
+            } catch (err) {
+              console.error('Error creating wallet:', err);
+              return;
+            }
+          }
+
+          this.registrationService.addNewUser(data).subscribe({
             next: (response) => {
-              console.log('Пользователь создан:', response);
               this.dialog.closeAll();
             },
             error: (err) => {
-              console.error('Ошибка создания пользователя:', err);
+              console.error('Error creating user:', err);
             }
           });
         })
@@ -66,13 +89,12 @@ export class AuthEffects {
         ofType(checkAuth),
         tap(() => {
           const raw = localStorage.getItem('playerData');
-          console.log('raw', raw)
           if (raw) {
             try {
               const parsed = JSON.parse(raw);
               this.store.dispatch(loginSuccess({ response: parsed }));
             } catch (e) {
-              console.error('Ошибка чтения playerData из localStorage:', e);
+              console.error('Error reading playerData from localStorage:', e);
             }
           }
         })
@@ -91,7 +113,7 @@ export class AuthEffects {
             this.dialog.closeAll();
             this.router.navigate([''], {});
           } catch (error) {
-            console.error('Ошибка при выходе из системы:', error);
+            console.error('Error logging out:', error);
           }
         })
       ),

@@ -1,6 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions'
-import {clearPlayer} from './auth.actions';
 export const AUTH_FEATURE_KEY = 'auth';
 
 export interface API {
@@ -20,6 +19,7 @@ export interface IPlayer {
   login: string;
   password: string;
   wallet?: string;
+  encrypted_private_key?: string;
   isLogin: boolean;
 }
 

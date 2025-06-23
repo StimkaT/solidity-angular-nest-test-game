@@ -1,13 +1,26 @@
 <div class="input-container">
   <mat-form-field class="custom-input">
     <mat-label></mat-label>
-    <input matInput placeholder="Login" [(ngModel)]="login">
+    <input
+      matInput
+      placeholder="Login"
+      [(ngModel)]="login"
+      form="myForm"
+      autocomplete="username"
+    >
   </mat-form-field>
 </div>
 <div class="input-container">
   <mat-form-field class="custom-input">
     <mat-label></mat-label>
-    <input matInput placeholder="Password" type="password" [(ngModel)]="password">
+    <input
+      matInput
+      placeholder="Password"
+      type="password"
+      [(ngModel)]="password"
+      form="myForm"
+      autocomplete="current-password"
+    >
   </mat-form-field>
 </div>
 <div (click)="checkPass()" class="check-pass"> <span>Forgot your password?</span> </div>
@@ -16,3 +29,5 @@
   <span>Newbie? </span>
   <span (click)="registration()" class="create">Create account</span>
 </div>
+<form id="myForm"></form>
+

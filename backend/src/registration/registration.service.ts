@@ -15,7 +15,7 @@ export class RegistrationService {
   ) {}
 
   async createUser(registrationDto: RegistrationDto): Promise<User> {
-    const { login, password } = registrationDto;
+    const { login, password, wallet, encrypted_private_key } = registrationDto;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -23,6 +23,8 @@ export class RegistrationService {
     const user = this.usersRepository.create({
       login,
       password: hashedPassword,
+      wallet,
+      encrypted_private_key
     });
 
     return this.usersRepository.save(user);

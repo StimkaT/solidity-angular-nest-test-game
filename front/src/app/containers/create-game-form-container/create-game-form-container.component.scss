@@ -1,0 +1,100 @@
+:host {
+  display: flex;
+  padding: 16px;
+  color: white;
+  background-color: rgb(35, 38, 38);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.left-side {
+  width: 60%;
+  height: 100%;
+  padding-right: 16px;;
+}
+
+.logo-image {
+  display: block;
+  max-width: 100%;
+}
+
+.form {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.login {
+  font-family: avertastd;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 28px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  margin: 0;
+
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+
+  position: relative;
+}
+
+.close-icon {
+  width: 16px;
+  height: 16px;
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.close-button:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.close-button:active {
+  transform: scale(0.95);
+}
+
+.tool {
+  display: flex;
+  flex-shrink: 0;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(35, 38, 38);
+}
+
+
+app-create-game-form {
+  height: calc(100% - 32px);
+}

@@ -3,7 +3,13 @@
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title>{{ user?.login }}</mat-card-title>
   </mat-card-header>
+
   <mat-card-content>
-    Balance: {{ balance }}
+    @if (user?.wallet) {
+      Balance: {{ balance }}
+    }
+    @if (!user?.wallet) {
+      No Wallet. You want create new wallet?
+    }
   </mat-card-content>
 </mat-card>

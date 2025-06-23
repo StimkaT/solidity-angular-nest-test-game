@@ -7,7 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class RegistrationController {
   constructor(private registrationService: RegistrationService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post('register')
   async register(@Body() registrationDto: RegistrationDto) {
     const user = await this.registrationService.createUser(registrationDto);

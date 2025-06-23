@@ -15,6 +15,5 @@ export class SidebarService {
   toggleSidebar() {
     this.isExpandedSubject.next(!this.isExpandedSubject.value);
     this.store.dispatch(setSidebar({sidebarValue: this.isExpandedSubject.value}))
-    console.log('this.isExpandedSubject', this.isExpandedSubject.value)
   }
 }

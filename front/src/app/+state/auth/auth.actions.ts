@@ -17,6 +17,10 @@ export const loginSuccess = createAction(
   '[Auth] loginSuccess',
   props<{ response: IPlayer }>()
 );
+export const sendNewAccount = createAction(
+  '[Auth] sendNewAccount',
+  props<{ data: IPlayer }>()
+);
 export const loginError = createAction(
   '[Auth] loginError',
   props<{ error: string }>()

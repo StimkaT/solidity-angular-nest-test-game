@@ -89,25 +89,25 @@ export const initialState: GameDataState = {
   ],
   activeGameList: [
     {
-      id: '11',
+      id: '111',
       needPlayers: 3213,
       registeredPlayers: 4332,
       bet: 1123
     },
     {
-      id: '11',
+      id: '1111',
       needPlayers: 3213,
       registeredPlayers: 4332,
       bet: 1123
     },
     {
-      id: '11',
+      id: '112',
       needPlayers: 3213,
       registeredPlayers: 4332,
       bet: 1123
     },
     {
-      id: '11',
+      id: '1122',
       needPlayers: 3213,
       registeredPlayers: 4332,
       bet: 1123
