@@ -2,26 +2,20 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GameService } from './services/deploy';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegistrationModule } from './registration/registration.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './services/jwt.strategy';
+import {DatabaseModule} from './database.module';
 
 @Module({
   imports: [
-    PassportModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'user',
-      password: 'password',
-      database: 'game',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true, // чтобы переменные были доступны во всём приложении
     }),
+    PassportModule,
+    DatabaseModule,
     RegistrationModule,
     ConfigModule.forRoot(),
     JwtModule.registerAsync({
