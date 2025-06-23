@@ -3,14 +3,14 @@
     <form class="example-form">
       <div>Players</div>
       <mat-form-field class="example-full-width">
-        <input matInput>
+        <input matInput [(ngModel)]="players" name="players">
       </mat-form-field>
     </form>
 
     <form class="example-form">
       <div>Bet</div>
       <mat-form-field class="example-full-width">
-        <input matInput>
+        <input matInput [(ngModel)]="bet" name="bet">
       </mat-form-field>
     </form>
   </div>

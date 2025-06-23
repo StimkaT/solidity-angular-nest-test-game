@@ -24,7 +24,7 @@ export class RegistrationService {
       login,
       password: hashedPassword,
       wallet,
-      encrypted_private_key
+      encrypted_private_key,
     });
 
     return this.usersRepository.save(user);

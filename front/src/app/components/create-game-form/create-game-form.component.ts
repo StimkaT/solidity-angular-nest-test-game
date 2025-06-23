@@ -1,9 +1,9 @@
-import {Component, EventEmitter, inject, Output} from '@angular/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
-import {RegisterButtonComponent} from '../register-button/register-button.component';
-import {LoginButtonComponent} from '../login-button/login-button.component';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { RegisterButtonComponent } from '../register-button/register-button.component';
+import { LoginButtonComponent } from '../login-button/login-button.component';
 
 @Component({
   selector: 'app-create-game-form',
@@ -14,12 +14,21 @@ import {LoginButtonComponent} from '../login-button/login-button.component';
 })
 export class CreateGameFormComponent {
   @Output() emitter = new EventEmitter();
+  players: number = 0;
+  bet: number = 0;
 
   events(event: string) {
-    const message = {
+    const message: any = {
       event: `CreateGameFormComponent:${event}`,
     };
+
+    if (event === 'create') {
+      message.data = {
+        players: this.players,
+        bet: this.bet,
+      };
+    }
+
     this.emitter.emit(message);
   }
-
 }

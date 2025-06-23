@@ -23,6 +23,8 @@ export interface IGameData {
   gameTookPlace: boolean | null; //игра состоялась?
   bank: number;
   playerList: IPlayer[]; // список игроков и их условия
+  bettingMaxTime?: number;
+  gameMaxTime?: number;
 }
 
 export interface IGameList {

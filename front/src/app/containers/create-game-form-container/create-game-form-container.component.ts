@@ -3,6 +3,7 @@ import {CreateGameFormComponent} from '../../components/create-game-form/create-
 import {RegistrationFormComponent} from '../../components/registration-form/registration-form.component';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
+import {createGame} from '../../+state/game-data/game-data.actions';
 
 @Component({
   selector: 'app-create-game-form-container',
@@ -16,10 +17,13 @@ import {Store} from '@ngrx/store';
 })
 export class CreateGameFormContainerComponent {
   private dialogRef = inject(MatDialogRef<CreateGameFormContainerComponent>);
+  private store = inject(Store);
 
   events(event: any) {
     if (event.event === "CreateGameFormComponent:cancel") {
       this.close();
+    } else if (event.event === "CreateGameFormComponent:create") {
+      this.store.dispatch(createGame({data: event.data}));
     }
   }
 

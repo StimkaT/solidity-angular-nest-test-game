@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
+  createGame,
   getGameData,
   loadGameData,
   loadGameDataFailure,
@@ -23,7 +24,6 @@ export class GameDataEffects {
       this.actions$.pipe(
         ofType(loadGameData),
         tap((action) => {
-          console.log('WAIT', action)
           this.gameDataService.setGameData(action.data).subscribe({
             next: (data) => {
               this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
@@ -71,6 +71,23 @@ export class GameDataEffects {
           );
 
           this.store.dispatch(setSelectedPlayerListData({playerList: playersWithBalance}))
+        })
+      ),
+    { dispatch: false }
+  );
+
+  createGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(createGame),
+        tap((action) => {
+          console.log('WAIT', action)
+          this.gameDataService.createGame(action.data).subscribe({
+            next: (data) => {
+              // this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
+              console.log(data)
+            },
+            error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
+          });
         })
       ),
     { dispatch: false }
