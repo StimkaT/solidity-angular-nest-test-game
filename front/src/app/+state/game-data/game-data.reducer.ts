@@ -25,6 +25,7 @@ export interface IGameData {
   playerList: IPlayer[]; // список игроков и их условия
   bettingMaxTime?: number;
   gameMaxTime?: number;
+  gameType?: string;
 }
 
 export interface IGameList {

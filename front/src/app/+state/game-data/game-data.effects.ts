@@ -13,6 +13,7 @@ import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
 import {selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
 import {ethers} from 'ethers';
+import {IPlayer} from './game-data.reducer';
 
 @Injectable()
 export class GameDataEffects {
@@ -80,13 +81,42 @@ export class GameDataEffects {
       this.actions$.pipe(
         ofType(createGame),
         tap((action) => {
-          console.log('WAIT', action)
-          this.gameDataService.createGame(action.data).subscribe({
-            next: (data) => {
-              // this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
-              console.log(data)
+          const data = {
+            ...action.data,
+            conditionToStartDone: true,
+            isFinish: false,
+            playerList: [
+              {
+                id: "player_1",
+                name: "Alice",
+                bet: 100,
+                isWinner: false,
+                hasWithdrawn: false
+              },
+              {
+                id: "player_2",
+                name: "Bob",
+                bet: 150,
+                isWinner: false,
+                hasWithdrawn: false
+              }
+            ],
+            bettingMaxTime: 30,
+            gameMaxTime: 60,
+            gameType: "rock-paper-scissors"
+          };
+
+          console.log('Sending game data:', data);
+
+          this.gameDataService.createGame(data).subscribe({
+            next: (response) => {
+              console.log('Game created successfully:', response);
+              // this.store.dispatch(loadGameDataSuccess({ data: response.contractAddress }));
             },
-            error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
+            error: (error) => {
+              console.error('Error creating game:', error);
+              // this.store.dispatch(loadGameDataFailure({ error }));
+            }
           });
         })
       ),

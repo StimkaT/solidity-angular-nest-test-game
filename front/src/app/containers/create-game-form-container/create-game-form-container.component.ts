@@ -1,6 +1,5 @@
 import {Component, inject} from '@angular/core';
 import {CreateGameFormComponent} from '../../components/create-game-form/create-game-form.component';
-import {RegistrationFormComponent} from '../../components/registration-form/registration-form.component';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {createGame} from '../../+state/game-data/game-data.actions';
@@ -9,7 +8,6 @@ import {createGame} from '../../+state/game-data/game-data.actions';
   selector: 'app-create-game-form-container',
   imports: [
     CreateGameFormComponent,
-    RegistrationFormComponent
   ],
   standalone: true,
   templateUrl: './create-game-form-container.component.html',
