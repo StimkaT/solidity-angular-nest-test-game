@@ -9,5 +9,5 @@ import {MainContainerComponent} from './containers/main-container/main-container
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'front';
+  title = 'frontend';
 }
