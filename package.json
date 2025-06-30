@@ -1,0 +1,14 @@
+{
+  "name": "solidity-angular-nest-test-game",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start:mysql": "npm run start:mysql --prefix backend",
+    "start:backend": "npm run start:dev --prefix backend",
+    "start:blockchain": "npm run start --prefix blockchain",
+    "start:frontend": "npm run start --prefix frontend"
+  },
+  "author": "Alex Rozhnov",
+  "license": "ISC",
+  "description": ""
+}
