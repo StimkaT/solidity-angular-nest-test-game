@@ -15,7 +15,6 @@ export class RegistrationController {
 
   @Post('login')
   async login(@Body() registrationDto: RegistrationDto) {
-    const token = await this.registrationService.validateUser(registrationDto);
-    return { token };
+    return await this.registrationService.validateUser(registrationDto);
   }
 }

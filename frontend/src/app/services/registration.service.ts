@@ -11,6 +11,7 @@ export class RegistrationService {
   addNewUser(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data );
   }
+
   checkAuth(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, data );
   }

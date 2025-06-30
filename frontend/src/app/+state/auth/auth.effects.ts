@@ -63,15 +63,13 @@ export class AuthEffects {
         tap((action) => {
           this.registrationService.checkAuth(action.data).subscribe(
             res => {
-              localStorage.setItem('jwtToken', res.token.token);
               localStorage.setItem('playerData', JSON.stringify({
-                id: res.token.id,
-                login: res.token.login,
-                password: res.token.password,
-                wallet: res.token.wallet,
+                token: res.token,
+                login: res.login,
+                wallet: res.wallet,
                 isLogin: true
               }));
-              this.store.dispatch(loginSuccess({ response: res.token }))
+              this.store.dispatch(loginSuccess({ response: res }))
               this.dialog.closeAll();
               this.router.navigate(['']);
             },

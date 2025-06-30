@@ -17,15 +17,15 @@ export class CreateGameFormContainerComponent {
   private dialogRef = inject(MatDialogRef<CreateGameFormContainerComponent>);
   private store = inject(Store);
 
+  close() {
+    this.dialogRef.close();
+  }
+
   events(event: any) {
     if (event.event === "CreateGameFormComponent:cancel") {
       this.close();
     } else if (event.event === "CreateGameFormComponent:create") {
       this.store.dispatch(createGame({data: event.data}));
     }
-  }
-
-  close() {
-    this.dialogRef.close();
   }
 }

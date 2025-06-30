@@ -8,7 +8,7 @@
     </form>
 
     <form class="example-form">
-      <div>Bet</div>
+      <div>Bet, $</div>
       <mat-form-field class="example-full-width">
         <input matInput [(ngModel)]="bet" name="bet">
       </mat-form-field>
@@ -17,7 +17,11 @@
 
   <div class="buttons-container">
     <div class="spacer"></div>
-    <app-login-button (click)="events('cancel')" [label]="'Cancel'"></app-login-button>
-    <app-register-button (click)="events('create')" [label]="'Create'"></app-register-button>
+    <button class="default-button"  (click)="events('cancel')">
+      Cancel
+    </button>
+    <button class="primary-button" (click)="events('create')">
+      Create
+    </button>
   </div>
 </div>

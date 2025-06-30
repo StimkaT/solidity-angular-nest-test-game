@@ -35,16 +35,6 @@ export class MainContainerComponent implements OnInit {
     this.store.dispatch(checkAuth())
   }
 
-  events($event: any) {
-    if ($event.event === 'HeaderComponent:login') {
-      this.openLoginModal()
-    } else if ($event.event === 'HeaderComponent:registration') {
-      this.openRegistrationModal()
-    } else if ($event.event === 'HeaderComponent:logout') {
-      this.store.dispatch(logout())
-    }
-  }
-
   openLoginModal(): void {
     const dialogRef = this.dialog.open(LoginFormContainerComponent, {
       width: '80%',
@@ -59,5 +49,15 @@ export class MainContainerComponent implements OnInit {
       height: '70%',
       hasBackdrop: true,
     });
+  }
+
+  events($event: any) {
+    if ($event.event === 'HeaderComponent:login') {
+      this.openLoginModal()
+    } else if ($event.event === 'HeaderComponent:registration') {
+      this.openRegistrationModal()
+    } else if ($event.event === 'HeaderComponent:logout') {
+      this.store.dispatch(logout())
+    }
   }
 }

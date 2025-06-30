@@ -14,21 +14,27 @@ import { LoginButtonComponent } from '../login-button/login-button.component';
 })
 export class CreateGameFormComponent {
   @Output() emitter = new EventEmitter();
-  players: number = 0;
-  bet: number = 0;
+  players = 2;
+  bet = 100;
 
   events(event: string) {
-    const message: any = {
-      event: `CreateGameFormComponent:${event}`,
-    };
-
     if (event === 'create') {
-      message.data = {
-        players: this.players,
-        bet: this.bet,
+      const message = {
+        event: 'CreateGameFormComponent:create',
+        data: {
+          players: this.players,
+          bet: this.bet,
+        },
       };
+      this.emitter.emit(message);
+    } else if (event === 'cancel') {
+      const message: any = {
+        event: 'CreateGameFormComponent:cancel',
+      };
+      this.emitter.emit(message);
     }
-
-    this.emitter.emit(message);
   }
+
+
+
 }

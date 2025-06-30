@@ -33,8 +33,6 @@ export class RegistrationService {
   async validateUser(registrationDto: RegistrationDto): Promise<{
     token: string;
     login: string;
-    id: any;
-    password: string;
     wallet?: string;
   }> {
     const { login, password } = registrationDto;
@@ -55,9 +53,7 @@ export class RegistrationService {
     const token = this.jwtService.sign(payload);
     return {
       token,
-      id: user.id,
       login: user.login,
-      password: user.password,
       wallet: user.wallet,
     };
   }
