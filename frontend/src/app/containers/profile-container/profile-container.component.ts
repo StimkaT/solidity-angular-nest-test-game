@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, OnDestroy, OnInit, Output} from '@angular/core';
 import {ProfileComponent} from '../../components/profile/profile.component';
 import {Store} from '@ngrx/store';
 import {getPlayer} from '../../+state/auth/auth.selectors';
@@ -17,7 +17,7 @@ import {environment} from '../../../environments/environment';
   templateUrl: './profile-container.component.html',
   styleUrl: './profile-container.component.scss'
 })
-export class ProfileContainerComponent implements  OnInit {
+export class ProfileContainerComponent implements  OnInit, OnDestroy {
   @Output() emitter = new EventEmitter();
   balance: any;
   private store = inject(Store);
