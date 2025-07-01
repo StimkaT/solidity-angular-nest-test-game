@@ -69,10 +69,7 @@ export const authReducer = createReducer(
       isLoaded: true,
       loadingTime: Date.now() - (state.authApi.startTime || 0),
       response: response
-    }
-  })),
-  on(AuthActions.loginSuccess, (state, {response}) => ({
-    ...state,
+    },
     player: {
       ...state.player,
       id: response.id,

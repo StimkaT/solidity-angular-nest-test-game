@@ -9,12 +9,13 @@ import {
   loginSuccess,
   logout,
 } from './auth.actions';
-import {tap} from 'rxjs/operators';
+import {catchError, exhaustMap, map, tap} from 'rxjs/operators';
 import {RegistrationService} from '../../services/registration.service';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {ethers} from 'ethers';
+import {of} from 'rxjs';
 
 @Injectable()
 export class AuthEffects {
@@ -56,28 +57,24 @@ export class AuthEffects {
   );
 
   auth$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(login),
-        tap((action) => {
-          this.registrationService.checkAuth(action.data).subscribe(
-            res => {
-              localStorage.setItem('playerData', JSON.stringify({
-                token: res.token,
-                login: res.login,
-                wallet: res.wallet,
-                isLogin: true
-              }));
-              this.store.dispatch(loginSuccess({ response: res }))
-              this.dialog.closeAll();
-              this.router.navigate(['']);
-            },
-            err => {
-              this.store.dispatch(loginError({error: err}))
-            }
-          );
-        })
-      ),
-    { dispatch: false }
+    this.actions$.pipe(
+      ofType(login),
+      exhaustMap((action) =>
+        this.registrationService.checkAuth(action.data).pipe(
+          tap(res => {
+            localStorage.setItem('playerData', JSON.stringify({
+              token: res.token,
+              login: res.login,
+              wallet: res.wallet,
+              isLogin: true
+            }));
+            this.dialog.closeAll();
+          }),
+          map(res => loginSuccess({ response: res })),
+          catchError(err => of(loginError({ error: err })))
+        )
+      )
+    )
   );
 
   checkAuth$ = createEffect(() =>
