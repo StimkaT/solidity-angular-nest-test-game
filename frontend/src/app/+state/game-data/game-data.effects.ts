@@ -80,35 +80,12 @@ export class GameDataEffects {
   createGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(createGame),
-        tap((action) => {
-          const data = {
-            ...action.data,
-            conditionToStartDone: true,
-            isFinish: false,
-            playerList: [
-              {
-                id: "player_1",
-                name: "Alice",
-                bet: 100,
-                isWinner: false,
-                hasWithdrawn: false
-              },
-              {
-                id: "player_2",
-                name: "Bob",
-                bet: 150,
-                isWinner: false,
-                hasWithdrawn: false
-              }
-            ],
-            bettingMaxTime: 30,
-            gameMaxTime: 60,
-            gameType: "rock-paper-scissors"
+        tap(({playersNumber, bet}) => {
+          const payload = {
+            playersNumber,
+            bet
           };
-
-          console.log('Sending game data:', data);
-
-          this.gameDataService.createGame(data).subscribe({
+          this.gameDataService.createGame(payload).subscribe({
             next: (response) => {
               console.log('Game created successfully:', response);
               // this.store.dispatch(loadGameDataSuccess({ data: response.contractAddress }));

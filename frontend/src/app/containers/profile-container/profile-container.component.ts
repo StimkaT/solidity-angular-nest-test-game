@@ -1,7 +1,7 @@
 import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {ProfileComponent} from '../../components/profile/profile.component';
 import {Store} from '@ngrx/store';
-import {getUserData} from '../../+state/auth/auth.selectors';
+import {getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {ethers} from 'ethers';
 
@@ -20,7 +20,7 @@ export class ProfileContainerComponent {
   balance: any;
   private store = inject(Store);
 
-  getUserData$ = this.store.select(getUserData);
+  getUserData$ = this.store.select(getPlayer);
 
   async ngOnInit() {
     this.getUserData$.subscribe(async (player) => {

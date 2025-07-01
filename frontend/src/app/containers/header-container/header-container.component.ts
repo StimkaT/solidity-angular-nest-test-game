@@ -1,7 +1,7 @@
 import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {HeaderComponent} from '../../components/header/header.component';
 import {Store} from '@ngrx/store';
-import {getUserData} from '../../+state/auth/auth.selectors';
+import {getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 
 @Component({
@@ -19,5 +19,5 @@ export class HeaderContainerComponent {
 
   private store = inject(Store);
 
-  getUserData$ = this.store.select(getUserData);
+  getUserData$ = this.store.select(getPlayer);
 }

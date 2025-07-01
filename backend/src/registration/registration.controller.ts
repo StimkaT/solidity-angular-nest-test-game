@@ -9,8 +9,7 @@ export class RegistrationController {
   // @UseGuards(AuthGuard('jwt'))
   @Post('register')
   async register(@Body() registrationDto: RegistrationDto) {
-    const user = await this.registrationService.createUser(registrationDto);
-    return { user };
+    return await this.registrationService.createUser(registrationDto);
   }
 
   @Post('login')

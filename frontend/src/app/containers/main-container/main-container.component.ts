@@ -5,7 +5,7 @@ import {LoginFormContainerComponent} from '../login-form-container/login-form-co
 import {RegistrationFormContainerComponent} from '../registration-form-container/registration-form-container.component';
 import {HeaderContainerComponent} from '../header-container/header-container.component';
 import {Store} from '@ngrx/store';
-import {getSidebarValue, getUserData} from '../../+state/auth/auth.selectors';
+import {getSidebarValue, getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {checkAuth, logout} from '../../+state/auth/auth.actions';
 import {RouterOutlet} from '@angular/router';
@@ -28,7 +28,7 @@ export class MainContainerComponent implements OnInit {
   private store = inject(Store);
   private dialog = inject(MatDialog);
 
-  getUserData$ = this.store.select(getUserData);
+  getUserData$ = this.store.select(getPlayer);
   getSidebarValue$ = this.store.select(getSidebarValue);
 
   ngOnInit() {

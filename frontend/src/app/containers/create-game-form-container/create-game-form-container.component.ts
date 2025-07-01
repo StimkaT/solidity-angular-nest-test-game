@@ -25,7 +25,10 @@ export class CreateGameFormContainerComponent {
     if (event.event === "CreateGameFormComponent:cancel") {
       this.close();
     } else if (event.event === "CreateGameFormComponent:create") {
-      this.store.dispatch(createGame({data: event.data}));
+      this.store.dispatch(createGame({
+        playersNumber: event.data.players,
+        bet: event.data.bet,
+      }));
     }
   }
 }

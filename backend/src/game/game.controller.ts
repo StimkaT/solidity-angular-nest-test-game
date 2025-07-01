@@ -6,7 +6,6 @@ export class GameController {
   constructor(private blockchainService: BlockchainService) {}
   @Post('createGame')
   createGame(@Body() data: any) {
-    console.log('data', data);
     return this.blockchainService.createGame(data);
   }
 }

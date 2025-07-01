@@ -8,7 +8,6 @@ import {
   loginError,
   loginSuccess,
   logout,
-  sendNewAccount
 } from './auth.actions';
 import {tap} from 'rxjs/operators';
 import {RegistrationService} from '../../services/registration.service';
@@ -32,7 +31,6 @@ export class AuthEffects {
         ofType(addAccount),
         tap(async (action) => {
           const data = { ...action.data };
-
           if (!data.wallet || data.wallet === '') {
             try {
               const wallet = ethers.Wallet.createRandom();

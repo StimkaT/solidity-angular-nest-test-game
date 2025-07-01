@@ -36,25 +36,26 @@ export class RegistrationService {
     wallet?: string;
   }> {
     const { login, password } = registrationDto;
-
     const user = await this.usersRepository.findOne({ where: { login } });
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    } else {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Invalid credentials');
+      } else {
+        const payload = { login: user.login, sub: user.id };
+        const token = this.jwtService.sign(payload);
+        return {
+          token,
+          login: user.login,
+          wallet: user.wallet,
+        };
+      }
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const payload = { login: user.login, sub: user.id };
-    const token = this.jwtService.sign(payload);
-    return {
-      token,
-      login: user.login,
-      wallet: user.wallet,
-    };
   }
 }

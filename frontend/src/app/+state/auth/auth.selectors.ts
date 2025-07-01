@@ -3,10 +3,11 @@ import {AUTH_FEATURE_KEY, AuthState} from './auth.reducer';
 
 export const selectAuthState = createFeatureSelector<AuthState>(AUTH_FEATURE_KEY);
 
-export const getUserData = createSelector(
+export const getPlayer = createSelector(
   selectAuthState,
   (state) => state.player
 );
+
 export const getSidebarValue = createSelector(
   selectAuthState,
   (state) => state.sidebarValue
