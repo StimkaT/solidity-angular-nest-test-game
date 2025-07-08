@@ -5,8 +5,11 @@ export class Games {
   @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
   id: number;
 
-  @Column("varchar", { name: "contractAddress", length: 255 })
-  contractAddress: string;
+  @Column("varchar", { name: "type", length: 256 })
+  type: string;
+
+  @Column("varchar", { name: "contractAddress", nullable: true, length: 255 })
+  contractAddress: string | null;
 
   @Column("varchar", { name: "ownerAddress", length: 255 })
   ownerAddress: string;

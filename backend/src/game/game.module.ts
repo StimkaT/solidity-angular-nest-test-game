@@ -6,9 +6,12 @@ import { PassportModule } from '@nestjs/passport';
 import { GameController } from './game.controller';
 import { BlockchainService } from '../services/blockchain.service';
 import { GameService } from '../services/deploy';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {Games} from '../entities/entities/Games';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Games]),
     JwtModule.registerAsync({
       imports: [],
       inject: [ConfigService],
