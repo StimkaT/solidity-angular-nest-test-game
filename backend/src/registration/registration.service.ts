@@ -1,21 +1,21 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { RegistrationDto } from './dto/registration.dto';
 import { JwtService } from '@nestjs/jwt';
+import {Users} from '../entities/entities/Users';
 
 @Injectable()
 export class RegistrationService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
     private jwtService: JwtService,
   ) {}
 
-  async createUser(registrationDto: RegistrationDto): Promise<User> {
-    const { login, password, wallet, encrypted_private_key } = registrationDto;
+  async createUser(registrationDto: RegistrationDto): Promise<Users> {
+    const { login, password, wallet, encryptedPrivateKey } = registrationDto;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -24,7 +24,7 @@ export class RegistrationService {
       login,
       password: hashedPassword,
       wallet,
-      encrypted_private_key,
+      encryptedPrivateKey,
     });
 
     return this.usersRepository.save(user);
@@ -33,7 +33,7 @@ export class RegistrationService {
   async validateUser(registrationDto: RegistrationDto): Promise<{
     token: string;
     login: string;
-    wallet?: string;
+    wallet: string | null;
   }> {
     const { login, password } = registrationDto;
     const user = await this.usersRepository.findOne({ where: { login } });
@@ -55,7 +55,7 @@ export class RegistrationService {
         };
       }
     }
-
-
   }
+
+
 }

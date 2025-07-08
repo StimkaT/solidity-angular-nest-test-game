@@ -15,5 +15,5 @@ export class RegistrationDto {
 
   @IsString()
   @IsOptional()
-  encrypted_private_key?: string;
+  encryptedPrivateKey?: string;
 }

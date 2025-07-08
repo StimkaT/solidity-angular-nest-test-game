@@ -36,7 +36,7 @@ export class AuthEffects {
             try {
               const wallet = ethers.Wallet.createRandom();
               data.wallet = wallet.address;
-              data.encrypted_private_key = wallet.privateKey;
+              data.encryptedPrivateKey = wallet.privateKey;
             } catch (err) {
               console.error('Error creating wallet:', err);
               return;

@@ -19,7 +19,7 @@ export interface IPlayer {
   login: string;
   password: string;
   wallet?: string;
-  encrypted_private_key?: string;
+  encryptedPrivateKey?: string;
   isLogin: boolean;
 }
 
