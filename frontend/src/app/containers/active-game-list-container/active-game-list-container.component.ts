@@ -34,7 +34,7 @@ export class ActiveGameListContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(getActiveGames({game: this.link}))
+    this.store.dispatch(getActiveGames({game: this.title}))
   }
 
   selectActiveGames$ = this.store.select(selectActiveGames);

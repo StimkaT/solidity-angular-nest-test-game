@@ -19,11 +19,9 @@ export class CreateGameFormContainerComponent {
   private store = inject(Store);
   private route = inject(ActivatedRoute);
 
-
-  private gameTitle = ''; // Значение по умолчанию
+  private gameTitle = '';
 
   ngOnInit() {
-    // Извлекаем параметр 'title' из URL
     this.route.queryParams.subscribe(params => {
       if (params['title']) {
         this.gameTitle = params['title'];

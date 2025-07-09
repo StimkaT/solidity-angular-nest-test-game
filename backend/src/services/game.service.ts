@@ -34,4 +34,9 @@ export class GameService {
     //   throw new Error(`Failed to add game: ${error.message}`);
     // }
   }
+
+  async getGamesByType(type: string) {
+    console.log('22222222222', this.gameRepository.find({ where: { type } }));
+    return this.gameRepository.find({ where: { type } });
+  }
 }

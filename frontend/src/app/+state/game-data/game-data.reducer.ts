@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
 import {walletListStabs} from './stabs';
+import {loadGameListSuccess} from './game-data.actions';
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
 
@@ -139,5 +140,14 @@ export const gameDataReducer = createReducer(
       ...state.gameData,
       playerList
     }
+  })),
+  on(GameDataActions.loadGameListSuccess, (state, { data }) => ({
+    ...state,
+    activeGameList: data.map((item: any) => ({
+      id: item.id,
+      needPlayers: item.gameData?.playersNumber || '-',
+      registeredPlayers: item.gameData?.playerNumberSet || '-',
+      bet: item.gameData?.bet || '-'
+    }))
   })),
 );

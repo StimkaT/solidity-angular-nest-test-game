@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {IGameData, IPlayer} from './game-data.reducer';
+import {IActiveGameList, IGameData, IPlayer} from './game-data.reducer';
 
 export const loadGameData = createAction(
   '[GameData] loadGameData',
@@ -36,4 +36,8 @@ export const getActiveGames = createAction(
 export const createGame = createAction(
   '[GameData] createGame',
   props<{typeGame: string, playersNumber: number, bet: number}>()
+);
+export const loadGameListSuccess = createAction(
+  '[GameData] loadGameListSuccess',
+  props<{data: any}>()
 );

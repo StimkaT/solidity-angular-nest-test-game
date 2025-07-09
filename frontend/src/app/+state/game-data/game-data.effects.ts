@@ -2,11 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
-  createGame,
+  createGame, getActiveGames,
   getGameData,
   loadGameData,
   loadGameDataFailure,
-  loadGameDataSuccess,
+  loadGameDataSuccess, loadGameListSuccess,
   setSelectedPlayerList, setSelectedPlayerListData
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
@@ -89,6 +89,25 @@ export class GameDataEffects {
             next: (response) => {
               console.log('Game created successfully:', response);
               // this.store.dispatch(loadGameDataSuccess({ data: response.contractAddress }));
+            },
+            error: (error) => {
+              console.error('Error creating game:', error);
+              // this.store.dispatch(loadGameDataFailure({ error }));
+            }
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  getGameList$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(getActiveGames),
+        tap(({game}) => {
+          this.gameDataService.getGameList(game).subscribe({
+            next: (response) => {
+              console.log('Game created successfully:', response);
+              this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },
             error: (error) => {
               console.error('Error creating game:', error);
