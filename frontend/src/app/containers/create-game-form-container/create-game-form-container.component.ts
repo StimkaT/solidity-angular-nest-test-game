@@ -3,6 +3,7 @@ import {CreateGameFormComponent} from '../../components/create-game-form/create-
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {createGame} from '../../+state/game-data/game-data.actions';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-create-game-form-container',
@@ -16,6 +17,19 @@ import {createGame} from '../../+state/game-data/game-data.actions';
 export class CreateGameFormContainerComponent {
   private dialogRef = inject(MatDialogRef<CreateGameFormContainerComponent>);
   private store = inject(Store);
+  private route = inject(ActivatedRoute);
+
+
+  private gameTitle = ''; // Значение по умолчанию
+
+  ngOnInit() {
+    // Извлекаем параметр 'title' из URL
+    this.route.queryParams.subscribe(params => {
+      if (params['title']) {
+        this.gameTitle = params['title'];
+      }
+    });
+  }
 
   close() {
     this.dialogRef.close();
@@ -26,6 +40,7 @@ export class CreateGameFormContainerComponent {
       this.close();
     } else if (event.event === "CreateGameFormComponent:create") {
       this.store.dispatch(createGame({
+        typeGame: this.gameTitle,
         playersNumber: event.data.players,
         bet: event.data.bet,
       }));

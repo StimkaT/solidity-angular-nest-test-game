@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GameService } from './services/deploy';
 import { RegistrationModule } from './registration/registration.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './services/jwt.strategy';
-import {DatabaseModule} from './database.module';
+import { DatabaseModule } from './database.module';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -30,7 +29,7 @@ import { GameModule } from './game/game.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, GameService, JwtStrategy],
+  providers: [AppService, JwtStrategy],
   exports: [JwtModule, PassportModule],
 })
 export class AppModule {}

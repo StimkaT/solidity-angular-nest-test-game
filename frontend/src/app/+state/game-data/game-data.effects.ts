@@ -13,7 +13,6 @@ import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
 import {selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
 import {ethers} from 'ethers';
-import {IPlayer} from './game-data.reducer';
 
 @Injectable()
 export class GameDataEffects {
@@ -80,10 +79,11 @@ export class GameDataEffects {
   createGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(createGame),
-        tap(({playersNumber, bet}) => {
+        tap(({typeGame, playersNumber, bet}) => {
           const payload = {
+            type: typeGame,
             playersNumber,
-            bet
+            bet,
           };
           this.gameDataService.createGame(payload).subscribe({
             next: (response) => {

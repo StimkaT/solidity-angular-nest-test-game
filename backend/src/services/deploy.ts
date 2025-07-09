@@ -21,7 +21,7 @@ interface ContractArtifact {
 }
 
 @Injectable()
-export class GameService {
+export class GameDeployService {
   private provider: ethers.JsonRpcProvider;
   private wallet: ethers.Wallet;
 

@@ -82,11 +82,9 @@ export const initialState: GameDataState = {
     },
     {
       iconList: [
-        'pan_tool',
-        'content_cut',
-        'description'
+        'casino'
       ],
-      title: 'Rock-Paper-Scissors',
+      title: 'Dice',
       linkGame: ''
     }
   ],

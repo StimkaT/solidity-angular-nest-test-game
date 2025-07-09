@@ -5,13 +5,18 @@ import { JwtStrategy } from '../services/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { GameController } from './game.controller';
 import { BlockchainService } from '../services/blockchain.service';
-import { GameService } from '../services/deploy';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {Games} from '../entities/entities/Games';
+import { GameDeployService } from '../services/deploy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Games } from '../entities/entities/Games';
+import { GameDataService } from '../services/game-data.service';
+import { GameService } from '../services/game.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Games]),
+    TypeOrmModule.forFeature([
+      Games,
+      require('../entities/entities/GameData').GameData,
+    ]),
     JwtModule.registerAsync({
       imports: [],
       inject: [ConfigService],
@@ -23,7 +28,13 @@ import {Games} from '../entities/entities/Games';
     PassportModule,
   ],
   controllers: [GameController],
-  providers: [JwtStrategy, BlockchainService, GameService],
+  providers: [
+    JwtStrategy,
+    BlockchainService,
+    GameDataService,
+    GameService,
+    GameDeployService,
+  ],
   exports: [JwtModule, PassportModule],
 })
 export class GameModule {}

@@ -35,5 +35,5 @@ export const getActiveGames = createAction(
 );
 export const createGame = createAction(
   '[GameData] createGame',
-  props<{playersNumber: number, bet: number}>()
+  props<{typeGame: string, playersNumber: number, bet: number}>()
 );

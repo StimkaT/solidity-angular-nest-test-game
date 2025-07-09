@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { RegistrationDto } from '../dto/registration.dto';
 import { JwtService } from '@nestjs/jwt';
-import {Users} from '../entities/entities/Users';
+import { Users } from '../entities/entities/Users';
 
 @Injectable()
 export class RegistrationService {
@@ -56,6 +56,4 @@ export class RegistrationService {
       }
     }
   }
-
-
 }
