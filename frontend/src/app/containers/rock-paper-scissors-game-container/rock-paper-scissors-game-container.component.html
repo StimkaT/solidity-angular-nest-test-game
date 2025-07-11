@@ -1,1 +1,5 @@
-<app-rock-paper-scissors-game></app-rock-paper-scissors-game>
+<app-rock-paper-scissors-game
+  [title]="'Rock-Paper-Scissors'"
+  [player]="(getPlayer$ | async)"
+  (emitter)="events($event)"
+></app-rock-paper-scissors-game>

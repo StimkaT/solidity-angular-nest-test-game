@@ -2,11 +2,12 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {getActiveGames} from '../../+state/game-data/game-data.actions';
+import {createGame, getActiveGames, joinGame} from '../../+state/game-data/game-data.actions';
 import {selectActiveGames} from '../../+state/game-data/game-data.selectors';
 import {CreateGameFormContainerComponent} from '../create-game-form-container/create-game-form-container.component';
 import {ActiveGameListComponent} from '../../components/active-game-list/active-game-list.component';
 import {AsyncPipe} from '@angular/common';
+import {getPlayer} from '../../+state/auth/auth.selectors';
 
 @Component({
   selector: 'app-active-game-list-container',
@@ -38,10 +39,15 @@ export class ActiveGameListContainerComponent implements OnInit {
   }
 
   selectActiveGames$ = this.store.select(selectActiveGames);
+  getPlayer$ = this.store.select(getPlayer);
 
   events(event: any) {
     if (event.event === 'ActiveGameListComponent:create') {
       this.openCreateGameModal()
+    } else if (event.event === 'ActiveGameListComponent:join') {
+      this.store.dispatch(joinGame({game: event.gameId, wallet: event.wallet, gameName: event.title}))
+    } else if (event.event === 'ActiveGameListComponent:reload') {
+      this.store.dispatch(getActiveGames({ game: event.game }))
     }
   }
 

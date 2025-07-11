@@ -1,0 +1,18 @@
+<div class="container">
+
+  <div class="header">
+        <button mat-icon-button class="toggle home-icon" (click)="event('home')" matTooltip="На главную">
+          <mat-icon>home</mat-icon>
+        </button>
+    <span>{{ title }}</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="toggle">
+      <mat-icon>replay</mat-icon>
+    </button>
+  </div>
+  <div class="footer">
+    <button class="footer-button" mat-raised-button (click)="event('observe')">Observe</button>
+    <button class="footer-button" mat-raised-button (click)="event('connect')">Connect to game</button>
+    <button mat-raised-button (click)="event('leave')">Interrupt and exit</button>
+  </div>
+</div>

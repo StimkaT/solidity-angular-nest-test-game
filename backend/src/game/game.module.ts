@@ -10,13 +10,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Games } from '../entities/entities/Games';
 import { GameDataService } from '../services/game-data.service';
 import { GameService } from '../services/game.service';
+import { GamePlayers } from '../entities/entities/GamePlayers';
+import { Users } from '../entities/entities/Users';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Games,
-      require('../entities/entities/GameData').GameData,
-    ]),
+    TypeOrmModule.forFeature([Games, require('../entities/entities/GameData').GameData, GamePlayers, Users]),
     JwtModule.registerAsync({
       imports: [],
       inject: [ConfigService],

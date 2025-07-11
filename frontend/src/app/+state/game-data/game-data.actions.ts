@@ -41,3 +41,11 @@ export const loadGameListSuccess = createAction(
   '[GameData] loadGameListSuccess',
   props<{data: any}>()
 );
+export const joinGame = createAction(
+  '[GameData] joinGame',
+  props<{game: number, wallet: string, gameName: string}>()
+);
+export const leaveGame = createAction(
+  '[GameData] leaveGame',
+  props<{gameId: number, wallet: string}>()
+);

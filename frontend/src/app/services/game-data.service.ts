@@ -15,11 +15,16 @@ export class GameDataService {
     return this.http.post(`${this.apiUrl}/getArray`, { params: { data } } );
   }
   getGameList(type: string): Observable<any> {
-    console.log('data', type)
     return this.http.post(`${this.apiUrl}/getGameList`, {type} );
   }
   createGame(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/createGame`, data );
+  }
+  joinGame(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/joinGame`, data );
+  }
+  leaveGame(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/leaveGame`, data );
   }
 
 }

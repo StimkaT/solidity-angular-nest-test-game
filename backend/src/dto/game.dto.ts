@@ -12,6 +12,9 @@ export class GameDto {
   @IsString()
   ownerAddress: string;
 
+  @IsString()
+  wallet: string;
+
   @IsDate()
   @IsOptional()
   finishedAt?: string;

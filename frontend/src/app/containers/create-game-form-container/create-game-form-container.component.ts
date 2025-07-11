@@ -1,9 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {CreateGameFormComponent} from '../../components/create-game-form/create-game-form.component';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {createGame} from '../../+state/game-data/game-data.actions';
+import {createGame, getActiveGames} from '../../+state/game-data/game-data.actions';
 import {ActivatedRoute} from '@angular/router';
+import {Actions, ofType} from '@ngrx/effects';
 
 @Component({
   selector: 'app-create-game-form-container',
@@ -14,10 +15,11 @@ import {ActivatedRoute} from '@angular/router';
   templateUrl: './create-game-form-container.component.html',
   styleUrl: './create-game-form-container.component.scss'
 })
-export class CreateGameFormContainerComponent {
+export class CreateGameFormContainerComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<CreateGameFormContainerComponent>);
   private store = inject(Store);
   private route = inject(ActivatedRoute);
+  private actions$ = inject(Actions);
 
   private gameTitle = '';
 
@@ -26,6 +28,11 @@ export class CreateGameFormContainerComponent {
       if (params['title']) {
         this.gameTitle = params['title'];
       }
+    });
+    this.actions$.pipe(
+      ofType(getActiveGames)
+    ).subscribe(() => {
+      this.dialogRef.close();
     });
   }
 

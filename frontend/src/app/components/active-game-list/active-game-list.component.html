@@ -1,5 +1,15 @@
 <div class="container">
-  <div class="header">{{ title }}</div>
+
+  <div class="header">
+    <button mat-icon-button class="toggle home-icon" (click)="goToHome()" matTooltip="На главную">
+      <mat-icon>home</mat-icon>
+    </button>
+    <span>{{ title }}</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="toggle" (click)="reload(title)">
+      <mat-icon>replay</mat-icon>
+    </button>
+  </div>
 
   <div class="table-container">
     <table class="table">
@@ -20,7 +30,7 @@
             <td class="table-cell">{{ game.registeredPlayers }}/{{ game.needPlayers }}</td>
             <td class="table-cell">{{ game.bet }}</td>
             <td class="table-cell action-cell">
-              <button mat-raised-button class="join-button">Войти</button>
+              <button mat-raised-button class="join-button" (click)="joinGame(game.id, title)">Join</button>
             </td>
           </tr>
         }

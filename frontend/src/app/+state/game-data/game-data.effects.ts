@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
   createGame, getActiveGames,
-  getGameData,
+  getGameData, joinGame, leaveGame,
   loadGameData,
   loadGameDataFailure,
   loadGameDataSuccess, loadGameListSuccess,
@@ -13,12 +13,15 @@ import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
 import {selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
 import {ethers} from 'ethers';
+import {getPlayer} from '../auth/auth.selectors';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class GameDataEffects {
   private actions$ = inject(Actions);
   private gameDataService = inject(GameDataService);
   private store = inject(Store);
+  private router = inject(Router);
 
   loadGameData$ = createEffect(() =>
       this.actions$.pipe(
@@ -79,16 +82,19 @@ export class GameDataEffects {
   createGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(createGame),
-        tap(({typeGame, playersNumber, bet}) => {
+        withLatestFrom(
+          this.store.select(getPlayer),
+        ),
+        tap(([{typeGame, playersNumber, bet}, player]) => {
           const payload = {
             type: typeGame,
             playersNumber,
             bet,
+            wallet: player.wallet
           };
           this.gameDataService.createGame(payload).subscribe({
             next: (response) => {
-              console.log('Game created successfully:', response);
-              // this.store.dispatch(loadGameDataSuccess({ data: response.contractAddress }));
+              this.store.dispatch(getActiveGames({ game: typeGame }));
             },
             error: (error) => {
               console.error('Error creating game:', error);
@@ -106,8 +112,59 @@ export class GameDataEffects {
         tap(({game}) => {
           this.gameDataService.getGameList(game).subscribe({
             next: (response) => {
-              console.log('Game created successfully:', response);
               this.store.dispatch(loadGameListSuccess({ data: response.games }));
+            },
+            error: (error) => {
+              console.error('Error creating game:', error);
+              // this.store.dispatch(loadGameDataFailre({ error }));
+            }
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  joinGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(joinGame),
+        tap(({game, wallet, gameName}) => {
+          const payload = {
+            game,
+            wallet
+          }
+          this.gameDataService.joinGame(payload).subscribe({
+            next: (response) => {
+              console.log('Join successfully:', response);
+              if (response.success === true) {
+                this.router.navigate([`/${gameName.toLowerCase()}/:${response.player.gameData.gameId}`]);
+              } else if (response.success === false && response.message === "This user is already participating in the game") {
+                this.router.navigate([`/${gameName.toLowerCase()}/:${game}`]);
+              }
+              // this.store.dispatch(loadGameListSuccess({ data: response.games }));
+            },
+            error: (error) => {
+              console.error('Error creating game:', error);
+              // this.store.dispatch(loadGameDataFailure({ error }));
+            }
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  leaveGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(leaveGame),
+        tap(({gameId, wallet}) => {
+          const payload = {
+            gameId,
+            wallet
+          }
+          this.gameDataService.leaveGame(payload).subscribe({
+            next: (response) => {
+              console.log('Join successfully:', response);
+              // this.router.navigate([`/`]);
+              // this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },
             error: (error) => {
               console.error('Error creating game:', error);

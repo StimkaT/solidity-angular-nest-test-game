@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { GameService } from '../services/game.service';
+import { GameService, ICreateGameData } from '../services/game.service';
 import { GameDataService } from '../services/game-data.service';
 
 @Controller('game')
@@ -10,7 +10,7 @@ export class GameController {
   ) {}
 
   @Post('createGame')
-  async createGame(@Body() data: any) {
+  async createGame(@Body() data: ICreateGameData) {
     try {
       const game = await this.gameService.createGame(data);
       const gameData = await this.gameDataService.createGameData({
@@ -47,6 +47,36 @@ export class GameController {
         success: true,
         games: result,
       };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
+  @Post('joinGame')
+  async joinGame(@Body() data: { game: number; wallet: string }) {
+    try {
+      const game = await this.gameService.getGameById(data.game);
+      if (!game) {
+        return { success: false, message: 'Game not found' };
+      }
+      const player = await this.gameService.addWalletToGame(data.game, data.wallet);
+      return { success: true, player };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
+  @Post('leaveGame')
+  async leaveGame(@Body() data: { gameId: number; wallet: string }) {
+    try {
+      const game = await this.gameService.leaveGame(data);
+      return { success: true, game };
     } catch (error) {
       return {
         success: false,
