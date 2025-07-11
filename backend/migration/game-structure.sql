@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: mysql:3306
--- Время создания: Июл 08 2025 г., 08:50
+-- Время создания: Июл 11 2025 г., 07:52
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- База данных: `game`
 --
-CREATE DATABASE IF NOT EXISTS `game` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `game`;
 
 -- --------------------------------------------------------
 
@@ -29,10 +27,9 @@ USE `game`;
 -- Структура таблицы `games`
 --
 
-DROP TABLE IF EXISTS `games`;
 CREATE TABLE `games` (
                          `id` int UNSIGNED NOT NULL,
-                         `type` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `type` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                          `contractAddress` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                          `ownerAddress` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                          `finished_at` timestamp NULL DEFAULT NULL,
@@ -41,11 +38,19 @@ CREATE TABLE `games` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Очистить таблицу перед добавлением данных `games`
+--
+
+TRUNCATE TABLE `games`;
+--
 -- Дамп данных таблицы `games`
 --
 
 INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_at`, `created_at`, `updated_at`) VALUES
-    (1, 'Rock-Paper-Scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-08 08:34:28', '2025-07-08 08:34:28');
+                                                                                                                     (56, 'Rock-Paper-Scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-11 07:34:03', '2025-07-11 07:34:03'),
+                                                                                                                     (57, 'Rock-Paper-Scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-11 07:34:19', '2025-07-11 07:34:19'),
+                                                                                                                     (58, 'Rock-Paper-Scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-11 07:36:33', '2025-07-11 07:36:33'),
+                                                                                                                     (59, 'Rock-Paper-Scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-11 07:47:45', '2025-07-11 07:47:45');
 
 -- --------------------------------------------------------
 
@@ -53,13 +58,56 @@ INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_
 -- Структура таблицы `game_data`
 --
 
-DROP TABLE IF EXISTS `game_data`;
 CREATE TABLE `game_data` (
                              `id` int NOT NULL,
                              `game_id` int NOT NULL,
                              `bet` int NOT NULL,
-                             `players_number` int NOT NULL
+                             `players_number` int NOT NULL,
+                             `player_number_set` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Очистить таблицу перед добавлением данных `game_data`
+--
+
+TRUNCATE TABLE `game_data`;
+--
+-- Дамп данных таблицы `game_data`
+--
+
+INSERT INTO `game_data` (`id`, `game_id`, `bet`, `players_number`, `player_number_set`) VALUES
+                                                                                            (33, 56, 100, 10000, 3),
+                                                                                            (34, 57, 100, 222, 1),
+                                                                                            (35, 58, 100, 2, 1),
+                                                                                            (36, 59, 100, 22222, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `game_players`
+--
+
+CREATE TABLE `game_players` (
+                                `id` int NOT NULL,
+                                `game_id` int NOT NULL,
+                                `wallet` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                                `user_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Очистить таблицу перед добавлением данных `game_players`
+--
+
+TRUNCATE TABLE `game_players`;
+--
+-- Дамп данных таблицы `game_players`
+--
+
+INSERT INTO `game_players` (`id`, `game_id`, `wallet`, `user_id`) VALUES
+                                                                      (56, 57, '0x75AFb5a18E0B7960f11529f284c18444C8a76A86', 13),
+                                                                      (57, 58, '0xEC8B785Bf287606E0B6DdE00A6B8d4849aC51c0f', 14),
+                                                                      (59, 56, '0xEC8B785Bf287606E0B6DdE00A6B8d4849aC51c0f', 14),
+                                                                      (60, 59, '0xEC8B785Bf287606E0B6DdE00A6B8d4849aC51c0f', 14);
 
 -- --------------------------------------------------------
 
@@ -67,12 +115,16 @@ CREATE TABLE `game_data` (
 -- Структура таблицы `game_types`
 --
 
-DROP TABLE IF EXISTS `game_types`;
 CREATE TABLE `game_types` (
                               `id` int NOT NULL,
-                              `name` varchar(256) COLLATE utf8mb4_general_ci NOT NULL
+                              `name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Очистить таблицу перед добавлением данных `game_types`
+--
+
+TRUNCATE TABLE `game_types`;
 --
 -- Дамп данных таблицы `game_types`
 --
@@ -87,20 +139,23 @@ INSERT INTO `game_types` (`id`, `name`) VALUES
 -- Структура таблицы `migrations`
 --
 
-DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE `migrations` (
                               `id` int NOT NULL,
                               `timestamp` bigint NOT NULL,
-                              `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
+                              `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Очистить таблицу перед добавлением данных `migrations`
+--
+
+TRUNCATE TABLE `migrations`;
 -- --------------------------------------------------------
 
 --
 -- Структура таблицы `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
                          `id` int NOT NULL,
                          `login` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -111,6 +166,11 @@ CREATE TABLE `users` (
                          `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Очистить таблицу перед добавлением данных `users`
+--
+
+TRUNCATE TABLE `users`;
 --
 -- Дамп данных таблицы `users`
 --
@@ -149,6 +209,13 @@ ALTER TABLE `game_data`
   ADD UNIQUE KEY `game_id` (`game_id`);
 
 --
+-- Индексы таблицы `game_players`
+--
+ALTER TABLE `game_players`
+    ADD PRIMARY KEY (`id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
 -- Индексы таблицы `game_types`
 --
 ALTER TABLE `game_types`
@@ -176,13 +243,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
-    MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT для таблицы `game_data`
 --
 ALTER TABLE `game_data`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT для таблицы `game_players`
+--
+ALTER TABLE `game_players`
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT для таблицы `game_types`
