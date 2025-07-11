@@ -1,12 +1,12 @@
 <div class="container">
 
   <div class="header">
-    <button mat-icon-button class="toggle home-icon" (click)="goToHome()" matTooltip="На главную">
+    <button mat-icon-button class="toggle home-icon" (click)="event('home', title)">
       <mat-icon>home</mat-icon>
     </button>
     <span>{{ title }}</span>
     <span class="example-spacer"></span>
-    <button mat-icon-button class="toggle" (click)="reload(title)">
+    <button mat-icon-button class="toggle" (click)="event('reload', title)">
       <mat-icon>replay</mat-icon>
     </button>
   </div>
@@ -30,7 +30,8 @@
             <td class="table-cell">{{ game.registeredPlayers }}/{{ game.needPlayers }}</td>
             <td class="table-cell">{{ game.bet }}</td>
             <td class="table-cell action-cell">
-              <button mat-raised-button class="join-button" (click)="joinGame(game.id, title)">Join</button>
+              <button mat-raised-button class="manage-button join-button" (click)="manage('join', game.id, title)">Join</button>
+              <button mat-raised-button class="manage-button delete-button" (click)="manage('delete', game.id, title)">X</button>
             </td>
           </tr>
         }
@@ -39,6 +40,6 @@
   </div>
 
   <div class="footer">
-    <button mat-raised-button (click)="openCreateGameModal()">Create</button>
+    <button mat-raised-button (click)="event('create', title)">Create</button>
   </div>
 </div>
