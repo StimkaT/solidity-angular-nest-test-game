@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: mysql:3306
--- Время создания: Июл 11 2025 г., 07:52
+-- Время создания: Июл 11 2025 г., 07:56
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- База данных: `game`
 --
+CREATE DATABASE IF NOT EXISTS `game` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `game`;
 
 -- --------------------------------------------------------
 
@@ -27,6 +29,7 @@ SET time_zone = "+00:00";
 -- Структура таблицы `games`
 --
 
+DROP TABLE IF EXISTS `games`;
 CREATE TABLE `games` (
                          `id` int UNSIGNED NOT NULL,
                          `type` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -37,11 +40,6 @@ CREATE TABLE `games` (
                          `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Очистить таблицу перед добавлением данных `games`
---
-
-TRUNCATE TABLE `games`;
 --
 -- Дамп данных таблицы `games`
 --
@@ -58,6 +56,7 @@ INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_
 -- Структура таблицы `game_data`
 --
 
+DROP TABLE IF EXISTS `game_data`;
 CREATE TABLE `game_data` (
                              `id` int NOT NULL,
                              `game_id` int NOT NULL,
@@ -66,11 +65,6 @@ CREATE TABLE `game_data` (
                              `player_number_set` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Очистить таблицу перед добавлением данных `game_data`
---
-
-TRUNCATE TABLE `game_data`;
 --
 -- Дамп данных таблицы `game_data`
 --
@@ -87,6 +81,7 @@ INSERT INTO `game_data` (`id`, `game_id`, `bet`, `players_number`, `player_numbe
 -- Структура таблицы `game_players`
 --
 
+DROP TABLE IF EXISTS `game_players`;
 CREATE TABLE `game_players` (
                                 `id` int NOT NULL,
                                 `game_id` int NOT NULL,
@@ -94,11 +89,6 @@ CREATE TABLE `game_players` (
                                 `user_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Очистить таблицу перед добавлением данных `game_players`
---
-
-TRUNCATE TABLE `game_players`;
 --
 -- Дамп данных таблицы `game_players`
 --
@@ -115,16 +105,12 @@ INSERT INTO `game_players` (`id`, `game_id`, `wallet`, `user_id`) VALUES
 -- Структура таблицы `game_types`
 --
 
+DROP TABLE IF EXISTS `game_types`;
 CREATE TABLE `game_types` (
                               `id` int NOT NULL,
                               `name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Очистить таблицу перед добавлением данных `game_types`
---
-
-TRUNCATE TABLE `game_types`;
 --
 -- Дамп данных таблицы `game_types`
 --
@@ -139,23 +125,20 @@ INSERT INTO `game_types` (`id`, `name`) VALUES
 -- Структура таблицы `migrations`
 --
 
+DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE `migrations` (
                               `id` int NOT NULL,
                               `timestamp` bigint NOT NULL,
                               `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Очистить таблицу перед добавлением данных `migrations`
---
-
-TRUNCATE TABLE `migrations`;
 -- --------------------------------------------------------
 
 --
 -- Структура таблицы `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
                          `id` int NOT NULL,
                          `login` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -166,11 +149,6 @@ CREATE TABLE `users` (
                          `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Очистить таблицу перед добавлением данных `users`
---
-
-TRUNCATE TABLE `users`;
 --
 -- Дамп данных таблицы `users`
 --
