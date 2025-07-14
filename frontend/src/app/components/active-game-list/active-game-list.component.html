@@ -31,7 +31,15 @@
             <td class="table-cell">{{ game.bet }}</td>
             <td class="table-cell action-cell">
               <button mat-raised-button class="manage-button join-button" (click)="manage('observe', game.id, title)">Observe</button>
-              <button mat-raised-button class="manage-button join-button" (click)="manage('join', game.id, title)">Join</button>
+              <button
+                mat-raised-button
+                class="manage-button join-button"
+                [class.is-connected]="game.isPlayerJoined === '1'"
+                [disabled]="game.isPlayerJoined === '1'"
+                (click)="manage('join', game.id, title)"
+              >
+                Join
+              </button>
               <button mat-raised-button class="manage-button delete-button" (click)="manage('delete', game.id, title)">X</button>
             </td>
           </tr>

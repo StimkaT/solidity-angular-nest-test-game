@@ -139,3 +139,6 @@ html, body {
   height: 100%;
 }
 
+.join-button.is-connected:disabled {
+  opacity: 0.8;
+}
