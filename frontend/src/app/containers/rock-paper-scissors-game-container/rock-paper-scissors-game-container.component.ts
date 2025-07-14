@@ -7,6 +7,7 @@ import {getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {joinGame, leaveGame} from '../../+state/game-data/game-data.actions';
+import {WebsocketService} from '../../services/websocket.service';
 
 @Component({
   selector: 'app-rock-paper-scissors-game-container',
@@ -22,6 +23,7 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private wsService = inject(WebsocketService);
 
   gameId: number | null = null;
 
@@ -31,6 +33,13 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.gameId = Number(id.replace(':', ''));
+
+      // this.wsService.joinGame(this.gameId, 'testUser');
+
+      this.wsService.onGameStarted().subscribe(() => {
+        alert('Игра началась!');
+      });
+
     } else {
       this.gameId = null;
     }

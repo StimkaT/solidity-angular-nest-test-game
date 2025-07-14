@@ -14,6 +14,7 @@ import { Users } from '../entities/entities/Users';
 import { Games } from '../entities/entities/Games';
 import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
+import {GameGateway} from './game-websocket';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { GameTypes } from '../entities/entities/GameTypes';
     GameDataService,
     GameService,
     GameDeployService,
+    GameGateway
   ],
   exports: [JwtModule, PassportModule],
 })
