@@ -8,8 +8,8 @@ export class WebsocketService {
   private socket: Socket = {} as Socket;
 
   constructor() {
-    this.connect();
-    console.log(this.socket);
+    // this.connect();
+    // console.log(this.socket);
   }
 
   connect() {
@@ -33,13 +33,13 @@ export class WebsocketService {
   // playerReady(gameId: number, username: string) {
   //   this.socket.emit('playerReady', { gameId, username });
   // }
-  //
-  // onPlayerJoined(): Observable<any> {
-  //   return new Observable(observer => {
-  //     this.socket.on('playerJoined', data => observer.next(data));
-  //   });
-  // }
-  //
+
+  onPlayerJoined(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('playerJoined', data => observer.next(data));
+    });
+  }
+
   // onPlayerReadyStatus(): Observable<any> {
   //   return new Observable(observer => {
   //     this.socket.on('playerReadyStatus', data => observer.next(data));

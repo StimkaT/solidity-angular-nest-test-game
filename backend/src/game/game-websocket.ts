@@ -14,8 +14,7 @@ import { Server, Socket } from 'socket.io';
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() server: Server;
 
   afterInit(server: Server) {
     console.log('WebSocket сервер инициализирован');
@@ -29,20 +28,18 @@ export class GameGateway
     console.log(`Клиент отключился: ${client.id}`);
   }
 
-  @SubscribeMessage('sendMessage')
-  handleMessage(
-    @MessageBody() data: { gameId: string; message: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    // отправляем сообщение в комнату с gameId
-    this.server.to(data.gameId).emit('receiveMessage', {
-      senderId: client.id,
-      message: data.message,
-    });
-  }
+  // @SubscribeMessage('sendMessage') handleMessage(
+  //   @MessageBody() data: { gameId: string; message: string },
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   // отправляем сообщение в комнату с gameId
+  //   this.server.to(data.gameId).emit('receiveMessage', {
+  //     senderId: client.id,
+  //     message: data.message,
+  //   });
+  // }
 
-  @SubscribeMessage('joinGame')
-  joinGame(
+  @SubscribeMessage('joinGame') joinGame(
     @MessageBody() data: { gameId: string },
     @ConnectedSocket() client: Socket,
   ) {
@@ -54,16 +51,15 @@ export class GameGateway
     });
   }
 
-  @SubscribeMessage('leaveGame')
-  leaveGame(
-    @MessageBody() data: { gameId: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    client.leave(data.gameId);
-    console.log(`Клиент ${client.id} покинул игру ${data.gameId}`);
-
-    this.server.to(data.gameId).emit('playerLeft', {
-      playerId: client.id,
-    });
-  }
+  // @SubscribeMessage('leaveGame') leaveGame(
+  //   @MessageBody() data: { gameId: string },
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   client.leave(data.gameId);
+  //   console.log(`Клиент ${client.id} покинул игру ${data.gameId}`);
+  //
+  //   this.server.to(data.gameId).emit('playerLeft', {
+  //     playerId: client.id,
+  //   });
+  // }
 }

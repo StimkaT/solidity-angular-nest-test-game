@@ -34,9 +34,14 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
     if (id) {
       this.gameId = Number(id.replace(':', ''));
 
-      // this.wsService.joinGame(this.gameId, 'testUser');
+      this.wsService.connect();
+
+      this.wsService.joinGame(this.gameId, 'testUser');
 
       this.wsService.onGameStarted().subscribe(() => {
+        alert('Игра началась!');
+      });
+      this.wsService.onPlayerJoined().subscribe(() => {
         alert('Игра началась!');
       });
 
