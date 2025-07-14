@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
 import {walletListStabs} from './stabs';
-import {loadGameListSuccess} from './game-data.actions';
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
 
@@ -35,10 +34,17 @@ export interface IGameList {
   linkGame: string;
 }
 export interface IActiveGameList {
-  id: string;
-  needPlayers: number;
-  registeredPlayers: number;
+  id: number;
+  type: string | null;
+  contractAddress: string | null;
+  ownerAddress: string;
+  finishedAt: Date | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   bet: number;
+  playersNumber: number;
+  playerNumberSet: number;
+  isPlayerJoined: boolean;
 }
 
 export interface GameDataState {
@@ -91,29 +97,18 @@ export const initialState: GameDataState = {
   ],
   activeGameList: [
     {
-      id: '111',
-      needPlayers: 3213,
-      registeredPlayers: 4332,
-      bet: 1123
-    },
-    {
-      id: '1111',
-      needPlayers: 3213,
-      registeredPlayers: 4332,
-      bet: 1123
-    },
-    {
-      id: '112',
-      needPlayers: 3213,
-      registeredPlayers: 4332,
-      bet: 1123
-    },
-    {
-      id: '1122',
-      needPlayers: 3213,
-      registeredPlayers: 4332,
-      bet: 1123
-    },
+      id: 1,
+      type: 'Rock-Paper-Scissors',
+      contractAddress: null,
+      ownerAddress: '0x....',
+      finishedAt: null,
+      createdAt: '12333',
+      updatedAt: '123',
+      bet: 123444,
+      playersNumber: 3,
+      playerNumberSet: 2,
+      isPlayerJoined: true
+    }
   ]
 };
 
@@ -144,10 +139,17 @@ export const gameDataReducer = createReducer(
   on(GameDataActions.loadGameListSuccess, (state, { data }) => ({
     ...state,
     activeGameList: data.map((item: any) => ({
-      id: item.id,
-      needPlayers: item.gameData?.playersNumber || '-',
-      registeredPlayers: item.gameData?.playerNumberSet || '-',
-      bet: item.gameData?.bet || '-'
+      id: item.game_id,
+      type: item.game_type,
+      contractAddress: item.game_contractAddress,
+      ownerAddress: item.game_ownerAddress,
+      finishedAt: item.game_finishedAt,
+      createdAt: item.game_createdAt,
+      updatedAt: item.game_updatedAt,
+      bet: item.gameData_bet || '-',
+      playersNumber: item.gameData_players_number || '-',
+      playerNumberSet: item.gameData_player_number_set || '-',
+      isPlayerJoined: item.isPlayerJoined
     }))
   })),
 );

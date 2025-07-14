@@ -1,12 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { GameData } from "./GameData";
+import { GamePlayers } from "./GamePlayers";
+import { GameTypes } from "./GameTypes";
 
+@Index("idx_games_type_name", ["type"], {})
 @Entity("games", { schema: "game" })
 export class Games {
   @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
   id: number;
 
-  @Column("varchar", { name: "type", length: 256 })
-  type: string;
+  @Column("varchar", { name: "type", nullable: true, length: 256 })
+  type: string | null;
 
   @Column("varchar", { name: "contractAddress", nullable: true, length: 255 })
   contractAddress: string | null;
@@ -30,4 +43,17 @@ export class Games {
     default: () => "CURRENT_TIMESTAMP",
   })
   updatedAt: Date | null;
+
+  @OneToOne(() => GameData, (gameData) => gameData.game)
+  gameData: GameData;
+
+  @OneToMany(() => GamePlayers, (gamePlayers) => gamePlayers.game)
+  gamePlayers: GamePlayers[];
+
+  @ManyToOne(() => GameTypes, (gameTypes) => gameTypes.games, {
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "type", referencedColumnName: "name" }])
+  type2: GameTypes;
 }

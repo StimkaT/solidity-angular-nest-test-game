@@ -33,7 +33,7 @@ export class ActiveGameListComponent {
 
   manage(manage: string, gameId: string, title: string) {
     const message = {
-      event: 'ActiveGameListComponent:join',
+      event: `ActiveGameListComponent:${manage}`,
       wallet: this.player.wallet,
       gameId: gameId,
       title

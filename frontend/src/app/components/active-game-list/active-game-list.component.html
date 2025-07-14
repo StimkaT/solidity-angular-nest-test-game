@@ -27,9 +27,10 @@
           <tr class="table-row">
             <td class="table-cell">{{ i + 1 }}</td>
             <td class="table-cell">{{ game.id }}</td>
-            <td class="table-cell">{{ game.registeredPlayers }}/{{ game.needPlayers }}</td>
+            <td class="table-cell">{{ game.playerNumberSet }}/{{ game.playersNumber }}</td>
             <td class="table-cell">{{ game.bet }}</td>
             <td class="table-cell action-cell">
+              <button mat-raised-button class="manage-button join-button" (click)="manage('observe', game.id, title)">Observe</button>
               <button mat-raised-button class="manage-button join-button" (click)="manage('join', game.id, title)">Join</button>
               <button mat-raised-button class="manage-button delete-button" (click)="manage('delete', game.id, title)">X</button>
             </td>

@@ -7,15 +7,23 @@ import { GameController } from './game.controller';
 import { BlockchainService } from '../services/blockchain.service';
 import { GameDeployService } from '../services/deploy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Games } from '../entities/entities/Games';
 import { GameDataService } from '../services/game-data.service';
 import { GameService } from '../services/game.service';
 import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
+import { Games } from '../entities/entities/Games';
+import { GameData } from '../entities/entities/GameData';
+import { GameTypes } from '../entities/entities/GameTypes';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Games, require('../entities/entities/GameData').GameData, GamePlayers, Users]),
+    TypeOrmModule.forFeature([
+      Games,
+      GameData,
+      GameTypes,
+      GamePlayers,
+      Users,
+    ]),
     JwtModule.registerAsync({
       imports: [],
       inject: [ConfigService],

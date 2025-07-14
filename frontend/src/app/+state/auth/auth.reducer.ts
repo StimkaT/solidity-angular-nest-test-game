@@ -18,7 +18,7 @@ export interface IPlayer {
   id?: string;
   login: string;
   password: string;
-  wallet?: string;
+  wallet: string;
   encryptedPrivateKey?: string;
   isLogin: boolean;
 }
@@ -36,6 +36,7 @@ export interface SettingsPartialState {
 export const initialState: AuthState = {
   player: {
     id: '',
+    wallet: '',
     login: '',
     password: '',
     isLogin: false

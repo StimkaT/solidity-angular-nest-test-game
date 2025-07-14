@@ -20,6 +20,7 @@ export class RockPaperScissorsGameComponent {
   @Input() link: string = '';
   @Input() activeGamesList: any;
   @Input() player: any;
+  @Input() gameId: any;
 
   @Output() emitter = new EventEmitter();
 

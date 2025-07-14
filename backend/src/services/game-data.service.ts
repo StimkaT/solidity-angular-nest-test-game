@@ -20,7 +20,7 @@ export class GameDataService {
       gameId: params.gameId,
       bet: params.bet,
       playersNumber: params.playersNumber,
-      playerNumberSet: 1,
+      playerNumberSet: params.playerNumberSet ?? 1,
     });
 
     const savedData = await this.gameDataRepository.save(newGameData);

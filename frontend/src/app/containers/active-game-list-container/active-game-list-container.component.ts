@@ -50,6 +50,10 @@ export class ActiveGameListContainerComponent implements OnInit {
     } else if (event.event === 'ActiveGameListComponent:reload') {
       this.store.dispatch(getActiveGames({ game: event.title }))
     } else if (event.event === 'ActiveGameListComponent:home') {
+      this.router.navigate([`/${event.title.toLowerCase()}`]);
+    }else if (event.event === 'ActiveGameListComponent:observe') {
+      this.router.navigate([`/${event.title.toLowerCase()}/:${event.gameId}`]);
+    }else if (event.event === 'ActiveGameListComponent:delete') {
       this.router.navigate(['/']);
     }
   }

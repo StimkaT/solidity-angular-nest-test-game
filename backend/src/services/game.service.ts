@@ -30,27 +30,24 @@ export class GameService {
     private gameDataRepository: Repository<GameData>,
   ) {}
 
-  async createGame(data: ICreateGameData): Promise<any> {
-    const type = data.type || '';
-    const ownerAddress = this.configService.get<string>(
-      'OWNER_ADDRESS',
-    ) as string;
-
-    const gameDto: GameDto = {
-      type,
-      ownerAddress,
-      wallet: data.wallet,
-    };
-
+  async createGame(data: ICreateGameData): Promise<Games> {
     const user = await this.usersRepository.findOne({
       where: { wallet: data.wallet },
     });
-
     if (!user) {
-      throw new Error('User not found for the provided wallet');
+      throw new Error('Пользователь не найден');
     }
 
+    const gameDto: GameDto = {
+      type: data.type || '',
+      ownerAddress: this.configService.get<string>('OWNER_ADDRESS') as string,
+      wallet: data.wallet,
+    };
+
     const game = await this.gameRepository.save(gameDto);
+    if (!game?.id) {
+      throw new Error('Не удалось сохранить игру');
+    }
 
     await this.gamePlayersRepository.save({
       gameId: game.id,
@@ -58,11 +55,13 @@ export class GameService {
       userId: user.id,
     });
 
-    return game;
-  }
+    try {
+      await this.updatePlayerNumberSet(game.id);
+    } catch (error) {
+      console.error('Ошибка при обновлении playerNumberSet:', error);
+    }
 
-  async getGamesByType(type: string) {
-    return this.gameRepository.find({ where: { type } });
+    return game;
   }
 
   async getGameById(id: number) {
@@ -72,7 +71,7 @@ export class GameService {
   async addWalletToGame(
     gameId: number,
     wallet: string,
-  ): Promise<{ player: GamePlayers; gameData: GameData }> {
+  ): Promise<{ player: GamePlayers; gameData: GameData | null }> {
     const user = await this.usersRepository.findOne({
       where: { wallet },
     });
@@ -116,8 +115,10 @@ export class GameService {
       userId: user.id,
     });
 
-    gameData.playerNumberSet += 1;
-    const updatedGameData = await this.gameDataRepository.save(gameData);
+    await this.updatePlayerNumberSet(gameId);
+    const updatedGameData = await this.gameDataRepository.findOne({
+      where: { gameId },
+    });
 
     return {
       player: newPlayer,
@@ -142,9 +143,82 @@ export class GameService {
       wallet: params.wallet,
     });
 
+    await this.updatePlayerNumberSet(params.gameId);
+
     return {
       success: true,
       message: 'Successfully left the game',
     };
+  }
+
+  async updatePlayerNumberSet(gameId: number): Promise<void> {
+    const playersCount = await this.gamePlayersRepository.count({
+      where: { gameId },
+    });
+
+    const game = await this.gameDataRepository.findOne({
+      where: { gameId: gameId },
+    });
+    if (!game) {
+      throw new Error('Game not found');
+    }
+
+    await this.gameDataRepository.update(
+      { gameId },
+      { playerNumberSet: playersCount },
+    );
+
+    const [gameData, gamePlayers] = await Promise.all([
+      this.gameDataRepository.findOne({ where: { gameId } }),
+      this.gamePlayersRepository.find({ where: { gameId } }),
+    ]);
+
+    // Проверяем два условия:
+    // 1. Текущее количество игроков соответствует требуемому (playersNumber)
+    // 2. Значение playerNumberSet было успешно обновлено
+    if (
+      gameData &&
+      playersCount === game.playersNumber &&
+      gameData.playerNumberSet === playersCount
+    ) {
+      console.log('Комната готова для деплоя контракта!');
+      console.log('Данные для деплоя:');
+      console.log('Game:', game);
+      console.log('GameData:', gameData);
+      console.log('GamePlayers:', gamePlayers);
+
+      // Здесь будет вызов метода для деплоя контракта на blockchain
+      // await this.blockchainService.deployContract(game, gameData, gamePlayers);
+    }
+  }
+
+  // games.service.ts
+
+  async getGamesByTypeWithPlayerFlag(type: string, playerWallet: string) {
+    return await this.gameRepository
+      .createQueryBuilder('game')
+      .leftJoinAndSelect('game.gameData', 'gameData')
+      .leftJoinAndSelect(
+        'game.gamePlayers',
+        'gamePlayer',
+        'gamePlayer.wallet = :wallet',
+        { wallet: playerWallet },
+      )
+      .where('game.type = :type', { type })
+      .andWhere('game.contractAddress IS NULL')
+      .select([
+        'game.id',
+        'game.type',
+        'game.contractAddress',
+        'game.ownerAddress',
+        'game.finishedAt',
+        'game.createdAt',
+        'game.updatedAt',
+        'gameData.bet',
+        'gameData.playersNumber',
+        'gameData.playerNumberSet',
+        'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
+      ])
+      .getRawMany();
   }
 }

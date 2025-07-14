@@ -45,7 +45,9 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
     } else if (event.event === 'RockPaperScissorsGameComponent:connect') {
       this.store.dispatch(joinGame({game: this.gameId!, wallet: event.wallet, gameName: event.title}))
     } else if (event.event === 'RockPaperScissorsGameComponent:home') {
-      this.router.navigate(['/']);
+      this.router.navigate(['/game-list'], {
+        queryParams: { link: event.title.toLowerCase(), title: event.title }
+      });
     }
   }
 }

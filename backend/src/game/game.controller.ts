@@ -13,14 +13,27 @@ export class GameController {
   async createGame(@Body() data: ICreateGameData) {
     try {
       const game = await this.gameService.createGame(data);
-      const gameData = await this.gameDataService.createGameData({
-        ...data,
+      if (!game?.id) {
+        throw new Error('Игра не была создана, отсутствует ID');
+      }
+
+      const gameDataParams = {
         gameId: game.id,
-      });
+        bet: data.bet,
+        playersNumber: data.playersNumber,
+      };
+
+      const gameDataResult =
+        await this.gameDataService.createGameData(gameDataParams);
+
+      if (!gameDataResult?.success) {
+        throw new Error('Не удалось создать GameData');
+      }
+
       return {
         success: true,
         game,
-        gameData,
+        gameData: gameDataResult.gameData,
       };
     } catch (error) {
       return {
@@ -31,21 +44,16 @@ export class GameController {
   }
 
   @Post('getGameList')
-  async getGameList(@Body() data: { type: string }) {
+  async getGameList(@Body() data: { type: string; player: string }) {
     try {
-      const games = await this.gameService.getGamesByType(data.type);
-      console.log('games', games);
-      const filteredGames = games.filter(game => game.contractAddress === null);
-      const result = await Promise.all(filteredGames.map(async (game) => {
-        const gameData = await this.gameDataService.getGameDataByGameId(game.id);
-        return {
-          ...game,
-          gameData,
-        };
-      }));
+      const games = await this.gameService.getGamesByTypeWithPlayerFlag(
+        data.type,
+        data.player,
+      );
+
       return {
         success: true,
-        games: result,
+        games,
       };
     } catch (error) {
       return {
@@ -62,7 +70,10 @@ export class GameController {
       if (!game) {
         return { success: false, message: 'Game not found' };
       }
-      const player = await this.gameService.addWalletToGame(data.game, data.wallet);
+      const player = await this.gameService.addWalletToGame(
+        data.game,
+        data.wallet,
+      );
       return { success: true, player };
     } catch (error) {
       return {

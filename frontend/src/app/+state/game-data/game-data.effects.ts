@@ -109,8 +109,15 @@ export class GameDataEffects {
   getGameList$ = createEffect(() =>
       this.actions$.pipe(
         ofType(getActiveGames),
-        tap(({game}) => {
-          this.gameDataService.getGameList(game).subscribe({
+        withLatestFrom(
+          this.store.select(getPlayer),
+        ),
+        tap(([{game}, player]) => {
+          const payload = {
+            type: game,
+            player: player.wallet
+          }
+          this.gameDataService.getGameList(payload).subscribe({
             next: (response) => {
               this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },

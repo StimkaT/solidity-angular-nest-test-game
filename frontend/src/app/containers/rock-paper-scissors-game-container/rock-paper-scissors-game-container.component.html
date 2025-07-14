@@ -1,5 +1,6 @@
 <app-rock-paper-scissors-game
   [title]="'Rock-Paper-Scissors'"
   [player]="(getPlayer$ | async)"
+  [gameId]="gameId"
   (emitter)="events($event)"
 ></app-rock-paper-scissors-game>
