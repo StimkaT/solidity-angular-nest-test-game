@@ -94,10 +94,6 @@ export class GameService {
       throw new Error('Game data not found');
     }
 
-    if (gameData.playerNumberSet >= gameData.playersNumber) {
-      throw new Error('No available spots in this game');
-    }
-
     const existingPlayer = await this.gamePlayersRepository.findOne({
       where: {
         gameId,
@@ -107,6 +103,10 @@ export class GameService {
 
     if (existingPlayer) {
       throw new Error('This user is already participating in the game');
+    }
+
+    if (gameData.playerNumberSet >= gameData.playersNumber) {
+      throw new Error('No available spots in this game');
     }
 
     const newPlayer = await this.gamePlayersRepository.save({
@@ -220,5 +220,50 @@ export class GameService {
         'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
       ])
       .getRawMany();
+  }
+
+  async getGameByIdWithPlayerFlag(gameId: string, playerWallet: string) {
+    return await this.gameRepository
+      .createQueryBuilder('game')
+      .leftJoinAndSelect('game.gameData', 'gameData')
+      .leftJoinAndSelect(
+        'game.gamePlayers',
+        'gamePlayer',
+        'gamePlayer.wallet = :wallet',
+        { wallet: playerWallet },
+      )
+      .where('game.id = :gameId', { gameId })
+      .select([
+        'game.id',
+        'game.type',
+        'game.contractAddress',
+        'game.ownerAddress',
+        'game.finishedAt',
+        'game.createdAt',
+        'game.updatedAt',
+        'gameData.bet',
+        'gameData.playersNumber',
+        'gameData.playerNumberSet',
+        'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
+      ])
+      .getRawOne();
+  }
+
+  async areAllPlayersJoined(gameId: number): Promise<boolean> {
+    const fakeWallet = '';
+
+    const game = await this.getGameByIdWithPlayerFlag(
+      gameId.toString(),
+      fakeWallet,
+    );
+
+    if (!game) {
+      throw new Error(`Game with ID ${gameId} not found`);
+    }
+
+    const playersNumber = Number(game.gameData_players_number);
+    const playerNumberSet = Number(game.gameData_player_number_set);
+
+    return playerNumberSet === playersNumber;
   }
 }

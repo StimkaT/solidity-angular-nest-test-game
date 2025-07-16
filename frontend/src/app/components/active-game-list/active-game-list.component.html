@@ -24,25 +24,77 @@
       </thead>
       <tbody>
         @for (game of (activeGamesList); track game.id + '-'; let i = $index) {
-          <tr class="table-row">
-            <td class="table-cell">{{ i + 1 }}</td>
-            <td class="table-cell">{{ game.id }}</td>
-            <td class="table-cell">{{ game.playerNumberSet }}/{{ game.playersNumber }}</td>
-            <td class="table-cell">{{ game.bet }}</td>
-            <td class="table-cell action-cell">
-              <button mat-raised-button class="manage-button join-button" (click)="manage('observe', game.id, title)">Observe</button>
-              <button
-                mat-raised-button
-                class="manage-button join-button"
-                [class.is-connected]="game.isPlayerJoined === '1'"
-                [disabled]="game.isPlayerJoined === '1'"
-                (click)="manage('join', game.id, title)"
-              >
-                Join
-              </button>
-              <button mat-raised-button class="manage-button delete-button" (click)="manage('delete', game.id, title)">X</button>
-            </td>
-          </tr>
+          @if (game.isPlayerJoined === '0') {
+            <tr class="table-row">
+              <td class="table-cell">{{ i + 1 }}</td>
+              <td class="table-cell">{{ game.id }}</td>
+              <td class="table-cell">{{ game.playerNumberSet }}/{{ game.playersNumber }}</td>
+              <td class="table-cell">{{ game.bet }}</td>
+              <td class="table-cell action-cell">
+
+                <button
+                  mat-raised-button
+                  class="manage-button join-button watch-button"
+                  (click)="manage('observe', game.id, title)"
+                >
+                  Watch
+                </button>
+
+                <button
+                  mat-raised-button
+                  class="manage-button join-button connect-button"
+                  (click)="manage('join', game.id, title)"
+                >
+                  Connect
+                </button>
+
+
+                <button
+                  mat-raised-button
+                  class="manage-button delete-button"
+                  (click)="manage('delete', game.id, title)"
+                >
+                  X
+                </button>
+
+              </td>
+            </tr>
+          } @else {
+            <tr class="table-row connected-row">
+              <td class="table-cell">{{ i + 1 }}</td>
+              <td class="table-cell">{{ game.id }}</td>
+              <td class="table-cell">{{ game.playerNumberSet }}/{{ game.playersNumber }}</td>
+              <td class="table-cell">{{ game.bet }}</td>
+              <td class="table-cell action-cell">
+
+
+                <button
+                  mat-raised-button
+                  class="manage-button join-button disconnect-button"
+                  (click)="manage('disconnect', game.id, title)"
+                >
+                  Disconnect
+                </button>
+
+                <button
+                  mat-raised-button
+                  class="manage-button join-button back-button"
+                  (click)="manage('join', game.id, title)"
+                >
+                  Back to game
+                </button>
+
+                <button
+                  mat-raised-button
+                  class="manage-button delete-button"
+                  (click)="manage('delete', game.id, title)"
+                >
+                  X
+                </button>
+
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>

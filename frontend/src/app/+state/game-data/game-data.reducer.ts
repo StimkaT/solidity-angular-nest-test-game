@@ -55,6 +55,7 @@ export interface GameDataState {
 
   gameList: IGameList[];
   activeGameList: IActiveGameList[];
+  activeGameData: IActiveGameList;
 }
 
 export interface SettingsPartialState {
@@ -109,7 +110,20 @@ export const initialState: GameDataState = {
       playerNumberSet: 2,
       isPlayerJoined: true
     }
-  ]
+  ],
+  activeGameData: {
+    id: 0,
+    type: null,
+    contractAddress: null,
+    ownerAddress: '',
+    finishedAt: null,
+    createdAt: '',
+    updatedAt: '',
+    bet: 0,
+    playersNumber: 0,
+    playerNumberSet: 0,
+    isPlayerJoined: false
+  }
 };
 
 export const gameDataReducer = createReducer(
@@ -151,5 +165,21 @@ export const gameDataReducer = createReducer(
       playerNumberSet: item.gameData_player_number_set || '-',
       isPlayerJoined: item.isPlayerJoined
     }))
+  })),
+  on(GameDataActions.loadDataGameSuccess, (state, { data }) => ({
+    ...state,
+    activeGameData: {
+      id: data.game_id,
+      type: data.game_type,
+      contractAddress: data.game_contractAddress,
+      ownerAddress: data.game_ownerAddress,
+      finishedAt: data.game_finished_at,
+      createdAt: data.game_created_at,
+      updatedAt: data.game_updated_at,
+      bet: data.gameData_bet || '-',
+      playersNumber: data.gameData_players_number || '-',
+      playerNumberSet: data.gameData_player_number_set || '-',
+      isPlayerJoined: data.isPlayerJoined
+    }
   })),
 );

@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
-  private socket: Socket = {} as Socket;
+  private socket: Socket | null = null;
 
   constructor() {
     // this.connect();
@@ -18,12 +18,19 @@ export class WebsocketService {
     }
   }
 
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+  }
+
   socketExists(): boolean {
-    return !!(!!this.socket && this.socket.connected);
+    return (!!this.socket && this.socket.connected);
   }
 
   joinGame(gameId: number, username: string) {
-    this.socket.emit('joinGame', { gameId, username });
+    this.socket?.emit('joinGame', { gameId, username });
   }
 
   // joinGame(gameId: number, username: string) {
@@ -36,7 +43,7 @@ export class WebsocketService {
 
   onPlayerJoined(): Observable<any> {
     return new Observable(observer => {
-      this.socket.on('playerJoined', data => observer.next(data));
+      this.socket?.on('playerJoined', data => observer.next(data));
     });
   }
 
@@ -48,7 +55,12 @@ export class WebsocketService {
   //
   onGameStarted(): Observable<any> {
     return new Observable(observer => {
-      this.socket.on('gameStarted', (data) => observer.next(data));
+      this.socket?.on('gameStarted', (data) => observer.next(data));
+    });
+  }
+  onGameReady(): Observable<any> {
+    return new Observable(observer => {
+      this.socket?.on('gameReady', (data) => observer.next(data));
     });
   }
 }

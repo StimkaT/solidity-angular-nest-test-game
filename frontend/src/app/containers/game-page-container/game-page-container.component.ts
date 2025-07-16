@@ -37,7 +37,6 @@ export class GamePageContainerComponent implements OnInit {
 
   events(event: any) {
     if (event.event === 'ButtonComponent:CLICK') {
-      console.log(event)
       if (event.data === 'Start') {
         this.store.dispatch(loadGameData({data: event.gameData}));
       }

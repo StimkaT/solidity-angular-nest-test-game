@@ -26,5 +26,8 @@ export class GameDataService {
   leaveGame(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/leaveGame`, data );
   }
+  getDataGame(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/getDataGame`, data );
+  }
 
 }

@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {getActiveGames, joinGame} from '../../+state/game-data/game-data.actions';
+import {getActiveGames, joinGame, leaveGame} from '../../+state/game-data/game-data.actions';
 import {selectActiveGames} from '../../+state/game-data/game-data.selectors';
 import {CreateGameFormContainerComponent} from '../create-game-form-container/create-game-form-container.component';
 import {ActiveGameListComponent} from '../../components/active-game-list/active-game-list.component';
@@ -51,10 +51,13 @@ export class ActiveGameListContainerComponent implements OnInit {
       this.store.dispatch(getActiveGames({ game: event.title }))
     } else if (event.event === 'ActiveGameListComponent:home') {
       this.router.navigate([`/${event.title.toLowerCase()}`]);
-    }else if (event.event === 'ActiveGameListComponent:observe') {
+    } else if (event.event === 'ActiveGameListComponent:observe') {
       this.router.navigate([`/${event.title.toLowerCase()}/:${event.gameId}`]);
-    }else if (event.event === 'ActiveGameListComponent:delete') {
+    } else if (event.event === 'ActiveGameListComponent:delete') {
       this.router.navigate(['/']);
+    } else if (event.event === 'ActiveGameListComponent:disconnect') {
+      this.store.dispatch(leaveGame({gameId: event.gameId, wallet: event.wallet, game: event.title}))
+      this.store.dispatch(getActiveGames({ game: event.title }))
     }
   }
 

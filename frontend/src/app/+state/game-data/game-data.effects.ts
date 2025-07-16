@@ -2,11 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
-  createGame, getActiveGames,
-  getGameData, joinGame, leaveGame,
-  loadGameData,
-  loadGameDataFailure,
-  loadGameDataSuccess, loadGameListSuccess,
+  createGame, getActiveGames, getDataGame,
+  joinGame, leaveGame,
+  loadDataGameSuccess,
+  loadGameListSuccess,
   setSelectedPlayerList, setSelectedPlayerListData
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
@@ -15,6 +14,7 @@ import {selectPlayerList, selectSelectedPlayerList} from './game-data.selectors'
 import {ethers} from 'ethers';
 import {getPlayer} from '../auth/auth.selectors';
 import {Router} from '@angular/router';
+import {WebsocketService} from '../../services/websocket.service';
 
 @Injectable()
 export class GameDataEffects {
@@ -22,35 +22,37 @@ export class GameDataEffects {
   private gameDataService = inject(GameDataService);
   private store = inject(Store);
   private router = inject(Router);
+  private wsService = inject(WebsocketService);
 
-  loadGameData$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(loadGameData),
-        tap((action) => {
-          this.gameDataService.setGameData(action.data).subscribe({
-            next: (data) => {
-              this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
-              console.log(data)
-            },
-            error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
-          });
-        })
-      ),
-    { dispatch: false }
-  );
 
-  getGameData$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(getGameData),
-        tap((action) => {
-          this.gameDataService.getGameData(action.data).subscribe({
-            next: (data) =>console.log(data),
-            error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
-          });
-        })
-      ),
-    { dispatch: false }
-  );
+  // loadGameData$ = createEffect(() =>
+  //     this.actions$.pipe(
+  //       ofType(loadGameData),
+  //       tap((action) => {
+  //         this.gameDataService.setGameData(action.data).subscribe({
+  //           next: (data) => {
+  //             this.store.dispatch(loadGameDataSuccess({ data: data.contractAddress }));
+  //             console.log(data)
+  //           },
+  //           error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
+  //         });
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
+
+  // getGameData$ = createEffect(() =>
+  //     this.actions$.pipe(
+  //       ofType(getGameData),
+  //       tap((action) => {
+  //         this.gameDataService.getGameData(action.data).subscribe({
+  //           next: (data) =>console.log(data),
+  //           error: (error) => this.store.dispatch(loadGameDataFailure({ error })),
+  //         });
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
 
   setSelectedPlayerList$ = createEffect(() =>
       this.actions$.pipe(
@@ -131,6 +133,32 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
+  getDataGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(getDataGame),
+        withLatestFrom(
+          this.store.select(getPlayer),
+        ),
+        tap(([{game}, player]) => {
+          const payload = {
+            gameId: game,
+            player: player.wallet
+          }
+          this.gameDataService.getDataGame(payload).subscribe({
+            next: (response) => {
+              console.log('response-по игре', response)
+              this.store.dispatch(loadDataGameSuccess({ data: response.games }));
+            },
+            error: (error) => {
+              console.error('Error creating game:', error);
+              // this.store.dispatch(loadGameDataFailre({ error }));
+            }
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
   joinGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(joinGame),
@@ -147,6 +175,7 @@ export class GameDataEffects {
               } else if (response.success === false && response.message === "This user is already participating in the game") {
                 this.router.navigate([`/${gameName.toLowerCase()}/:${game}`]);
               }
+              this.store.dispatch(getDataGame({game}));
               // this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },
             error: (error) => {
@@ -162,14 +191,17 @@ export class GameDataEffects {
   leaveGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(leaveGame),
-        tap(({gameId, wallet}) => {
+        tap(({gameId, wallet, game}) => {
           const payload = {
             gameId,
             wallet
           }
+          this.wsService.disconnect();
           this.gameDataService.leaveGame(payload).subscribe({
             next: (response) => {
               console.log('Join successfully:', response);
+              this.store.dispatch(getActiveGames({game}));
+              this.store.dispatch(getDataGame({game: gameId}));
               // this.router.navigate([`/`]);
               // this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },

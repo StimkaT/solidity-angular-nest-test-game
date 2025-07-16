@@ -1,17 +1,33 @@
 <div class="container">
   <div class="header">
-        <button mat-icon-button class="toggle home-icon" (click)="event('home')">
-          <mat-icon>undo</mat-icon>
-        </button>
+    <button mat-icon-button class="toggle home-icon" (click)="event('home')">
+      <mat-icon>undo</mat-icon>
+    </button>
     <span>{{ title }}: {{ gameId }}</span>
     <span class="example-spacer"></span>
     <button mat-icon-button class="toggle">
       <mat-icon>replay</mat-icon>
     </button>
   </div>
-  <div class="footer">
-    <button class="footer-button" mat-raised-button (click)="event('observe')">Observe</button>
-    <button class="footer-button" mat-raised-button (click)="event('connect')">Connect to game</button>
-    <button mat-raised-button (click)="event('leave')">Interrupt and exit</button>
+  <div style="color: white;">
+    <b style="color: red;">gameData</b>
+    <div>
+      {{gameData | json}}
+    </div>
+    <div>
+      <button mat-raised-button [disabled]="!active" (click)="event('startGame')">
+        start
+      </button>
+    </div>
   </div>
+  <div class="footer">
+    @if (gameData.isPlayerJoined === '1') {
+      <button class="footer-button" mat-raised-button (click)="event('observe')">Disconnect & Stay</button>
+      <button mat-raised-button (click)="event('leave')">Disconnect & Leave</button>
+    } @else {
+      <button class="footer-button" mat-raised-button (click)="event('connect')">Connect to game</button>
+    }
+  </div>
+
+
 </div>

@@ -9,12 +9,15 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { GameService } from '../services/game.service';
 
 @WebSocketGateway({ cors: true })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() server: Server;
+
+  constructor(private readonly gameService: GameService) {}
 
   afterInit(server: Server) {
     console.log('WebSocket сервер инициализирован');
@@ -39,7 +42,8 @@ export class GameGateway
   //   });
   // }
 
-  @SubscribeMessage('joinGame') joinGame(
+  @SubscribeMessage('joinGame')
+  async joinGame(
     @MessageBody() data: { gameId: string },
     @ConnectedSocket() client: Socket,
   ) {
@@ -49,6 +53,15 @@ export class GameGateway
     this.server.to(data.gameId).emit('playerJoined', {
       playerId: client.id,
     });
+
+    const allReady = await this.gameService.areAllPlayersJoined(+data.gameId);
+    console.log(`Клиент ${allReady}`);
+
+    if (allReady) {
+      this.server.to(data.gameId).emit('gameReady', {
+        message: 'Все игроки на месте!',
+      });
+    }
   }
 
   // @SubscribeMessage('leaveGame') leaveGame(

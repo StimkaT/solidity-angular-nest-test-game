@@ -63,6 +63,26 @@ export class GameController {
     }
   }
 
+  @Post('getDataGame')
+  async getDataGame(@Body() data: { gameId: string; player: string }) {
+    try {
+      const games = await this.gameService.getGameByIdWithPlayerFlag(
+        data.gameId,
+        data.player,
+      );
+
+      return {
+        success: true,
+        games,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
   @Post('joinGame')
   async joinGame(@Body() data: { game: number; wallet: string }) {
     try {
