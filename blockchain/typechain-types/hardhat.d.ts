@@ -14,98 +14,62 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "ArrayGame",
+      name: "DelegateCallGameStorage",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArrayGame__factory>;
+    ): Promise<Contracts.DelegateCallGameStorage__factory>;
     getContractFactory(
-      name: "Game",
+      name: "GameBase",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Game__factory>;
+    ): Promise<Contracts.GameBase__factory>;
     getContractFactory(
-      name: "ArrayGame",
+      name: "GameLogic",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArrayGame__factory>;
-    getContractFactory(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
-      name: "TestGame",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TestGame__factory>;
+    ): Promise<Contracts.GameLogic__factory>;
 
     getContractAt(
-      name: "ArrayGame",
+      name: "DelegateCallGameStorage",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.ArrayGame>;
+    ): Promise<Contracts.DelegateCallGameStorage>;
     getContractAt(
-      name: "Game",
+      name: "GameBase",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.Game>;
+    ): Promise<Contracts.GameBase>;
     getContractAt(
-      name: "ArrayGame",
+      name: "GameLogic",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.ArrayGame>;
-    getContractAt(
-      name: "Lock",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "TestGame",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TestGame>;
+    ): Promise<Contracts.GameLogic>;
 
     deployContract(
-      name: "ArrayGame",
+      name: "DelegateCallGameStorage",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ArrayGame>;
+    ): Promise<Contracts.DelegateCallGameStorage>;
     deployContract(
-      name: "Game",
+      name: "GameBase",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Game>;
+    ): Promise<Contracts.GameBase>;
     deployContract(
-      name: "ArrayGame",
+      name: "GameLogic",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ArrayGame>;
-    deployContract(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "TestGame",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.TestGame>;
+    ): Promise<Contracts.GameLogic>;
 
     deployContract(
-      name: "ArrayGame",
+      name: "DelegateCallGameStorage",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ArrayGame>;
+    ): Promise<Contracts.DelegateCallGameStorage>;
     deployContract(
-      name: "Game",
+      name: "GameBase",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Game>;
+    ): Promise<Contracts.GameBase>;
     deployContract(
-      name: "ArrayGame",
+      name: "GameLogic",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ArrayGame>;
-    deployContract(
-      name: "Lock",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "TestGame",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.TestGame>;
+    ): Promise<Contracts.GameLogic>;
 
     // default types
     getContractFactory(

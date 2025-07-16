@@ -1,32 +1,58 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.8.2 <0.9.0;
 
-contract Game {
-    struct GameOptions {
-        string id;
+import "./GameBase.sol";
+
+contract DelegateCallGameStorage is GameBase {
+    constructor(Player[] memory _playerList, address logicAddr, uint256 _bettingMaxTime, uint256 _gameMaxTime) {
+        _init(_playerList, logicAddr,  _bettingMaxTime, _gameMaxTime);
     }
 
-    GameOptions[] private gameData;
-
-    constructor(string memory _initialId) {
-        gameData.push(GameOptions(_initialId));
+    receive() external payable {
+        _receive();
     }
 
-    function getGameData() public view returns (GameOptions[] memory) {
-        return gameData;
+    function finish(PlayerResult[] memory _playerResultList) public payable {
+        _finish(_playerResultList);
     }
 
-    function addGame(string memory _id) public {
-        gameData.push(GameOptions(_id));
+    function getPlayer(uint256 index) public view returns (Player memory) {
+        return _getPlayer(index);
     }
 
-    function updateGame(uint index, string memory _newId) public {
-        require(index < gameData.length, "Index out of bounds");
-        gameData[index].id = _newId;
+    function getAllPlayers() public view returns (
+        string[] memory names,
+        address[] memory wallets,
+        uint256[] memory bets,
+        bool[] memory isPaid,
+        bool[] memory isPaidOut,
+        uint256[] memory results
+    ) {
+        return _getAllPlayers();
     }
 
-    function getGame(uint index) public view returns (string memory) {
-        require(index < gameData.length, "Index out of bounds");
-        return gameData[index].id;
+    function getGameData() public view returns (
+        uint256 bettingMaxTime,
+        uint256 gameMaxTime,
+        uint256 createdAt,
+        uint256 startedAt,
+        uint256 finishedAt,
+        bool isBettingComplete,
+        bool isGameAborted,
+        bool isGameFinished
+    ) {
+        return _getGameData();
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return _getContractBalance();
+    }
+
+    function withdrawRemainingBalance() public {
+        _withdrawRemainingBalance();
+    }
+
+    function abortGame() public {
+        _abortGame();
     }
 }
