@@ -41,14 +41,16 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
       this.gameId = Number(id.replace(':', ''));
       this.store.dispatch(getDataGame({game: this.gameId}))
 
-      this.wsService.connect(); //создание потока
+      this.wsService.connect();
 
       this.wsService.onGameStarted().subscribe(() => {
         console.log('onGameStarted!');
       });
+
       this.wsService.onPlayerJoined().subscribe(() => {
         console.log('onPlayerJoined!');
       });
+
       this.gameSubscriptions.add(
         this.getPlayer$.subscribe(player => {
           if (player?.wallet && this.gameId) {
@@ -57,8 +59,12 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
         })
       );
 
-      this.gameSubscriptions = this.wsService.onGameReady().subscribe(() => {
+      this.gameSubscriptions = this.wsService.onGameReady().subscribe((payload) => {
         this.isGameReady = true;
+        if (payload?.logicAddress && payload?.storageAddress) {
+          console.log('Logic contract address:', payload.logicAddress);
+          console.log('Storage contract address:', payload.storageAddress);
+        }
       });
 
     } else {
