@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {tap, withLatestFrom} from 'rxjs';
+import {Subscription, tap, withLatestFrom} from 'rxjs';
 import {
   createGame, getActiveGames, getDataGame,
   joinGame, leaveGame,
@@ -23,6 +23,8 @@ export class GameDataEffects {
   private store = inject(Store);
   private router = inject(Router);
   private wsService = inject(WebsocketService);
+  private gameSubscriptions = new Subscription();
+
 
 
   // loadGameData$ = createEffect(() =>
@@ -162,7 +164,10 @@ export class GameDataEffects {
   joinGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(joinGame),
-        tap(({game, wallet, gameName}) => {
+        withLatestFrom(
+          this.store.select(getPlayer),
+        ),
+        tap(([{game, wallet, gameName}, player]) => {
           const payload = {
             game,
             wallet
@@ -170,6 +175,14 @@ export class GameDataEffects {
           this.gameDataService.joinGame(payload).subscribe({
             next: (response) => {
               console.log('Join successfully:', response);
+              this.wsService.connect();
+
+              this.wsService.joinGame(game, player.wallet);
+
+              this.wsService.onPlayerJoined().subscribe(() => {
+                console.log('onPlayerJoined!');
+              });
+
               if (response.success === true) {
                 this.router.navigate([`/${gameName.toLowerCase()}/:${response.player.gameData.gameId}`]);
               } else if (response.success === false && response.message === "This user is already participating in the game") {

@@ -1,4 +1,11 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { GamePlayers } from "./GamePlayers";
 
 @Index("IDX_2d443082eccd5198f95f2a36e2", ["login"], { unique: true })
 @Entity("users", { schema: "game" })
@@ -29,4 +36,7 @@ export class Users {
     default: () => "'CURRENT_TIMESTAMP(6)'",
   })
   updatedAt: Date;
+
+  @OneToMany(() => GamePlayers, (gamePlayers) => gamePlayers.user)
+  gamePlayers: GamePlayers[];
 }

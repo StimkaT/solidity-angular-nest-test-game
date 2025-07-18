@@ -7,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Games } from "./Games";
+import { Users } from "./Users";
 
+@Index("fk_game_players_user", ["userId"], {})
 @Index("game_id", ["gameId"], {})
 @Index("idx_game_players_game_id", ["gameId"], {})
 @Index("idx_game_players_wallet", ["wallet"], {})
@@ -31,4 +33,11 @@ export class GamePlayers {
   })
   @JoinColumn([{ name: "game_id", referencedColumnName: "id" }])
   game: Games;
+
+  @ManyToOne(() => Users, (users) => users.gamePlayers, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
+  })
+  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
+  user: Users;
 }

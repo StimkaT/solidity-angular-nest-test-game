@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as path from 'path';
+import { GameService } from './game.service';
 
 interface Player {
   name: string;
@@ -18,6 +19,7 @@ export class GameDeployNewService {
   private wallet: ethers.Wallet;
   private logicAddress: string | null = null; // Добавляем переменную для хранения адреса
 
+
   private readonly logicArtifactPath = path.resolve(
     __dirname,
     '../../../blockchain/artifacts/contracts/GameLogic.sol/GameLogic.json',
@@ -27,7 +29,9 @@ export class GameDeployNewService {
     '../../../blockchain/artifacts/contracts/Game.sol/DelegateCallGameStorage.json',
   );
 
-  constructor() {
+  constructor(
+    private readonly gameService: GameService,
+  ) {
     const rpcUrl = 'http://127.0.0.1:8545';
     const privateKey =
       '0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e';
@@ -40,6 +44,7 @@ export class GameDeployNewService {
     players: Player[],
     time1: number,
     time2: number,
+    gameId: number,
   ): Promise<{ logicAddress: string; storageAddress: string }> {
     // 1. Деплой логики (только если адрес не сохранен)
     if (!this.logicAddress) {
@@ -76,6 +81,8 @@ export class GameDeployNewService {
     );
     await contract.waitForDeployment();
     const storageAddress = await contract.getAddress();
+
+    await this.gameService.updateContractAddress(gameId, storageAddress);
 
     return {
       logicAddress: this.logicAddress,

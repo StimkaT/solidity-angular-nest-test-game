@@ -181,12 +181,11 @@ export class GameService {
       playersCount === game.playersNumber &&
       gameData.playerNumberSet === playersCount
     ) {
-      console.log('Комната готова для деплоя контракта!');
-      console.log('Данные для деплоя:');
-      console.log('Game:', game);
-      console.log('GameData:', gameData);
-      console.log('GamePlayers:', gamePlayers);
-
+      // console.log('Комната готова для деплоя контракта!');
+      // console.log('Данные для деплоя:');
+      // console.log('Game:', game);
+      // console.log('GameData:', gameData);
+      // console.log('GamePlayers:', gamePlayers);
       // Здесь будет вызов метода для деплоя контракта на blockchain
       // await this.blockchainService.deployContract(game, gameData, gamePlayers);
     }
@@ -266,4 +265,31 @@ export class GameService {
 
     return playerNumberSet === playersNumber;
   }
+
+  async updateContractAddress(
+    gameId: number,
+    contractAddress: string,
+  ): Promise<void> {
+    const game = await this.gameRepository.findOne({ where: { id: gameId } });
+    if (!game) {
+      throw new Error(`Game with ID ${gameId} not found`);
+    }
+
+    await this.gameRepository.update({ id: gameId }, { contractAddress });
+  }
+
+  async getGamePlayers(
+    gameId: number,
+  ): Promise<(GamePlayers & { user?: Users })[]> {
+    return this.gamePlayersRepository.find({
+      where: { gameId },
+      relations: ['user'],
+    });
+  }
+  //
+  // async getGameData(gameId: number): Promise<GameData> {
+  //   return this.gameDataRepository.findOne({
+  //     where: { gameId },
+  //   });
+  // }
 }

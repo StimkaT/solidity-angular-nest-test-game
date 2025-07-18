@@ -41,23 +41,23 @@ export class RockPaperScissorsGameContainerComponent implements OnInit {
       this.gameId = Number(id.replace(':', ''));
       this.store.dispatch(getDataGame({game: this.gameId}))
 
-      this.wsService.connect();
+      // this.wsService.connect();
 
-      this.wsService.onGameStarted().subscribe(() => {
-        console.log('onGameStarted!');
-      });
+      // this.wsService.onGameStarted().subscribe(() => {
+      //   console.log('onGameStarted!');
+      // });
 
-      this.wsService.onPlayerJoined().subscribe(() => {
-        console.log('onPlayerJoined!');
-      });
+      // this.wsService.onPlayerJoined().subscribe(() => {
+      //   console.log('onPlayerJoined!');
+      // });
 
-      this.gameSubscriptions.add(
-        this.getPlayer$.subscribe(player => {
-          if (player?.wallet && this.gameId) {
-            this.wsService.joinGame(this.gameId, player.wallet);
-          }
-        })
-      );
+      // this.gameSubscriptions.add(
+      //   this.getPlayer$.subscribe(player => {
+      //     if (player?.wallet && this.gameId) {
+      //       this.wsService.joinGame(this.gameId, player.wallet);
+      //     }
+      //   })
+      // );
 
       this.gameSubscriptions = this.wsService.onGameReady().subscribe((payload) => {
         this.isGameReady = true;
