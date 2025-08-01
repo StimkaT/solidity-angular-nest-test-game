@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import {IGameList} from '../../+state/game-data/game-data.reducer';
 
 @Component({
   selector: 'app-card-game',
@@ -10,7 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./card-game.component.scss']
 })
 export class CardGameComponent {
-  @Input() title: string = '';
-  @Input() iconList: string[] = [];
-
+  @Input() game: IGameList = {
+    iconList: [],
+    title: '',
+    linkGame: ''
+  };
 }

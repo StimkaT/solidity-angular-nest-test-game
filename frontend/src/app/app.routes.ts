@@ -4,12 +4,12 @@ import {
   ActiveGameListContainerComponent
 } from './containers/active-game-list-container/active-game-list-container.component';
 import {
-  RockPaperScissorsGameContainerComponent
-} from './containers/rock-paper-scissors-game-container/rock-paper-scissors-game-container.component';
+  GameShellContainerComponent
+} from './containers/game-shell-container/game-shell-container.component';
 
 export const routes: Routes = [
+  { path: 'game-list/:game-type', component: ActiveGameListContainerComponent },
+  { path: 'game/:id', component: GameShellContainerComponent },
   { path: '', component: CardGamesContainerComponent },
-  { path: 'game-list', component: ActiveGameListContainerComponent },
-  { path: 'rock-paper-scissors/:id', component: RockPaperScissorsGameContainerComponent },
   { path: '**', component: CardGamesContainerComponent } // fallback 404
 ];

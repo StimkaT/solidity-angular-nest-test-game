@@ -1,6 +1,5 @@
 <app-active-game-list
-  [title]="title"
-  [link]="link"
+  [gameType]="gameType"
   [player]="getPlayer$ | async"
   [activeGamesList]="selectActiveGames$ | async"
   (emitter)="events($event)"

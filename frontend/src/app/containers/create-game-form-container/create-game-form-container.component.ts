@@ -1,10 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnInit} from '@angular/core';
 import {CreateGameFormComponent} from '../../components/create-game-form/create-game-form.component';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {createGame, getActiveGames} from '../../+state/game-data/game-data.actions';
-import {ActivatedRoute} from '@angular/router';
-import {Actions, ofType} from '@ngrx/effects';
+import {createGame} from '../../+state/game-data/game-data.actions';
 
 @Component({
   selector: 'app-create-game-form-container',
@@ -18,22 +16,13 @@ import {Actions, ofType} from '@ngrx/effects';
 export class CreateGameFormContainerComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<CreateGameFormContainerComponent>);
   private store = inject(Store);
-  private route = inject(ActivatedRoute);
-  private actions$ = inject(Actions);
 
-  private gameTitle = '';
+  private gameType = '';
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { gameType: string }) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['title']) {
-        this.gameTitle = params['title'];
-      }
-    });
-    this.actions$.pipe(
-      ofType(getActiveGames)
-    ).subscribe(() => {
-      this.dialogRef.close();
-    });
+    this.gameType = this.data.gameType;
   }
 
   close() {
@@ -45,10 +34,11 @@ export class CreateGameFormContainerComponent implements OnInit {
       this.close();
     } else if (event.event === "CreateGameFormComponent:create") {
       this.store.dispatch(createGame({
-        typeGame: this.gameTitle,
+        typeGame: this.gameType,
         playersNumber: event.data.players,
         bet: event.data.bet,
       }));
+      this.close();
     }
   }
 }

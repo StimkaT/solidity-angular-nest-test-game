@@ -16,8 +16,7 @@ import {MatDividerModule} from '@angular/material/divider';
   styleUrl: './active-game-list.component.scss'
 })
 export class ActiveGameListComponent {
-  @Input() title: string = '';
-  @Input() link: string = '';
+  @Input() gameType: string = '';
   @Input() activeGamesList: any;
   @Input() player: any;
 

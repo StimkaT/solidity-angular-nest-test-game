@@ -20,23 +20,19 @@ import {getPlayer} from '../../+state/auth/auth.selectors';
   styleUrl: './active-game-list-container.component.scss'
 })
 export class ActiveGameListContainerComponent implements OnInit {
-  title: string = '';
-  link: string = '';
-
   private store = inject(Store);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
+  gameType = '';
+
   constructor() {
-    this.route.queryParams.subscribe(params => {
-      this.title = params['title'];
-      this.link = params['link'];
-    });
+    this.gameType = this.route.snapshot.paramMap.get('game-type') || '';
   }
 
   ngOnInit() {
-    this.store.dispatch(getActiveGames({game: this.title}))
+    this.store.dispatch(getActiveGames({game: this.gameType}))
   }
 
   selectActiveGames$ = this.store.select(selectActiveGames);
@@ -46,17 +42,19 @@ export class ActiveGameListContainerComponent implements OnInit {
     if (event.event === 'ActiveGameListComponent:create') {
       this.openCreateGameModal()
     } else if (event.event === 'ActiveGameListComponent:join') {
-      this.store.dispatch(joinGame({game: event.gameId, wallet: event.wallet, gameName: event.title}))
+      this.store.dispatch(joinGame())
+    } else if (event.event === 'ActiveGameListComponent:open-tab') {
+      this.router.navigate([`/game/${event.gameId}`]);
     } else if (event.event === 'ActiveGameListComponent:reload') {
       this.store.dispatch(getActiveGames({ game: event.title }))
     } else if (event.event === 'ActiveGameListComponent:home') {
-      this.router.navigate([`/${event.title.toLowerCase()}`]);
+      this.router.navigate([`/`]);
     } else if (event.event === 'ActiveGameListComponent:observe') {
-      this.router.navigate([`/${event.title.toLowerCase()}/:${event.gameId}`]);
+      this.router.navigate([`/${event.title.toLowerCase()}/${event.gameId}`]);
     } else if (event.event === 'ActiveGameListComponent:delete') {
       this.router.navigate(['/']);
     } else if (event.event === 'ActiveGameListComponent:disconnect') {
-      this.store.dispatch(leaveGame({gameId: event.gameId, wallet: event.wallet, game: event.title}))
+      this.store.dispatch(leaveGame())
       this.store.dispatch(getActiveGames({ game: event.title }))
     }
   }
@@ -66,6 +64,7 @@ export class ActiveGameListContainerComponent implements OnInit {
       width: '60%',
       height: '40%',
       hasBackdrop: true,
+      data: { gameType: this.gameType }
     });
   }
 }

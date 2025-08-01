@@ -1,12 +1,12 @@
 <div class="container">
 
   <div class="header">
-    <button mat-icon-button class="toggle home-icon" (click)="event('home', title)">
+    <button mat-icon-button class="toggle home-icon" (click)="event('home', gameType)">
       <mat-icon>home</mat-icon>
     </button>
-    <span>{{ title }}</span>
+    <span>{{ gameType }}</span>
     <span class="example-spacer"></span>
-    <button mat-icon-button class="toggle" (click)="event('reload', title)">
+    <button mat-icon-button class="toggle" (click)="event('reload', gameType)">
       <mat-icon>replay</mat-icon>
     </button>
   </div>
@@ -34,27 +34,10 @@
 
                 <button
                   mat-raised-button
-                  class="manage-button join-button watch-button"
-                  (click)="manage('observe', game.id, title)"
-                >
-                  Watch
-                </button>
-
-                <button
-                  mat-raised-button
                   class="manage-button join-button connect-button"
-                  (click)="manage('join', game.id, title)"
+                  (click)="manage('open-tab', game.id, gameType)"
                 >
-                  Connect
-                </button>
-
-
-                <button
-                  mat-raised-button
-                  class="manage-button delete-button"
-                  (click)="manage('delete', game.id, title)"
-                >
-                  X
+                  <mat-icon>arrow_forward</mat-icon>
                 </button>
 
               </td>
@@ -67,29 +50,12 @@
               <td class="table-cell">{{ game.bet }}</td>
               <td class="table-cell action-cell">
 
-
                 <button
                   mat-raised-button
-                  class="manage-button join-button disconnect-button"
-                  (click)="manage('disconnect', game.id, title)"
+                  class="manage-button join-button connect-button"
+                  (click)="manage('open-tab', game.id, gameType)"
                 >
-                  Disconnect
-                </button>
-
-                <button
-                  mat-raised-button
-                  class="manage-button join-button back-button"
-                  (click)="manage('join', game.id, title)"
-                >
-                  Back to game
-                </button>
-
-                <button
-                  mat-raised-button
-                  class="manage-button delete-button"
-                  (click)="manage('delete', game.id, title)"
-                >
-                  X
+                  <mat-icon>arrow_forward</mat-icon>
                 </button>
 
               </td>
@@ -101,6 +67,6 @@
   </div>
 
   <div class="footer">
-    <button mat-raised-button (click)="event('create', title)">Create</button>
+    <button mat-raised-button (click)="event('create', gameType)">Create</button>
   </div>
 </div>

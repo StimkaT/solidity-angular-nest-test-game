@@ -2,27 +2,24 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
-import {JsonPipe} from '@angular/common';
 
 @Component({
-  selector: 'app-rock-paper-scissors-game',
+  selector: 'app-game-layout',
   imports: [
     MatButton,
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
-    JsonPipe
   ],
   standalone: true,
-  templateUrl: './rock-paper-scissors-game.component.html',
-  styleUrl: './rock-paper-scissors-game.component.scss'
+  templateUrl: './game-layout.component.html',
+  styleUrl: './game-layout.component.scss'
 })
-export class RockPaperScissorsGameComponent {
+export class GameLayoutComponent {
   @Input() title: string = '';
   @Input() link: string = '';
   @Input() activeGamesList: any;
   @Input() player: any;
-  @Input() gameId: any;
   @Input() active: boolean = false;
   @Input() gameData: any;
 
@@ -30,7 +27,7 @@ export class RockPaperScissorsGameComponent {
 
   event(event: string) {
     const message = {
-      event: `RockPaperScissorsGameComponent:${event}`,
+      event: `GameLayoutComponent:${event}`,
       wallet: this.player.wallet,
       title: this.title
     }

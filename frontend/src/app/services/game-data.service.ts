@@ -29,5 +29,8 @@ export class GameDataService {
   getDataGame(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/getDataGame`, data );
   }
+  getGameTypes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getGameTypes`);
+  }
 
 }

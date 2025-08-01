@@ -46,13 +46,17 @@ export interface IActiveGameList {
   playerNumberSet: number;
   isPlayerJoined: boolean;
 }
+export interface IGameTypes {
+  id: number;
+  name: string;
+}
 
 export interface GameDataState {
   playerList: IPlayer[];
   selectedPlayerList: string[];
   gameData: IGameData;
   gameDataAddress: string;
-
+  gameTypes: IGameTypes[];
   gameList: IGameList[];
   activeGameList: IActiveGameList[];
   activeGameData: IActiveGameList;
@@ -77,7 +81,8 @@ export const initialState: GameDataState = {
     bank: 0,
     playerList: [],
   },
-
+  gameTypes: [
+  ],
   gameList: [
     {
       iconList: [
@@ -93,7 +98,7 @@ export const initialState: GameDataState = {
         'casino'
       ],
       title: 'Dice',
-      linkGame: ''
+      linkGame: 'dice'
     }
   ],
   activeGameList: [
@@ -181,5 +186,9 @@ export const gameDataReducer = createReducer(
       playerNumberSet: data.gameData_player_number_set || '-',
       isPlayerJoined: data.isPlayerJoined
     }
+  })),
+  on(GameDataActions.getGameTypesSuccess, (state, { data }) => ({
+    ...state,
+    gameTypes: data
   })),
 );

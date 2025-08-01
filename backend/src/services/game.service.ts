@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
 import { GameData } from '../entities/entities/GameData';
+import { GameTypes } from '../entities/entities/GameTypes';
 
 export interface ICreateGameData {
   wallet: string;
@@ -24,6 +25,8 @@ export class GameService {
     private gameRepository: Repository<Games>,
     @InjectRepository(GamePlayers)
     private gamePlayersRepository: Repository<GamePlayers>,
+    @InjectRepository(GameTypes)
+    private gameTypesRepository: Repository<GameTypes>,
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
     @InjectRepository(GameData)
@@ -286,10 +289,20 @@ export class GameService {
       relations: ['user'],
     });
   }
-  //
-  // async getGameData(gameId: number): Promise<GameData> {
-  //   return this.gameDataRepository.findOne({
-  //     where: { gameId },
-  //   });
-  // }
+
+  async getGameData(gameId: number): Promise<GameData> {
+    const gameData = await this.gameDataRepository.findOne({
+      where: { gameId },
+    });
+
+    if (!gameData) {
+      throw new Error(`GameData not found for gameId: ${gameId}`);
+    }
+
+    return gameData;
+  }
+
+  getGameTypes() {
+    return this.gameTypesRepository.find();
+  }
 }

@@ -1,66 +1,58 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable } from 'rxjs';
 import {environment} from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
   private socket: Socket | null = null;
-
-  constructor() {
-    // this.connect();
-    // console.log(this.socket);
-  }
-
-  connect() {
-    if (!this.socketExists()) {
-      this.socket = io(environment.hostUrl);
-    }
-  }
-
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = null;
-    }
-  }
+  private gameId?: number;
+  private wallet?: string;
 
   socketExists(): boolean {
-    return (!!this.socket && this.socket.connected);
+    return !!this.socket && this.socket.connected;
   }
 
-  joinGame(gameId: number, username: string) {
-    this.socket?.emit('joinGame', { gameId, username });
-  }
-
-  // joinGame(gameId: number, username: string) {
-  //   this.socket.emit('joinGame', { gameId, username });
-  // }
-  //
-  // playerReady(gameId: number, username: string) {
-  //   this.socket.emit('playerReady', { gameId, username });
-  // }
-
-  onPlayerJoined(): Observable<any> {
-    return new Observable(observer => {
-      this.socket?.on('playerJoined', data => observer.next(data));
+  private connect() {
+    this.socket = io(environment.hostUrl, {
+      query: { wallet: this.wallet }
     });
   }
 
-  // onPlayerReadyStatus(): Observable<any> {
-  //   return new Observable(observer => {
-  //     this.socket.on('playerReadyStatus', data => observer.next(data));
-  //   });
-  // }
-  //
-  onGameStarted(): Observable<any> {
-    return new Observable(observer => {
-      this.socket?.on('gameStarted', (data) => observer.next(data));
-    });
+  initGameConnection(gameId: number, wallet: string) {
+    this.gameId = gameId;
+    this.wallet = wallet;
+
+    if (!this.socketExists()) {
+      this.connect();
+
+      this.socket!.on('connect', () => {
+        console.log('Socket connected:', this.socket!.id);
+
+        this.socket!.on('player_joined', ({ gameId, wallet }) => {
+          console.log(`Player ${wallet} joined game ${gameId}`);
+        });
+       //
+       // const pay = {
+       //   gameId: this.gameId, wallet: this.wallet
+       //  }
+       //  this.gameDataService.getDataGame(pay);
+
+        this.socket!.emit('join_game', { gameId: this.gameId });
+      });
+
+    } else {
+      this.socket!.emit('join_game', { gameId: this.gameId });
+    }
   }
-  onGameReady(): Observable<any> {
-    return new Observable(observer => {
-      this.socket?.on('gameReady', (data) => observer.next(data));
-    });
+
+  disconnect() {
+    if (this.socket) {
+      this.socket.emit('leave_game', { gameId: this.gameId })
+      this.socket?.on('player_left', ({ gameId, wallet }) => {
+        console.log(`Player ${wallet} left game ${gameId}`);
+      });
+      this.socket.disconnect();
+    }
   }
 }
+

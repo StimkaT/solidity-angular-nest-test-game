@@ -1,8 +1,7 @@
-@for (game of (getGameList$ | async); track game) {
+@for (game of activeGameDataList; track game) {
   <app-card-game
-    [title]="game.title"
-    [iconList]="game.iconList"
-    (click)="navigateTo(game.linkGame, game.title)"
+    [game]="game"
+    (click)="navigateTo(game.linkGame)"
   ></app-card-game>
 }
 

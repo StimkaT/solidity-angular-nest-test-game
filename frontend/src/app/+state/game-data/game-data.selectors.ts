@@ -34,3 +34,8 @@ export const selectActiveGameData = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.activeGameData
 );
+
+export const selectGameTypes = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.gameTypes
+);

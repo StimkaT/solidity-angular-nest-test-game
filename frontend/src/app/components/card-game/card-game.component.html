@@ -1,8 +1,8 @@
 <div class="game-card">
   <div class="game-content">
-    <h2>{{ title }}</h2>
+    <h2>{{ game.title }}</h2>
     <div class="game-options">
-      @for (icon of iconList; track icon) {
+      @for (icon of game.iconList; track icon) {
         <button class="game-option">
           <mat-icon>{{ icon }}</mat-icon>
         </button>
@@ -10,3 +10,4 @@
     </div>
   </div>
 </div>
+

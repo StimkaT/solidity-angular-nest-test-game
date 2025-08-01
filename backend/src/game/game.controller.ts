@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GameService, ICreateGameData } from '../services/game.service';
 import { GameDataService } from '../services/game-data.service';
 
@@ -108,6 +108,20 @@ export class GameController {
     try {
       const game = await this.gameService.leaveGame(data);
       return { success: true, game };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
+
+  @Get('getGameTypes')
+  async getGameTypes() {
+    try {
+      const gameTypes = await this.gameService.getGameTypes();
+      console.log('types:gameTypes', gameTypes);
+      return { success: true, gameTypes };
     } catch (error) {
       return {
         success: false,

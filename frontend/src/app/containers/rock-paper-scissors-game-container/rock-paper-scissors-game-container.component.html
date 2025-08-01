@@ -1,8 +1,0 @@
-<app-rock-paper-scissors-game
-  [title]="'Rock-Paper-Scissors'"
-  [player]="(getPlayer$ | async)"
-  [gameId]="gameId"
-  [gameData]="selectActiveGameData$ | async"
-  [active]="isGameReady"
-  (emitter)="events($event)"
-></app-rock-paper-scissors-game>
