@@ -20,17 +20,17 @@ export interface ICreateGameData {
 @Injectable()
 export class GameService {
   constructor(
-    private configService: ConfigService,
-    @InjectRepository(Games)
-    private gameRepository: Repository<Games>,
-    @InjectRepository(GamePlayers)
-    private gamePlayersRepository: Repository<GamePlayers>,
-    @InjectRepository(GameTypes)
-    private gameTypesRepository: Repository<GameTypes>,
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-    @InjectRepository(GameData)
-    private gameDataRepository: Repository<GameData>,
+      private configService: ConfigService,
+      @InjectRepository(Games)
+      private gameRepository: Repository<Games>,
+      @InjectRepository(GamePlayers)
+      private gamePlayersRepository: Repository<GamePlayers>,
+      @InjectRepository(GameTypes)
+      private gameTypesRepository: Repository<GameTypes>,
+      @InjectRepository(Users)
+      private usersRepository: Repository<Users>,
+      @InjectRepository(GameData)
+      private gameDataRepository: Repository<GameData>,
   ) {}
 
   async createGame(data: ICreateGameData): Promise<Games> {
@@ -126,7 +126,7 @@ export class GameService {
   }
 
 
-  async updatePlayerNumberSet(gameId: number): Promise<void> {
+  async updatePlayerNumberSet(gameId: number) {
     const playersCount = await this.gamePlayersRepository.count({
       where: { gameId },
     });
@@ -139,8 +139,8 @@ export class GameService {
     }
 
     await this.gameDataRepository.update(
-      { gameId },
-      { playerNumberSet: playersCount },
+        { gameId },
+        { playerNumberSet: playersCount },
     );
 
     const [gameData, gamePlayers] = await Promise.all([
@@ -152,9 +152,9 @@ export class GameService {
     // 1. Текущее количество игроков соответствует требуемому (playersNumber)
     // 2. Значение playerNumberSet было успешно обновлено
     if (
-      gameData &&
-      playersCount === game.playersNumber &&
-      gameData.playerNumberSet === playersCount
+        gameData &&
+        playersCount === game.playersNumber &&
+        gameData.playerNumberSet === playersCount
     ) {
       // console.log('Комната готова для деплоя контракта!');
       // console.log('Данные для деплоя:');
@@ -170,65 +170,65 @@ export class GameService {
 
   async getGamesByTypeWithPlayerFlag(type: string, playerWallet: string) {
     return await this.gameRepository
-      .createQueryBuilder('game')
-      .leftJoinAndSelect('game.gameData', 'gameData')
-      .leftJoinAndSelect(
-        'game.gamePlayers',
-        'gamePlayer',
-        'gamePlayer.wallet = :wallet',
-        { wallet: playerWallet },
-      )
-      .where('game.type = :type', { type })
-      .andWhere('game.contractAddress IS NULL')
-      .select([
-        'game.id',
-        'game.type',
-        'game.contractAddress',
-        'game.ownerAddress',
-        'game.finishedAt',
-        'game.createdAt',
-        'game.updatedAt',
-        'gameData.bet',
-        'gameData.playersNumber',
-        'gameData.playerNumberSet',
-        'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
-      ])
-      .getRawMany();
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.gameData', 'gameData')
+        .leftJoinAndSelect(
+            'game.gamePlayers',
+            'gamePlayer',
+            'gamePlayer.wallet = :wallet',
+            { wallet: playerWallet },
+        )
+        .where('game.type = :type', { type })
+        .andWhere('game.contractAddress IS NULL')
+        .select([
+          'game.id',
+          'game.type',
+          'game.contractAddress',
+          'game.ownerAddress',
+          'game.finishedAt',
+          'game.createdAt',
+          'game.updatedAt',
+          'gameData.bet',
+          'gameData.playersNumber',
+          'gameData.playerNumberSet',
+          'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
+        ])
+        .getRawMany();
   }
 
   async getGameByIdWithPlayerFlag(gameId: string, playerWallet: string) {
     return await this.gameRepository
-      .createQueryBuilder('game')
-      .leftJoinAndSelect('game.gameData', 'gameData')
-      .leftJoinAndSelect(
-        'game.gamePlayers',
-        'gamePlayer',
-        'gamePlayer.wallet = :wallet',
-        { wallet: playerWallet },
-      )
-      .where('game.id = :gameId', { gameId })
-      .select([
-        'game.id',
-        'game.type',
-        'game.contractAddress',
-        'game.ownerAddress',
-        'game.finishedAt',
-        'game.createdAt',
-        'game.updatedAt',
-        'gameData.bet',
-        'gameData.playersNumber',
-        'gameData.playerNumberSet',
-        'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
-      ])
-      .getRawOne();
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.gameData', 'gameData')
+        .leftJoinAndSelect(
+            'game.gamePlayers',
+            'gamePlayer',
+            'gamePlayer.wallet = :wallet',
+            { wallet: playerWallet },
+        )
+        .where('game.id = :gameId', { gameId })
+        .select([
+          'game.id',
+          'game.type',
+          'game.contractAddress',
+          'game.ownerAddress',
+          'game.finishedAt',
+          'game.createdAt',
+          'game.updatedAt',
+          'gameData.bet',
+          'gameData.playersNumber',
+          'gameData.playerNumberSet',
+          'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
+        ])
+        .getRawOne();
   }
 
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
     const fakeWallet = '';
 
     const game = await this.getGameByIdWithPlayerFlag(
-      gameId.toString(),
-      fakeWallet,
+        gameId.toString(),
+        fakeWallet,
     );
 
     if (!game) {
@@ -242,8 +242,8 @@ export class GameService {
   }
 
   async updateContractAddress(
-    gameId: number,
-    contractAddress: string,
+      gameId: number,
+      contractAddress: string,
   ): Promise<void> {
     const game = await this.gameRepository.findOne({ where: { id: gameId } });
     if (!game) {
@@ -278,5 +278,61 @@ export class GameService {
 
   getGameTypes() {
     return this.gameTypesRepository.find();
+  }
+
+  async getGamePlayers(
+      gameId: number,
+  ): Promise<(GamePlayers & { user?: Users })[]> {
+    return this.gamePlayersRepository.find({
+      where: { gameId },
+      relations: ['user'],
+    });
+  }
+
+  async getGameLogicAddress(gameId: number) {
+    const game = await this.gameRepository.findOne({
+      where: { id: gameId },
+      select: ['type'],
+    });
+
+    if (!game) {
+      throw new Error(`Game with ID ${gameId} not found`);
+    }
+
+    if (!game.type) {
+      throw new Error(`Game type not set for game ${gameId}`);
+    }
+
+    const gameTypeWithAddress = await this.gameTypesRepository.findOne({
+      where: { name: game.type },
+      select: ['logicAddress']
+    });
+
+    if (!gameTypeWithAddress) {
+      throw new Error(`Game type ${game.type} not found`);
+    }
+
+    if (!gameTypeWithAddress) {
+      throw new Error(`Logic address not set for game type ${game.type}`);
+    }
+
+    return gameTypeWithAddress.logicAddress;
+  }
+
+  async setGameLogicAddress(gameId: number, logicAddress: string) {
+    const game = await this.gameRepository.findOne({
+      where: { id: gameId },
+      select: ['type'],
+    });
+
+    if (!game) {
+      throw new Error(`Game with ID ${gameId} not found`);
+    }
+
+    if (!game.type) {
+      throw new Error(`Game type not set for game ${gameId}`);
+    }
+
+    await this.gameTypesRepository.update({ name: game.type }, { logicAddress });
   }
 }

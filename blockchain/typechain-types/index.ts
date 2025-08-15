@@ -3,10 +3,16 @@
 /* eslint-disable */
 import type * as gameSol from "./Game.sol";
 export type { gameSol };
+import type * as testContractSol from "./TestContract.sol";
+export type { testContractSol };
 export type { GameBase } from "./GameBase";
 export type { GameLogic } from "./GameLogic";
+export type { Lock } from "./Lock";
 export * as factories from "./factories";
 export type { DelegateCallGameStorage } from "./Game.sol/DelegateCallGameStorage";
 export { DelegateCallGameStorage__factory } from "./factories/Game.sol/DelegateCallGameStorage__factory";
 export { GameBase__factory } from "./factories/GameBase__factory";
 export { GameLogic__factory } from "./factories/GameLogic__factory";
+export { Lock__factory } from "./factories/Lock__factory";
+export type { Game } from "./TestContract.sol/Game";
+export { Game__factory } from "./factories/TestContract.sol/Game__factory";

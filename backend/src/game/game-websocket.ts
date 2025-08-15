@@ -8,11 +8,15 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameService } from 'src/services/game.service';
+import {GameDeployNewService} from "../services/deploy-new";
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  constructor(private readonly gameService: GameService) {}
+  constructor(
+      private readonly gameService: GameService,
+      private readonly gameDeployNewService: GameDeployNewService
+  ) {}
 
   private connectedWallets = new Map<string, Socket>();
 
@@ -61,11 +65,41 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     try {
       await this.gameService.addWalletToGame(payload.gameId, payload.wallet);
       const roomName = `game_${payload.gameId}`;
+      client.join(roomName);
 
       const response = await this.gameService.buildGameResponse(payload.gameId, payload.wallet);
-
       client.to(roomName).emit('player_join', response);
       client.emit('join_game_success', response);
+
+      // Проверяем готовность к деплою (добавлено из старой реализации)
+      const allReady = await this.gameService.areAllPlayersJoined(payload.gameId);
+
+      if (allReady) {
+        const gamePlayers = await this.gameService.getGamePlayers(payload.gameId);
+
+        const players = gamePlayers.map(player => ({
+          name: player.user?.login || 'Player',
+          wallet: player.wallet,
+          bet: '1',
+          isPaid: false,
+          isPaidOut: false,
+          result: 0,
+        }));
+
+        // Деплоим контракты
+        const result = await this.gameDeployNewService.deployGameWithLogic(
+            players,
+            5 * 60,    // time1 (регистрация)
+            30 * 60,   // time2 (игра)
+            payload.gameId
+        );
+
+        this.server.to(roomName).emit('game_ready', {
+          logicAddress: result.logicAddress,
+          storageAddress: result.storageAddress,
+          gameId: payload.gameId
+        });
+      }
 
     } catch (error) {
       client.emit('error', { message: error.message });

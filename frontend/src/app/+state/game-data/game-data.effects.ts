@@ -245,8 +245,6 @@ export class GameDataEffects {
       this.actions$.pipe(
         ofType(disconnectGame),
         tap(({}) => {
-
-
           this.wsService.disconnectGame();
         })
       ),

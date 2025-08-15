@@ -17,86 +17,89 @@ interface Player {
 export class GameDeployNewService {
   private provider: ethers.JsonRpcProvider;
   private wallet: ethers.Wallet;
-  private logicAddress: string | null = null; // Добавляем переменную для хранения адреса
 
 
   private readonly logicArtifactPath = path.resolve(
-    __dirname,
-    '../../../blockchain/artifacts/contracts/GameLogic.sol/GameLogic.json',
+      __dirname,
+      '../../../blockchain/artifacts/contracts/GameLogic.sol/GameLogic.json',
   );
   private readonly storageArtifactPath = path.resolve(
-    __dirname,
-    '../../../blockchain/artifacts/contracts/Game.sol/DelegateCallGameStorage.json',
+      __dirname,
+      '../../../blockchain/artifacts/contracts/Game.sol/DelegateCallGameStorage.json',
   );
 
   constructor(
-    private readonly gameService: GameService,
+      private readonly gameService: GameService,
   ) {
     const rpcUrl = 'http://127.0.0.1:8545';
     const privateKey =
-      '0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e';
+        '0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e';
 
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.wallet = new ethers.Wallet(privateKey, this.provider);
   }
 
   async deployGameWithLogic(
-    players: Player[],
-    time1: number,
-    time2: number,
-    gameId: number,
-  ): Promise<{ logicAddress: string; storageAddress: string }> {
+      players: Player[],
+      time1: number,
+      time2: number,
+      gameId: number,
+  ) {
+    let logicAddress = await this.gameService.getGameLogicAddress(gameId);
+
     // 1. Деплой логики (только если адрес не сохранен)
-    if (!this.logicAddress) {
+    if (!logicAddress) {
       const logicArtifact = JSON.parse(
-        fs.readFileSync(this.logicArtifactPath, 'utf8'),
+          fs.readFileSync(this.logicArtifactPath, 'utf8'),
       );
       const GameLogicFactory = new ethers.ContractFactory(
-        logicArtifact.abi,
-        logicArtifact.bytecode,
-        this.wallet,
+          logicArtifact.abi,
+          logicArtifact.bytecode,
+          this.wallet,
       );
       const logicContract = await GameLogicFactory.deploy();
       await logicContract.waitForDeployment();
-      this.logicAddress = await logicContract.getAddress();
-      console.log('GameLogic deployed at:', this.logicAddress);
+      logicAddress = await logicContract.getAddress();
+      await this.gameService.setGameLogicAddress(gameId, logicAddress);
+
     } else {
-      console.log('Using existing GameLogic at:', this.logicAddress);
+      console.log('Using existing GameLogic at:', logicAddress);
     }
 
     // 2. Деплой DelegateCallGameStorage
     const storageArtifact = JSON.parse(
-      fs.readFileSync(this.storageArtifactPath, 'utf8'),
+        fs.readFileSync(this.storageArtifactPath, 'utf8'),
     );
     const DelegateCallGameStorageFactory = new ethers.ContractFactory(
-      storageArtifact.abi,
-      storageArtifact.bytecode,
-      this.wallet,
+        storageArtifact.abi,
+        storageArtifact.bytecode,
+        this.wallet,
     );
     const contract = await DelegateCallGameStorageFactory.deploy(
-      players,
-      this.logicAddress,
-      time1,
-      time2,
+        players,
+        logicAddress,
+        time1,
+        time2,
     );
     await contract.waitForDeployment();
     const storageAddress = await contract.getAddress();
 
     await this.gameService.updateContractAddress(gameId, storageAddress);
+    console.log('storageAddress', storageAddress);
 
     return {
-      logicAddress: this.logicAddress,
+      logicAddress,
       storageAddress,
     };
   }
 
   // Метод для сброса сохраненного адреса (если нужно)
-  resetLogicAddress(): void {
-    this.logicAddress = null;
-  }
+  // resetLogicAddress(): void {
+  //   this.logicAddress = null;
+  // }
 
   // Метод для установки адреса вручную (если нужно)
-  setLogicAddress(address: string): void {
-    this.logicAddress = address;
-  }
+  // setLogicAddress(address: string): void {
+  //   this.logicAddress = address;
+  // }
 }
