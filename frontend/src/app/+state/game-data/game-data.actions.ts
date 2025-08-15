@@ -37,8 +37,8 @@ export const getDataGame = createAction(
   '[GameData] getDataGame',
   props<{ game: any }>()
 );
-export const setWebSocket = createAction(
-  '[GameData] setWebSocket',
+export const setWebSocketConnection = createAction(
+  '[GameData] setWebSocketConnection',
   props<{ gameId: number }>()
 );
 export const closeWebSocketConnection = createAction(
@@ -60,18 +60,23 @@ export const loadGameListSuccess = createAction(
 export const joinGame = createAction(
   '[GameData] joinGame',
 );
+
+export const setGameData = createAction(
+  '[GameData] setGameData',
+  props<{data: any}>()
+);
+export const gameError = createAction(
+  '[GameData] gameError',
+  props<{error: any}>()
+);
+
 export const leaveGame = createAction(
   '[GameData] leaveGame',
 );
-export const loadDataGameSuccess = createAction(
-  '[GameData] loadDataGameSuccess',
-  props<{data: any}>()
+export const disconnectGame = createAction(
+  '[GameData] disconnectGame',
 );
-
-export const leaveGameSuccess = createAction('[GameData] leaveGameSuccess');
 export const getGameTypes = createAction('[GameData] getGameTypes');
-
-
 export const getGameTypesSuccess = createAction(
   '[GameData] getGameTypesSuccess',
   props<{data: any}>()

@@ -71,88 +71,60 @@ export class GameService {
     return this.gameRepository.findOne({ where: { id } });
   }
 
-  async addWalletToGame(
-    gameId: number,
-    wallet: string,
-  ): Promise<{ player: GamePlayers; gameData: GameData | null }> {
-    const user = await this.usersRepository.findOne({
-      where: { wallet },
-    });
-
-    if (!user) {
-      throw new Error('User not found for the provided wallet');
-    }
-
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-    });
-    if (!game) {
-      throw new Error('Game not found');
-    }
-
-    const gameData = await this.gameDataRepository.findOne({
-      where: { gameId },
-    });
-    if (!gameData) {
-      throw new Error('Game data not found');
-    }
-
-    const existingPlayer = await this.gamePlayersRepository.findOne({
-      where: {
-        gameId,
-        userId: user.id,
-      },
-    });
-
-    if (existingPlayer) {
-      throw new Error('This user is already participating in the game');
-    }
-
-    if (gameData.playerNumberSet >= gameData.playersNumber) {
-      throw new Error('No available spots in this game');
-    }
-
-    const newPlayer = await this.gamePlayersRepository.save({
-      gameId,
-      wallet,
-      userId: user.id,
-    });
-
-    await this.updatePlayerNumberSet(gameId);
-    const updatedGameData = await this.gameDataRepository.findOne({
-      where: { gameId },
-    });
-
-    return {
-      player: newPlayer,
-      gameData: updatedGameData,
-    };
+  async addWalletToGame(gameId: number, wallet: string) {
+    return this.modifyGamePlayers('add', gameId, wallet);
   }
 
   async leaveGame(params: { gameId: number; wallet: string }) {
-    const gameData = await this.gameDataRepository.findOne({
-      where: { gameId: params.gameId },
+    return this.modifyGamePlayers('remove', params.gameId, params.wallet);
+  }
+
+  private async modifyGamePlayers(
+      action: 'add' | 'remove',
+      gameId: number,
+      wallet: string
+  ): Promise<{ wallet: string }> {
+    const game = await this.gameRepository.findOne({ where: { id: gameId } });
+    if (!game) throw new Error('Game not found');
+
+    const user = await this.usersRepository.findOne({ where: { wallet } });
+    if (!user) throw new Error('User not found for the provided wallet');
+
+    const existingPlayer = await this.gamePlayersRepository.findOne({
+      where: { gameId, userId: user.id }
     });
 
-    if (!gameData) {
-      return {
-        success: false,
-        message: 'Game not found',
-      };
+    if (action === 'add') {
+      const gameData = await this.getGameByIdWithPlayerFlag(gameId.toString(), wallet);
+      if (existingPlayer) throw new Error('This user is already participating in the game');
+      if (gameData.playerNumberSet >= gameData.playersNumber) {
+        throw new Error('No available spots in this game');
+      }
+      await this.gamePlayersRepository.save({ gameId, wallet, userId: user.id });
+    } else if (action === 'remove') {
+      if (!existingPlayer) throw new Error('Player not found in this game');
+      await this.gamePlayersRepository.delete({ gameId, wallet });
     }
 
-    await this.gamePlayersRepository.delete({
-      gameId: params.gameId,
-      wallet: params.wallet,
-    });
-
-    await this.updatePlayerNumberSet(params.gameId);
-
-    return {
-      success: true,
-      message: 'Successfully left the game',
-    };
+    await this.updatePlayerNumberSet(gameId);
+    return { wallet };
   }
+
+
+
+  async buildGameResponse(gameId: number, wallet: string) {
+    const gameData = await this.getGameByIdWithPlayerFlag(gameId.toString(), wallet);
+    const playersWallets = await this.getGamePlayersWallets(gameId);
+
+    const players = playersWallets.map(player => ({
+      wallet: player,
+      bet: false,
+      ready: false
+    }));
+
+    return { newDataGame: gameData, players };
+  }
+
 
   async updatePlayerNumberSet(gameId: number): Promise<void> {
     const playersCount = await this.gamePlayersRepository.count({
@@ -281,13 +253,15 @@ export class GameService {
     await this.gameRepository.update({ id: gameId }, { contractAddress });
   }
 
-  async getGamePlayers(
-    gameId: number,
-  ): Promise<(GamePlayers & { user?: Users })[]> {
-    return this.gamePlayersRepository.find({
+  async getGamePlayersWallets(gameId: number): Promise<string[]> {
+    const players = await this.gamePlayersRepository.find({
       where: { gameId },
       relations: ['user'],
     });
+
+    return players
+        .map(player => player.user?.wallet) // получаем wallet или undefined
+        .filter((wallet): wallet is string => wallet !== null && wallet !== undefined);
   }
 
   async getGameData(gameId: number): Promise<GameData> {

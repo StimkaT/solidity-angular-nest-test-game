@@ -4,13 +4,15 @@ import {
   OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
+  SubscribeMessage
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { GameService } from 'src/services/game.service';
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
+  constructor(private readonly gameService: GameService) {}
 
   private connectedWallets = new Map<string, Socket>();
 
@@ -29,36 +31,71 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleDisconnect(client: Socket) {
     const wallet = client.handshake.query.wallet as string;
+    const gameId = client.handshake.query.gameId as string;
     if (wallet && this.connectedWallets.get(wallet) === client) {
       this.connectedWallets.delete(wallet);
     }
+
     this.server.emit('player_disconnected', { wallet });
   }
 
-  @SubscribeMessage('join_game')
-  handleJoinGame(client: Socket, payload: { gameId: number }) {
+  @SubscribeMessage('connect_game')
+  async handleConnectGame(client: Socket, payload: { gameId: number, wallet: string }) {
     const roomName = `game_${payload.gameId}`;
     client.join(roomName);
 
-    client.to(roomName).emit('player_joined', {
+    const response = await this.gameService.buildGameResponse(payload.gameId, payload.wallet);
+    client.to(roomName).emit('game_data', response);
+
+    client.to(roomName).emit('player_connected', {
       gameId: payload.gameId,
       wallet: client.handshake.query.wallet,
     });
+    client.emit('connected_game', { response });
+    client.emit('game_data_response', response);
 
-    client.emit('joined_game', { gameId: payload.gameId });
+  }
+
+  @SubscribeMessage('join_game')
+  async handleJoinGame(client: Socket, payload: { wallet: string; gameId: number }) {
+    try {
+      await this.gameService.addWalletToGame(payload.gameId, payload.wallet);
+      const roomName = `game_${payload.gameId}`;
+
+      const response = await this.gameService.buildGameResponse(payload.gameId, payload.wallet);
+
+      client.to(roomName).emit('player_join', response);
+      client.emit('join_game_success', response);
+
+    } catch (error) {
+      client.emit('error', { message: error.message });
+    }
   }
 
   @SubscribeMessage('leave_game')
-  handleLeaveGame(client: Socket, payload: { gameId: number }) {
-    const roomName = `game_${payload.gameId}`;
+  async handleLeaveGame(client: Socket, payload: { gameId: number }) {
+    try {
+      const wallet = client.handshake.query.wallet as string;
+      await this.gameService.leaveGame({ gameId: payload.gameId, wallet });
 
-    client.to(roomName).emit('player_left', {
-      gameId: payload.gameId,
-      wallet: client.handshake.query.wallet,
-    });
+      const roomName = `game_${payload.gameId}`;
+      const response = await this.gameService.buildGameResponse(payload.gameId, wallet);
 
-    client.emit('leave_game', { gameId: payload.gameId });
+      client.to(roomName).emit('player_left', response);
+      client.emit('leave_game_success', response);
+    } catch (error) {
+      client.emit('leave_game_error', { message: error.message });
+    }
+  }
 
-    client.leave(roomName);
+  @SubscribeMessage('disconnect_game')
+  async handleDisconnectGame(client: Socket, payload: { gameId: number }) {
+    try {
+      const roomName = `game_${payload.gameId}`;
+
+      client.leave(roomName);
+    } catch (error) {
+      client.emit('disconnect_game_error', { message: error.message });
+    }
   }
 }

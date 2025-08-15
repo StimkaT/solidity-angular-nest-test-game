@@ -1,5 +1,6 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {GAME_DATA_FEATURE_KEY, GameDataState} from './game-data.reducer';
+import {getPlayer} from '../auth/auth.selectors';
 
 export const selectGameDataState = createFeatureSelector<GameDataState>(GAME_DATA_FEATURE_KEY);
 export const selectSelectedPlayerList = createSelector(
@@ -38,4 +39,13 @@ export const selectActiveGameData = createSelector(
 export const selectGameTypes = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.gameTypes
+);
+
+export const selectIsConnectedGame = createSelector(
+  selectActiveGameData,
+  getPlayer,
+  (activeGameData, player): boolean => {
+    if (!activeGameData?.players || !player?.wallet) return false;
+    return activeGameData.players.some(p => p.wallet === player.wallet);
+  }
 );

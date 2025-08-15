@@ -7,11 +7,11 @@ import {getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  closeWebSocketConnection,
+  closeWebSocketConnection, disconnectGame,
   getDataGameAndSetWebSocket, joinGame,
   leaveGame
 } from '../../+state/game-data/game-data.actions';
-import {selectActiveGameData} from '../../+state/game-data/game-data.selectors';
+import {selectActiveGameData, selectIsConnectedGame} from '../../+state/game-data/game-data.selectors';
 import {
   RockPaperScissorsContainerComponent
 } from '../rock-paper-scissors-container/rock-paper-scissors-container.component';
@@ -38,6 +38,7 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
 
   getPlayer$ = this.store.select(getPlayer);
   selectActiveGameData$ = this.store.select(selectActiveGameData);
+  selectIsConnectedGame$ = this.store.select(selectIsConnectedGame);
 
 
   ngOnInit() {
@@ -54,7 +55,7 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   events(event: any) {
     if (event.event === 'GameLayoutComponent:leave') {
       if (this.gameData) {
-        this.store.dispatch(leaveGame());
+        this.store.dispatch(disconnectGame());
       }
       this.router.navigate(['/']);
     } else if (event.event === 'GameLayoutComponent:observe') {
@@ -67,7 +68,7 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.store.dispatch(leaveGame())
-    this.store.dispatch(closeWebSocketConnection({gameId: this.idGame!}))
+    this.store.dispatch(disconnectGame())
+    // this.store.dispatch(closeWebSocketConnection({gameId: this.idGame!}))
   }
 }

@@ -3,11 +3,10 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
   closeWebSocketConnection,
-  createGame, getActiveGames, getDataGame, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
+  createGame, disconnectGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadDataGameSuccess,
-  loadGameListSuccess,
-  setSelectedPlayerList, setSelectedPlayerListData, setWebSocket
+  loadGameListSuccess, setGameData,
+  setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
@@ -109,48 +108,53 @@ export class GameDataEffects {
       this.actions$.pipe(
         ofType(getDataGameAndSetWebSocket),
         tap(({game}) => {
-          this.store.dispatch(setWebSocket({gameId: game}));
-          this.store.dispatch(getDataGame({game}));
+          this.store.dispatch(setWebSocketConnection({gameId: game}));
+          // this.store.dispatch(getDataGame({game}));
         })
       ),
     { dispatch: false }
   );
 
-  getDataGame$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(getDataGame),
-        withLatestFrom(
-          this.store.select(getPlayer),
-        ),
-        tap(([{game}, player]) => {
-          const payload = {
-            gameId: game,
-            player: player.wallet
-          }
-          this.gameDataService.getDataGame(payload).subscribe({
-            next: (response) => {
-              this.store.dispatch(loadDataGameSuccess({ data: response.games }));
-            },
-            error: (error) => {
-              console.error('Error creating game:', error);
-              // this.store.dispatch(loadGameDataFailre({ error }));
-            }
-          });
+  // getDataGame$ = createEffect(() =>
+  //     this.actions$.pipe(
+  //       ofType(getDataGame),
+  //       withLatestFrom(
+  //         this.store.select(getPlayer),
+  //       ),
+  //       tap(([{game}, player]) => {
+  //         const payload = {
+  //           gameId: game,
+  //           player: player.wallet
+  //         }
+  //         this.gameDataService.getDataGame(payload).subscribe({
+  //           next: (response) => {
+  //             this.store.dispatch(setGameData({ data: response.games }));
+  //             console.log(response.games)
+  //           },
+  //           error: (error) => {
+  //             console.error('Error creating game:', error);
+  //             // this.store.dispatch(loadGameDataFailre({ error }));
+  //           }
+  //         });
+  //
+  //         // this.store.dispatch(getGameDataApi())
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
 
-          // this.store.dispatch(getGameDataApi())
-        })
-      ),
-    { dispatch: false }
-  );
-
-  setWebSocket$ = createEffect(() =>
+  setWebSocketConnection$ = createEffect(() =>
       this.actions$.pipe(
-        ofType(setWebSocket),
+        ofType(setWebSocketConnection),
         withLatestFrom(
           this.store.select(getPlayer),
         ),
         tap(([{gameId}, player]) => {
           this.wsService.initGameConnection(gameId, player.wallet);
+
+          this.wsService.onPlayerJoin((data: any) => {
+            this.store.dispatch(setGameData({ data }));
+          });
         })
       ),
     { dispatch: false }
@@ -163,7 +167,7 @@ export class GameDataEffects {
           this.store.select(getPlayer),
         ),
         tap(([{gameId}, player]) => {
-          this.wsService.disconnect();
+          // this.wsService.disconnect();
         })
       ),
     { dispatch: false }
@@ -176,25 +180,18 @@ export class GameDataEffects {
           this.store.select(getPlayer),
           this.store.select(selectActiveGameData),
         ),
-        tap(([{}, player, gameData]) => {
-          const payload = {
-            game: gameData.id,
-            wallet: player.wallet
-          }
-          this.gameDataService.joinGame(payload).subscribe({
-            next: (response) => {
-              if (response.success === true) {
-                this.router.navigate([`/game/${gameData.id}`]);
-              } else if (response.success === false && response.message === "This user is already participating in the game") {
-                this.router.navigate([`/game/${gameData.id}`]);
-              }
-              this.store.dispatch(getDataGame({game: gameData.id}));
-              // this.store.dispatch(loadGameListSuccess({ data: response.games }));
-            },
-            error: (error) => {
-              console.error('Error creating game:', error);
-              // this.store.dispatch(loadGameDataFailure({ error }));
-            }
+        tap(([, player, gameData]) => {
+          const wallet = player.wallet;
+          const gameId = gameData.id;
+
+          this.wsService.joinGame(wallet, gameId);
+
+          this.wsService.onJoinGameSuccess((data: any) => {
+            this.store.dispatch(setGameData({ data }));
+          });
+
+          this.wsService.onError((error: any) => {
+            this.store.dispatch(gameError({ error: error.message }));
           });
         })
       ),
@@ -228,20 +225,29 @@ export class GameDataEffects {
           this.store.select(selectGameTypes),
         ),
         tap(([{}, player, game, gameTypes]) => {
-          const payload = {
-            gameId: game.id,
-            wallet: player.wallet
-          }
-          this.gameDataService.leaveGame(payload).subscribe({
-            next: (response) => {
-              this.store.dispatch(getDataGame({game: game.id}));
-              // this.store.dispatch(loadGameListSuccess({ data: response.games }));
-            },
-            error: (error) => {
-              console.error('Error creating game:', error);
-              // this.store.dispatch(loadGameDataFailure({ error }));
-            }
+          const gameId = game.id;
+          const wallet =  player.wallet
+
+          this.wsService.leaveGame(wallet, gameId);
+
+          this.wsService.onLeaveGameSuccess((data: any) => {
+            // this.store.dispatch(joinGameSuccess({ data }));
+            this.store.dispatch(setGameData({ data }));
+            console.log('tyt', data)
           });
+
+        })
+      ),
+    { dispatch: false }
+  );
+
+  disconnectGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(disconnectGame),
+        tap(({}) => {
+
+
+          this.wsService.disconnectGame();
         })
       ),
     { dispatch: false }

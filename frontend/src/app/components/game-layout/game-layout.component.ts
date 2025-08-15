@@ -21,6 +21,7 @@ export class GameLayoutComponent {
   @Input() activeGamesList: any;
   @Input() player: any;
   @Input() active: boolean = false;
+  @Input() isConnected= false;
   @Input() gameData: any;
 
   @Output() emitter = new EventEmitter();

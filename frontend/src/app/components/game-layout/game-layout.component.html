@@ -14,7 +14,7 @@
     ></ng-content>
   </div>
   <div class="footer">
-    @if (gameData.isPlayerJoined === '1') {
+    @if (isConnected) {
       <button class="footer-button" mat-raised-button (click)="event('observe')">Disconnect & Stay</button>
       <button mat-raised-button (click)="event('leave')">Disconnect & Leave</button>
     } @else {

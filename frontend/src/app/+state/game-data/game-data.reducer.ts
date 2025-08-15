@@ -44,8 +44,14 @@ export interface IActiveGameList {
   bet: number;
   playersNumber: number;
   playerNumberSet: number;
-  isPlayerJoined: boolean;
+  players: IPlayers[];
 }
+export interface IPlayers {
+  wallet: string;
+  bet: boolean;
+  ready: boolean;
+}
+
 export interface IGameTypes {
   id: number;
   name: string;
@@ -113,7 +119,7 @@ export const initialState: GameDataState = {
       bet: 123444,
       playersNumber: 3,
       playerNumberSet: 2,
-      isPlayerJoined: true
+      players: []
     }
   ],
   activeGameData: {
@@ -127,7 +133,7 @@ export const initialState: GameDataState = {
     bet: 0,
     playersNumber: 0,
     playerNumberSet: 0,
-    isPlayerJoined: false
+    players: []
   }
 };
 
@@ -168,25 +174,29 @@ export const gameDataReducer = createReducer(
       bet: item.gameData_bet || '-',
       playersNumber: item.gameData_players_number || '-',
       playerNumberSet: item.gameData_player_number_set || '-',
-      isPlayerJoined: item.isPlayerJoined
     }))
   })),
-  on(GameDataActions.loadDataGameSuccess, (state, { data }) => ({
-    ...state,
-    activeGameData: {
-      id: data.game_id,
-      type: data.game_type,
-      contractAddress: data.game_contractAddress,
-      ownerAddress: data.game_ownerAddress,
-      finishedAt: data.game_finished_at,
-      createdAt: data.game_created_at,
-      updatedAt: data.game_updated_at,
-      bet: data.gameData_bet || '-',
-      playersNumber: data.gameData_players_number || '-',
-      playerNumberSet: data.gameData_player_number_set || '-',
-      isPlayerJoined: data.isPlayerJoined
+  on(GameDataActions.setGameData, (state, { data }) => {
+    const gameData = data.newDataGame;
+    const players = data.players;
+
+    return {
+      ...state,
+      activeGameData: {
+        id: gameData.game_id,
+        type: gameData.game_type,
+        contractAddress: gameData.game_contractAddress,
+        ownerAddress: gameData.game_ownerAddress,
+        finishedAt: gameData.game_finished_at,
+        createdAt: gameData.game_created_at,
+        updatedAt: gameData.game_updated_at,
+        bet: gameData.gameData_bet || '-',
+        playersNumber: gameData.gameData_players_number || '-',
+        playerNumberSet: gameData.gameData_player_number_set || '-',
+        players: players
+      }
     }
-  })),
+  }),
   on(GameDataActions.getGameTypesSuccess, (state, { data }) => ({
     ...state,
     gameTypes: data

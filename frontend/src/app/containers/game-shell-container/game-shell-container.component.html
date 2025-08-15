@@ -3,6 +3,7 @@
   [player]="(getPlayer$ | async)"
   [active]="isGameReady"
   [gameData]="selectActiveGameData$ | async"
+  [isConnected]="!!(selectIsConnectedGame$ | async)"
   (emitter)="events($event)"
 >
   <app-rock-paper-scissors-container
