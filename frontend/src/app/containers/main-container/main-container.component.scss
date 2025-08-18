@@ -1,19 +1,22 @@
 :host {
-
   background-color: rgb(36, 38, 38);
   height: 100%;
   width: 100%;
 }
+
 app-header-container {
   display: block;
   height: 60px;
 }
 
 .main-container {
-  margin: 16px;
   width: 100%;
 }
 
 .main-container.sidebar-open .main-content {
   margin-left: 240px;
+}
+
+.content {
+  margin: 16px;
 }

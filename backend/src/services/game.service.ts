@@ -110,8 +110,6 @@ export class GameService {
     return { wallet };
   }
 
-
-
   async buildGameResponse(gameId: number, wallet: string) {
     const gameData = await this.getGameByIdWithPlayerFlag(gameId.toString(), wallet);
     const playersWallets = await this.getGamePlayersWallets(gameId);
@@ -122,7 +120,7 @@ export class GameService {
       ready: false
     }));
 
-    return { newDataGame: gameData, players };
+    return { gameData: gameData, players };
   }
 
 
@@ -179,7 +177,7 @@ export class GameService {
             { wallet: playerWallet },
         )
         .where('game.type = :type', { type })
-        .andWhere('game.contractAddress IS NULL')
+        // .andWhere('game.contractAddress IS NULL')
         .select([
           'game.id',
           'game.type',

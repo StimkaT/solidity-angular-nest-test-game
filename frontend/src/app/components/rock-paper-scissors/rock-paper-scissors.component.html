@@ -31,8 +31,11 @@
     playerNumberSet: {{ gameData.playerNumberSet }}
   </div>
   <div>
-    <button mat-button style="background-color: green">
-      pay
+    <button mat-button style="background-color: green" (click)="checkDataBlockchain()">
+      Get Data Game
+    </button>
+    <button mat-button style="background-color: green" (click)="payBlockchain()">
+      Pay
     </button>
   </div>
 

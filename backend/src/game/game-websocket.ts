@@ -80,11 +80,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const players = gamePlayers.map(player => ({
           name: player.user?.login || 'Player',
           wallet: player.wallet,
-          bet: '1',
+          bet: response.gameData.gameData_bet,
           isPaid: false,
           isPaidOut: false,
           result: 0,
         }));
+
+
 
         // Деплоим контракты
         const result = await this.gameDeployNewService.deployGameWithLogic(
@@ -94,6 +96,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             payload.gameId
         );
 
+        console.log('result', players,
+            5 * 60,    // time1 (регистрация)
+            30 * 60,   // time2 (игра)
+            payload.gameId)
         this.server.to(roomName).emit('game_ready', {
           logicAddress: result.logicAddress,
           storageAddress: result.storageAddress,

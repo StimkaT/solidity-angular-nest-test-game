@@ -177,7 +177,7 @@ export const gameDataReducer = createReducer(
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {
-    const gameData = data.newDataGame;
+    const gameData = data.gameData;
     const players = data.players;
 
     return {

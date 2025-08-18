@@ -24,7 +24,7 @@
       </thead>
       <tbody>
         @for (game of (activeGamesList); track game.id + '-'; let i = $index) {
-          @if (game.isPlayerJoined === '0') {
+          @if (!game.contractAddress) {
             <tr class="table-row">
               <td class="table-cell">{{ i + 1 }}</td>
               <td class="table-cell">{{ game.id }}</td>
