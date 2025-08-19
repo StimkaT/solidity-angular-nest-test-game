@@ -9,13 +9,16 @@ import {
 import { Server, Socket } from 'socket.io';
 import { GameService } from 'src/services/game.service';
 import {GameDeployNewService} from "../services/deploy-new";
+import {BlockchainService} from "../services/blockchain.service";
+import {IDataToPay} from "../types/dataToPay";
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   constructor(
       private readonly gameService: GameService,
-      private readonly gameDeployNewService: GameDeployNewService
+      private readonly gameDeployNewService: GameDeployNewService,
+      private blockchainService: BlockchainService
   ) {}
 
   private connectedWallets = new Map<string, Socket>();
@@ -50,11 +53,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     const gameData = await this.gameService.getGameData(payload.gameId);
     client.to(roomName).emit('game_data', gameData);
-
-    client.to(roomName).emit('player_connected', {
-      gameId: payload.gameId,
-      wallet: client.handshake.query.wallet,
-    });
     client.emit('game_data_response', gameData);
   }
 
@@ -65,42 +63,55 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       const roomName = `game_${payload.gameId}`;
       client.join(roomName);
 
-      const response = await this.gameService.getGameData(payload.gameId);
-      client.to(roomName).emit('player_join', response);
-      client.emit('join_game_success', response);
+      const gameDataBeforeDeploy = await this.gameService.getGameData(payload.gameId);
+      client.to(roomName).emit('data_update', gameDataBeforeDeploy);
+      client.emit('data_update', gameDataBeforeDeploy);
 
-      // Проверяем готовность к деплою (добавлено из старой реализации)
       const allReady = await this.gameService.areAllPlayersJoined(payload.gameId);
 
       if (allReady) {
-          const gamePlayers = await this.gameService.getGamePlayers(payload.gameId);
-          const players = gamePlayers.map(player => ({
-            name: player.user?.login || 'Player',
-            wallet: player.wallet,
-            bet: response.gameInfo.bet.toString(),
-            isPaid: false,
-            isPaidOut: false,
-            result: 0,
-          }));
+        const gamePlayers = await this.gameService.getGamePlayers(payload.gameId);
+        const players = gamePlayers.map(player => ({
+          name: player.user?.login || 'Player',
+          wallet: player.wallet,
+          bet: gameDataBeforeDeploy.gameInfo.bet.toString(),
+          isPaid: false,
+          isPaidOut: false,
+          result: 0,
+        }));
 
-          // Деплоим контракты
-          const result = await this.gameDeployNewService.deployGameWithLogic(
-              players,
-              5 * 60,    // time1 (регистрация)
-              30 * 60,   // time2 (игра)
-              payload.gameId
-          );
+        const result = await this.gameDeployNewService.deployGameWithLogic(
+            players,
+            5 * 60,
+            30 * 60,
+            payload.gameId
+        );
 
-          console.log('result', players,
-              5 * 60,    // time1 (регистрация)
-              30 * 60,   // time2 (игра)
-              payload.gameId)
-          this.server.to(roomName).emit('game_ready', {
-            logicAddress: result.logicAddress,
-            storageAddress: result.storageAddress,
-            gameId: payload.gameId
-          });
+        const gameData = await this.gameService.getGameData(payload.gameId);
+        client.to(roomName).emit('data_update', gameData);
+        client.emit('data_update', gameData);
       }
+    } catch (error) {
+      client.emit('error', { message: error.message });
+    }
+  }
+
+  @SubscribeMessage('send_money')
+  async handleSendMoney(client: Socket, payload: { wallet: string; gameId: number }) {
+    try {
+      const game = await this.gameService.getGameById(payload.gameId);
+      const userData = await this.gameService.getUserDataByWallet(payload.wallet);
+
+      const dataToPay: IDataToPay = {
+        wallet: payload.wallet,
+        gameId: payload.gameId,
+        contractAddress: game?.contractAddress || '',
+        contractBet: game?.gameData.bet || 0,
+        privateKey: userData?.encryptedPrivateKey || '',
+      }
+
+      await this.blockchainService.playerPayment(dataToPay);
+
     } catch (error) {
       client.emit('error', { message: error.message });
     }
@@ -115,8 +126,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       const roomName = `game_${payload.gameId}`;
       const gameData = await this.gameService.getGameData(payload.gameId);
 
-      client.to(roomName).emit('player_left', gameData);
-      client.emit('leave_game_success', gameData);
+      client.to(roomName).emit('data_update', gameData);
+      client.emit('data_update', gameData);
     } catch (error) {
       client.emit('leave_game_error', { message: error.message });
     }

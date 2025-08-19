@@ -1,0 +1,7 @@
+@if (selectActiveGameData$ | async; as activeGameData) {
+  @for (activeGame of activeGameData.players; track activeGame) {
+    <app-players-status-table
+      [data]="activeGame"
+    ></app-players-status-table>
+  }
+}

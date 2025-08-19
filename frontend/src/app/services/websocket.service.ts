@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import {environment} from '../../environments/environment';
-import {disconnectGame, setGameData} from '../+state/game-data/game-data.actions';
+import {setGameData} from '../+state/game-data/game-data.actions';
 import {Store} from '@ngrx/store';
 
 @Injectable({ providedIn: 'root' })
@@ -30,24 +30,13 @@ export class WebsocketService {
       this.connect();
 
       this.socket!.off('connect');
-      this.socket!.off('player_connected');
-      this.socket!.off('player_join');
-      this.socket!.off('player_left');
+      this.socket!.off('data_update');
 
       this.socket!.on('connect', () => {
-        console.log('Socket connected:', this.socket!.id);
-
-        this.socket!.on('player_connected', ({ gameId, wallet }) => {
-          console.log(`Player ${wallet} connected game ${gameId}`);
-        });
 
         this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
 
-        this.socket!.on('player_join', (data) => {
-          this.store.dispatch(setGameData({ data }));
-        });
-
-        this.socket!.on('player_left', (data) => {
+        this.socket!.on('data_update', (data) => {
           this.store.dispatch(setGameData({ data }));
         });
       });
@@ -124,6 +113,12 @@ export class WebsocketService {
       this.socket.emit('disconnect_game', { gameId: this.gameId, wallet: this.wallet }, () => {
         this.socket?.disconnect();
       });
+    }
+  }
+
+  sendMoney(wallet: string, gameId: number) {
+    if (this.socket) {
+      this.socket.emit('send_money', { wallet, gameId });
     }
   }
 }

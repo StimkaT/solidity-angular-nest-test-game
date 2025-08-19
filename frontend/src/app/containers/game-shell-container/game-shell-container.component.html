@@ -8,6 +8,7 @@
 >
   <app-rock-paper-scissors-container
     [gameData]="(selectActiveGameData$ | async)!"
+    (emitter)="events($event)"
   >
   </app-rock-paper-scissors-container>
 </app-game-layout>

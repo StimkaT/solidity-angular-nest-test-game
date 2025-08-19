@@ -73,7 +73,16 @@ export class GameService {
   }
 
   async getGameById(id: number) {
-    return this.gameRepository.findOne({ where: { id } });
+    return await this.gameRepository.findOne({
+      where: { id },
+      relations: ['gameData', 'gamePlayers', 'gamePlayers.user', 'gamePlayers.game'],
+    });
+  }
+
+  async getUserDataByWallet(wallet: string) {
+    return await this.usersRepository.findOne({
+      where: { wallet },
+    });
   }
 
   async addWalletToGame(gameId: number, wallet: string) {

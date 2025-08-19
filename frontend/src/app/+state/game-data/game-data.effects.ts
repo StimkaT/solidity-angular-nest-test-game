@@ -5,12 +5,12 @@ import {
   closeWebSocketConnection,
   createGame, disconnectGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadGameListSuccess, setGameData,
+  loadGameListSuccess, sendMoney, setGameData,
   setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
-import {selectActiveGameData, selectGameTypes, selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
+import {selectActiveGameData, selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
 import {ethers} from 'ethers';
 import {getPlayer} from '../auth/auth.selectors';
 import {WebsocketService} from '../../services/websocket.service';
@@ -198,6 +198,31 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
+  sendMoney$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(sendMoney),
+        withLatestFrom(
+          this.store.select(getPlayer),
+          this.store.select(selectActiveGameData),
+        ),
+        tap(([, player, gameData]) => {
+          const wallet = player.wallet;
+          const gameId = gameData.id;
+
+          this.wsService.sendMoney(wallet, gameId);
+
+          // this.wsService.onJoinGameSuccess((data: any) => {
+          //   this.store.dispatch(setGameData({ data }));
+          // });
+          //
+          // this.wsService.onError((error: any) => {
+          //   this.store.dispatch(gameError({ error: error.message }));
+          // });
+        })
+      ),
+    { dispatch: false }
+  );
+
   getGameTypes = createEffect(() =>
       this.actions$.pipe(
         ofType(getGameTypes),
@@ -222,9 +247,8 @@ export class GameDataEffects {
         withLatestFrom(
           this.store.select(getPlayer),
           this.store.select(selectActiveGameData),
-          this.store.select(selectGameTypes),
         ),
-        tap(([{}, player, game, gameTypes]) => {
+        tap(([{}, player, game]) => {
           const gameId = game.id;
           const wallet =  player.wallet
 

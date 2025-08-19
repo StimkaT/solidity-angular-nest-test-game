@@ -1,3 +1,5 @@
 <app-rock-paper-scissors
   [gameData]="gameData"
+  (emitter)="events($event)"
 ></app-rock-paper-scissors>
+<app-players-status-table-container></app-players-status-table-container>

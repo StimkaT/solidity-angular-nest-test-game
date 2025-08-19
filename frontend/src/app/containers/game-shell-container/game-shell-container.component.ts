@@ -7,9 +7,9 @@ import {getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  closeWebSocketConnection, disconnectGame,
+  disconnectGame,
   getDataGameAndSetWebSocket, joinGame,
-  leaveGame
+  leaveGame, sendMoney
 } from '../../+state/game-data/game-data.actions';
 import {selectActiveGameData, selectIsConnectedGame} from '../../+state/game-data/game-data.selectors';
 import {
@@ -22,7 +22,7 @@ import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
   imports: [
     GameLayoutComponent,
     AsyncPipe,
-    RockPaperScissorsContainerComponent
+    RockPaperScissorsContainerComponent,
   ],
   standalone: true,
   templateUrl: './game-shell-container.component.html',
@@ -64,6 +64,8 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
       this.store.dispatch(joinGame())
     } else if (event.event === 'GameLayoutComponent:home') {
       this.router.navigate([`/game-list/${event.title.toLowerCase()}`]);
+    } else if (event.event === 'Game:pay') {
+      this.store.dispatch(sendMoney())
     }
   }
 

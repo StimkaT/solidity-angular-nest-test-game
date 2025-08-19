@@ -2,31 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IActiveGameList } from '../../+state/game-data/game-data.reducer';
 import { MatButton } from '@angular/material/button';
 
-interface Player {
-  name: string;
-  wallet: string;
-  bet: bigint;
-  isPaid: boolean;
-  isPaidOut: boolean;
-  result: bigint;
-}
-
-interface GameData {
-  bettingMaxTime: bigint;
-  gameMaxTime: bigint;
-  createdAt: bigint;
-  startedAt: bigint;
-  finishedAt: bigint;
-  isBettingComplete: boolean;
-  isGameAborted: boolean;
-  isGameFinished: boolean;
-}
-
-interface BlockchainResponse {
-  gameData: GameData;
-  players: Player[];
-}
-
 @Component({
   selector: 'app-rock-paper-scissors',
   imports: [MatButton],
@@ -42,6 +17,9 @@ export class RockPaperScissorsComponent {
   }
 
   payBlockchain() {
-
+    const message = {
+      event: `Game:pay`,
+    };
+    this.emitter.emit(message);
   }
 }

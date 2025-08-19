@@ -60,6 +60,9 @@ export const loadGameListSuccess = createAction(
 export const joinGame = createAction(
   '[GameData] joinGame',
 );
+export const sendMoney = createAction(
+  '[GameData] sendMoney',
+);
 
 export const setGameData = createAction(
   '[GameData] setGameData',

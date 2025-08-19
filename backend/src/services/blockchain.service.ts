@@ -1,6 +1,7 @@
+import DelegateCallGameStorage from '../blockchain/contracts/Game.sol/DelegateCallGameStorage.json';
+import {IDataToPay} from "../types/dataToPay";
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
-import DelegateCallGameStorage from '../blockchain/contracts/Game.sol/DelegateCallGameStorage.json';
 
 interface Player {
     name: string;
@@ -69,8 +70,31 @@ export class BlockchainService {
         }
     }
 
-    async playerPayment(wallet: string, gameId: number) {
+    async playerPayment(dataToPay: IDataToPay) {
+        try {
+            const { wallet, contractAddress, contractBet, privateKey } = dataToPay;
 
+            const playerWallet = new ethers.Wallet(privateKey, this.provider);
 
+            const tx = await playerWallet.sendTransaction({
+                to: contractAddress,
+                value: contractBet,
+            });
+
+            const receipt = await tx.wait();
+
+            const contract = new ethers.Contract(
+                contractAddress,
+                DelegateCallGameStorage.abi,
+                this.provider
+            );
+
+            const players = await contract.getAllPlayers();
+            const playerIndex = players.wallets.indexOf(wallet);
+
+            return players.isPaid[playerIndex];
+        } catch (error) {
+            throw new Error(`Payment error: ${error.message}`);
+        }
     }
 }
