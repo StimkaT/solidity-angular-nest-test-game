@@ -13,15 +13,14 @@ import {Store} from '@ngrx/store';
 import {selectActiveGameData, selectGameTypes, selectPlayerList, selectSelectedPlayerList} from './game-data.selectors';
 import {ethers} from 'ethers';
 import {getPlayer} from '../auth/auth.selectors';
-import {Router} from '@angular/router';
 import {WebsocketService} from '../../services/websocket.service';
+import {IGameData} from './game-data.reducer';
 
 @Injectable()
 export class GameDataEffects {
   private actions$ = inject(Actions);
   private gameDataService = inject(GameDataService);
   private store = inject(Store);
-  private router = inject(Router);
   private wsService = inject(WebsocketService);
 
 
@@ -152,9 +151,10 @@ export class GameDataEffects {
         tap(([{gameId}, player]) => {
           this.wsService.initGameConnection(gameId, player.wallet);
 
-          this.wsService.onPlayerJoin((data: any) => {
+          this.wsService.onPlayerJoin((data: IGameData) => {
             this.store.dispatch(setGameData({ data }));
           });
+
         })
       ),
     { dispatch: false }

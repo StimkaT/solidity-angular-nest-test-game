@@ -8,6 +8,10 @@ import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
 import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
+import {IGameData} from "../types/gameData";
+import {GameDataDto} from "../dto/gameData.dto";
+import {GamePlayerDto} from "../dto/GamePlayer.dto";
+import {BlockchainService} from "./blockchain.service";
 
 export interface ICreateGameData {
   wallet: string;
@@ -31,6 +35,7 @@ export class GameService {
       private usersRepository: Repository<Users>,
       @InjectRepository(GameData)
       private gameDataRepository: Repository<GameData>,
+      private blockchainService: BlockchainService,
   ) {}
 
   async createGame(data: ICreateGameData): Promise<Games> {
@@ -95,9 +100,9 @@ export class GameService {
     });
 
     if (action === 'add') {
-      const gameData = await this.getGameByIdWithPlayerFlag(gameId.toString(), wallet);
+      const gameData = await this.getGameDataById(gameId.toString());
       if (existingPlayer) throw new Error('This user is already participating in the game');
-      if (gameData.playerNumberSet >= gameData.playersNumber) {
+      if (gameData.activePlayersCount >= gameData.playersNumber) {
         throw new Error('No available spots in this game');
       }
       await this.gamePlayersRepository.save({ gameId, wallet, userId: user.id });
@@ -110,17 +115,32 @@ export class GameService {
     return { wallet };
   }
 
-  async buildGameResponse(gameId: number, wallet: string) {
-    const gameData = await this.getGameByIdWithPlayerFlag(gameId.toString(), wallet);
-    const playersWallets = await this.getGamePlayersWallets(gameId);
+  async getGameData(gameId: number): Promise<IGameData> {
+    const gameDataById: any = (await this.getGameDataById(gameId.toString()));
 
-    const players = playersWallets.map(player => ({
-      wallet: player,
-      bet: false,
-      ready: false
-    }));
+    const gameData: IGameData = {
+      gameInfo: {
+        id: gameDataById.id,
+        type: gameDataById.type,
+        bet: gameDataById.bet,
+        activePlayersCount: gameDataById.activePlayersCount,
+        playersNumber: gameDataById.playersNumber,
+        createdAt: gameDataById.createdAt,
+        finishedAt: gameDataById.finishedAt,
+        updatedAt: gameDataById.finishedAt,
+        status: !gameDataById.contractAddress ? 'notStarted' : 'notPaid',
+      },
+      players: gameDataById.players.map((player: GamePlayerDto) => ({
+        wallet: player.wallet,
+        bet: false,
+        ready: false
+      }))
+    };
+    if (gameDataById.contractAddress) {
+      const playerData = await this.blockchainService.getPlayerData(gameDataById.contractAddress)
+    }
 
-    return { gameData: gameData, players };
+    return gameData;
   }
 
 
@@ -141,30 +161,17 @@ export class GameService {
         { playerNumberSet: playersCount },
     );
 
-    const [gameData, gamePlayers] = await Promise.all([
+    const [gameData] = await Promise.all([
       this.gameDataRepository.findOne({ where: { gameId } }),
       this.gamePlayersRepository.find({ where: { gameId } }),
     ]);
-
-    // Проверяем два условия:
-    // 1. Текущее количество игроков соответствует требуемому (playersNumber)
-    // 2. Значение playerNumberSet было успешно обновлено
     if (
         gameData &&
         playersCount === game.playersNumber &&
         gameData.playerNumberSet === playersCount
     ) {
-      // console.log('Комната готова для деплоя контракта!');
-      // console.log('Данные для деплоя:');
-      // console.log('Game:', game);
-      // console.log('GameData:', gameData);
-      // console.log('GamePlayers:', gamePlayers);
-      // Здесь будет вызов метода для деплоя контракта на blockchain
-      // await this.blockchainService.deployContract(game, gameData, gamePlayers);
     }
   }
-
-  // games.service.ts
 
   async getGamesByTypeWithPlayerFlag(type: string, playerWallet: string) {
     return await this.gameRepository
@@ -177,7 +184,6 @@ export class GameService {
             { wallet: playerWallet },
         )
         .where('game.type = :type', { type })
-        // .andWhere('game.contractAddress IS NULL')
         .select([
           'game.id',
           'game.type',
@@ -194,47 +200,39 @@ export class GameService {
         .getRawMany();
   }
 
-  async getGameByIdWithPlayerFlag(gameId: string, playerWallet: string) {
-    return await this.gameRepository
-        .createQueryBuilder('game')
-        .leftJoinAndSelect('game.gameData', 'gameData')
-        .leftJoinAndSelect(
-            'game.gamePlayers',
-            'gamePlayer',
-            'gamePlayer.wallet = :wallet',
-            { wallet: playerWallet },
-        )
-        .where('game.id = :gameId', { gameId })
-        .select([
-          'game.id',
-          'game.type',
-          'game.contractAddress',
-          'game.ownerAddress',
-          'game.finishedAt',
-          'game.createdAt',
-          'game.updatedAt',
-          'gameData.bet',
-          'gameData.playersNumber',
-          'gameData.playerNumberSet',
-          'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
-        ])
-        .getRawOne();
+  async getGameDataById(gameId: string): Promise<GameDataDto> {
+    const game = await this.gameRepository.findOne({
+      where: { id: Number(gameId) },
+      relations: ['gameData', 'gamePlayers', 'gamePlayers.user', 'gamePlayers.game'],
+    });
+    if (!game) throw new Error('Game not found');
+
+    return {
+      id: game.id,
+      type: game.type,
+      finishedAt: game.finishedAt,
+      createdAt: game.createdAt,
+      updatedAt: game.updatedAt,
+      bet: game.gameData.bet,
+      playersNumber: game.gameData.playersNumber,
+      activePlayersCount: game.gameData.playerNumberSet,
+      contractAddress: game.contractAddress,
+      players: game.gamePlayers
+    };
   }
 
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
-    const fakeWallet = '';
 
-    const game = await this.getGameByIdWithPlayerFlag(
+    const game = await this.getGameDataById(
         gameId.toString(),
-        fakeWallet,
     );
 
     if (!game) {
       throw new Error(`Game with ID ${gameId} not found`);
     }
 
-    const playersNumber = Number(game.gameData_players_number);
-    const playerNumberSet = Number(game.gameData_player_number_set);
+    const playersNumber = Number(game.playersNumber);
+    const playerNumberSet = Number(game.activePlayersCount);
 
     return playerNumberSet === playersNumber;
   }
@@ -260,18 +258,6 @@ export class GameService {
     return players
         .map(player => player.user?.wallet) // получаем wallet или undefined
         .filter((wallet): wallet is string => wallet !== null && wallet !== undefined);
-  }
-
-  async getGameData(gameId: number): Promise<GameData> {
-    const gameData = await this.gameDataRepository.findOne({
-      where: { gameId },
-    });
-
-    if (!gameData) {
-      throw new Error(`GameData not found for gameId: ${gameId}`);
-    }
-
-    return gameData;
   }
 
   getGameTypes() {

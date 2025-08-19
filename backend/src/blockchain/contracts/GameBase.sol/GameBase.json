@@ -1,0 +1,55 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "GameBase",
+  "sourceName": "contracts/GameBase.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "BettingFinished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "GameFinalized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "wallet",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "bet",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogBet",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x60806040526000600660006101000a81548160ff0219169083151502179055506000600660016101000a81548160ff0219169083151502179055506000600660026101000a81548160ff021916908315150217905550348015606057600080fd5b50603f80606e6000396000f3fe6080604052600080fdfea264697066735822122097ce34f370cff4d024c3826f64e83b120d3a40745969b48073a2f982e967482a64736f6c634300081c0033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122097ce34f370cff4d024c3826f64e83b120d3a40745969b48073a2f982e967482a64736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

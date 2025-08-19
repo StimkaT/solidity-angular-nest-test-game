@@ -36,8 +36,7 @@ export interface IGameList {
 export interface IActiveGameList {
   id: number;
   type: string | null;
-  contractAddress: string | null;
-  ownerAddress: string;
+  status: string;
   finishedAt: Date | null;
   createdAt: string | Date;
   updatedAt: string | Date;
@@ -111,8 +110,7 @@ export const initialState: GameDataState = {
     {
       id: 1,
       type: 'Rock-Paper-Scissors',
-      contractAddress: null,
-      ownerAddress: '0x....',
+      status: '',
       finishedAt: null,
       createdAt: '12333',
       updatedAt: '123',
@@ -125,8 +123,7 @@ export const initialState: GameDataState = {
   activeGameData: {
     id: 0,
     type: null,
-    contractAddress: null,
-    ownerAddress: '',
+    status: '',
     finishedAt: null,
     createdAt: '',
     updatedAt: '',
@@ -177,22 +174,21 @@ export const gameDataReducer = createReducer(
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {
-    const gameData = data.gameData;
+    const gameInfo = data.gameInfo;
     const players = data.players;
 
     return {
       ...state,
       activeGameData: {
-        id: gameData.game_id,
-        type: gameData.game_type,
-        contractAddress: gameData.game_contractAddress,
-        ownerAddress: gameData.game_ownerAddress,
-        finishedAt: gameData.game_finished_at,
-        createdAt: gameData.game_created_at,
-        updatedAt: gameData.game_updated_at,
-        bet: gameData.gameData_bet || '-',
-        playersNumber: gameData.gameData_players_number || '-',
-        playerNumberSet: gameData.gameData_player_number_set || '-',
+        id: gameInfo.id,
+        type: gameInfo.type,
+        status: gameInfo.status,
+        finishedAt: gameInfo.finishedAt || '-',
+        createdAt: gameInfo.createdAt || '-',
+        updatedAt: gameInfo.updatedAt || '-',
+        bet: gameInfo.bet || '-',
+        playersNumber: gameInfo.playersNumber || '-',
+        playerNumberSet: gameInfo.activePlayersCount || '-',
         players: players
       }
     }

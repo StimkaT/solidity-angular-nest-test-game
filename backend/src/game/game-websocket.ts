@@ -48,16 +48,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const roomName = `game_${payload.gameId}`;
     client.join(roomName);
 
-    const response = await this.gameService.buildGameResponse(payload.gameId, payload.wallet);
-    client.to(roomName).emit('game_data', response);
+    const gameData = await this.gameService.getGameData(payload.gameId);
+    client.to(roomName).emit('game_data', gameData);
 
     client.to(roomName).emit('player_connected', {
       gameId: payload.gameId,
       wallet: client.handshake.query.wallet,
     });
-    client.emit('connected_game', { response });
-    client.emit('game_data_response', response);
-
+    client.emit('game_data_response', gameData);
   }
 
   @SubscribeMessage('join_game')
@@ -67,7 +65,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       const roomName = `game_${payload.gameId}`;
       client.join(roomName);
 
-      const response = await this.gameService.buildGameResponse(payload.gameId, payload.wallet);
+      const response = await this.gameService.getGameData(payload.gameId);
       client.to(roomName).emit('player_join', response);
       client.emit('join_game_success', response);
 
@@ -75,38 +73,34 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       const allReady = await this.gameService.areAllPlayersJoined(payload.gameId);
 
       if (allReady) {
-        const gamePlayers = await this.gameService.getGamePlayers(payload.gameId);
+          const gamePlayers = await this.gameService.getGamePlayers(payload.gameId);
+          const players = gamePlayers.map(player => ({
+            name: player.user?.login || 'Player',
+            wallet: player.wallet,
+            bet: response.gameInfo.bet.toString(),
+            isPaid: false,
+            isPaidOut: false,
+            result: 0,
+          }));
 
-        const players = gamePlayers.map(player => ({
-          name: player.user?.login || 'Player',
-          wallet: player.wallet,
-          bet: response.gameData.gameData_bet,
-          isPaid: false,
-          isPaidOut: false,
-          result: 0,
-        }));
+          // Деплоим контракты
+          const result = await this.gameDeployNewService.deployGameWithLogic(
+              players,
+              5 * 60,    // time1 (регистрация)
+              30 * 60,   // time2 (игра)
+              payload.gameId
+          );
 
-
-
-        // Деплоим контракты
-        const result = await this.gameDeployNewService.deployGameWithLogic(
-            players,
-            5 * 60,    // time1 (регистрация)
-            30 * 60,   // time2 (игра)
-            payload.gameId
-        );
-
-        console.log('result', players,
-            5 * 60,    // time1 (регистрация)
-            30 * 60,   // time2 (игра)
-            payload.gameId)
-        this.server.to(roomName).emit('game_ready', {
-          logicAddress: result.logicAddress,
-          storageAddress: result.storageAddress,
-          gameId: payload.gameId
-        });
+          console.log('result', players,
+              5 * 60,    // time1 (регистрация)
+              30 * 60,   // time2 (игра)
+              payload.gameId)
+          this.server.to(roomName).emit('game_ready', {
+            logicAddress: result.logicAddress,
+            storageAddress: result.storageAddress,
+            gameId: payload.gameId
+          });
       }
-
     } catch (error) {
       client.emit('error', { message: error.message });
     }
@@ -119,10 +113,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       await this.gameService.leaveGame({ gameId: payload.gameId, wallet });
 
       const roomName = `game_${payload.gameId}`;
-      const response = await this.gameService.buildGameResponse(payload.gameId, wallet);
+      const gameData = await this.gameService.getGameData(payload.gameId);
 
-      client.to(roomName).emit('player_left', response);
-      client.emit('leave_game_success', response);
+      client.to(roomName).emit('player_left', gameData);
+      client.emit('leave_game_success', gameData);
     } catch (error) {
       client.emit('leave_game_error', { message: error.message });
     }

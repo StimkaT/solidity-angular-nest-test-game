@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../services/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { GameController } from './game.controller';
-import { BlockchainService } from '../services/blockchain.service';
 import { GameDeployService } from '../services/deploy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameDataService } from '../services/game-data.service';
@@ -16,6 +15,7 @@ import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
 import {GameGateway} from './game-websocket';
 import { GameDeployNewService } from '../services/deploy-new';
+import {BlockchainService} from "../services/blockchain.service";
 
 @Module({
   imports: [
@@ -39,12 +39,12 @@ import { GameDeployNewService } from '../services/deploy-new';
   controllers: [GameController],
   providers: [
     JwtStrategy,
-    BlockchainService,
     GameDataService,
     GameService,
     GameDeployService,
     GameGateway,
     GameDeployNewService,
+    BlockchainService,
   ],
   exports: [JwtModule, PassportModule],
 })

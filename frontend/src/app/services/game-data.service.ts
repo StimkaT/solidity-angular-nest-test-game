@@ -8,26 +8,11 @@ export class GameDataService {
 
   private apiUrl = 'http://localhost:3000/game';
 
-  setGameData(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/startArray`, data);
-  }
-  getGameData(data: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/getArray`, { params: { data } } );
-  }
   getGameList(data: {type: string, player: string}): Observable<any> {
     return this.http.post(`${this.apiUrl}/getGameList`, {type: data.type, player: data.player} );
   }
   createGame(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/createGame`, data );
-  }
-  joinGame(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/joinGame`, data );
-  }
-  leaveGame(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/leaveGame`, data );
-  }
-  getDataGame(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/getDataGame`, data );
   }
   getGameTypes(): Observable<any> {
     return this.http.get(`${this.apiUrl}/getGameTypes`);
