@@ -47,13 +47,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.to(roomName).emit('game_data', gameData);
   }
 
-  sendContractEvent(contractData: any) {
-    // gameByAddress = this.gameService.getGameByAddress(contractData.storageAddress)
-    //
-    // await this.sendGameData(gameByAddress.gameId);
-
-  }
-
   @SubscribeMessage('connect_game')
   async handleConnectGame(client: Socket, payload: { gameId: number, wallet: string }) {
     const roomName = `game_${payload.gameId}`;

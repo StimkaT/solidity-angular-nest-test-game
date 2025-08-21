@@ -71,17 +71,7 @@ export class BlockchainService {
         return await contract.getAddress();
     }
 
-    contractListener(storageAddress: any) {
-        const contract = this.getContract(storageAddress);
 
-        contract.on("LogBet", (wallet, name, bet, event) => {});
-
-        contract.on("BettingFinished", (event) => {});
-
-        contract.on("GameFinalized", (timestamp, event) => {});
-
-        return contract
-    }
 
     async getPlayerData(contractAddress: string) {
         this.contract = new ethers.Contract(contractAddress, DelegateCallGameStorage.abi, this.provider);

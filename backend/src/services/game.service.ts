@@ -14,6 +14,7 @@ import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
+// import {GameGateway} from "../game/game-websocket";
 
 @Injectable()
 export class GameService {
@@ -30,6 +31,7 @@ export class GameService {
       @InjectRepository(GameData)
       private gameDataRepository: Repository<GameData>,
       private blockchainService: BlockchainService,
+      // private readonly gameGateway: GameGateway
   ) {}
 
   async createGame(data: ICreateGameData): Promise<Games> {
@@ -351,28 +353,45 @@ export class GameService {
           5000 * 60,
           30000 * 60,
           contractData.logicAddress,
-          gameId
       );
 
       await this.updateContractAddress(gameId, storageAddress);
+      await this.contractListener(gameId, storageAddress);
 
     }
   }
 
+  async contractListener(gameId: number, storageAddress: any) {
+    const contract = this.blockchainService.getContract(storageAddress);
+
+    contract.on("LogBet", (wallet, name, bet, event) => {
+      // const gameData = await this.gameService.getGameData(gameId);
+      console.log('LogBet', wallet, name);
+      console.log('LogBet', bet, event);
+      // this.gameGateway.sendGameData(gameId)
+    });
+
+    contract.on("BettingFinished", (event) => {});
+
+    contract.on("GameFinalized", (timestamp, event) => {});
+
+    return contract
+  }
+
   async sendMoney(gameId: number, wallet: string) {
-      const game = await this.getGameById(gameId);
-      const userData = await this.getUserDataByWallet(wallet);
+    const game = await this.getGameById(gameId);
+    const userData = await this.getUserDataByWallet(wallet);
 
-      const dataToPay: IDataToPay = {
-        wallet: wallet,
-        gameId: gameId,
-        contractAddress: game?.contractAddress || '',
-        contractBet: game?.gameData.bet || 0,
-        privateKey: userData?.encryptedPrivateKey || '',
-      }
+    const dataToPay: IDataToPay = {
+      wallet: wallet,
+      gameId: gameId,
+      contractAddress: game?.contractAddress || '',
+      contractBet: game?.gameData.bet || 0,
+      privateKey: userData?.encryptedPrivateKey || '',
+    }
 
-      const pay = await this.blockchainService.playerPayment(dataToPay);
+    const pay = await this.blockchainService.playerPayment(dataToPay);
 
-      console.log('pay', pay)
+    console.log('pay', pay)
   }
 }
