@@ -135,7 +135,7 @@ export class BlockchainService {
             const playerIndex = players.wallets.indexOf(wallet);
             return players.isPaid[playerIndex];
         } catch (error) {
-            throw new Error(`Payment error: ${error.message}`);
+            new Error(`Payment error: ${error.message}`);
         }
     }
 

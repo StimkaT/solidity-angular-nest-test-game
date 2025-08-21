@@ -7,14 +7,12 @@ import {
   SubscribeMessage
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameService } from 'src/services/game.service';
+import {Subject} from "rxjs";
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  constructor(
-      private readonly gameService: GameService,
-  ) {}
+  public _websocketEvents: Subject<{event: string, payload: any}> = new Subject();
 
   private connectedWallets = new Map<string, Socket>();
 
@@ -36,15 +34,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (wallet && this.connectedWallets.get(wallet) === client) {
       this.connectedWallets.delete(wallet);
     }
-
     this.server.emit('player_disconnected', { wallet });
   }
 
-  async sendGameData(gameId: number) {
+  send(event: string, data: any, gameId: number) {
     const roomName = `game_${gameId}`;
-
-    const gameData = await this.gameService.getGameData(gameId);
-    this.server.to(roomName).emit('game_data', gameData);
+    if(roomName === '') {
+      this.server.emit(event, data);
+    } else {
+      this.server.to(roomName).emit(event, data);
+    }
   }
 
   @SubscribeMessage('connect_game')
@@ -52,23 +51,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const roomName = `game_${payload.gameId}`;
     client.join(roomName);
 
-    await this.sendGameData(payload.gameId);
+    this._websocketEvents.next({event: "connect_game", payload})
   }
 
   @SubscribeMessage('join_game')
   async handleJoinGame(client: Socket, payload: { wallet: string; gameId: number }) {
+    const roomName = `game_${payload.gameId}`;
+    client.join(roomName);
     try {
-      await this.gameService.addWalletToGame(payload.gameId, payload.wallet);
-      const roomName = `game_${payload.gameId}`;
-      client.join(roomName);
-
-      const gameDataBeforeDeploy = await this.gameService.getGameData(payload.gameId);
-      await this.sendGameData(payload.gameId);
-
-      await this.gameService.checkEverythingIsReady(gameDataBeforeDeploy, payload.gameId);
-      // this.sendContractEvent(contractData);
-
-      await this.sendGameData(payload.gameId);
+      this._websocketEvents.next({event: "join_game", payload})
     } catch (error) {
       client.emit('error', { message: error.message });
     }
@@ -77,7 +68,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('send_money')
   async handleSendMoney(client: Socket, payload: { wallet: string; gameId: number }) {
     try {
-      await this.gameService.sendMoney(payload.gameId, payload.wallet);
+      this._websocketEvents.next({event: "send_money", payload})
     } catch (error) {
       client.emit('error', { message: error.message });
     }
@@ -87,9 +78,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   async handleLeaveGame(client: Socket, payload: { gameId: number }) {
     try {
       const wallet = client.handshake.query.wallet as string;
-      await this.gameService.leaveGame({ gameId: payload.gameId, wallet });
 
-      await this.sendGameData(payload.gameId);
+      this._websocketEvents.next({
+        event: "leave_game",
+        payload: {
+          gameId: payload.gameId,
+          wallet: wallet
+        }
+      });
     } catch (error) {
       client.emit('leave_game_error', { message: error.message });
     }

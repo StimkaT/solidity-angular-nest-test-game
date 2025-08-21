@@ -14,7 +14,7 @@ import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
-// import {GameGateway} from "../game/game-websocket";
+import {GameGateway} from "../game/game-websocket";
 
 @Injectable()
 export class GameService {
@@ -31,8 +31,42 @@ export class GameService {
       @InjectRepository(GameData)
       private gameDataRepository: Repository<GameData>,
       private blockchainService: BlockchainService,
-      // private readonly gameGateway: GameGateway
-  ) {}
+      private readonly gameGateway: GameGateway
+  ) {
+    this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
+      if(data.event === 'connect_game') {
+        console.log('connect_game')
+        const gameData = await this.getGameData(data.payload.gameId);
+        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+      } else if (data.event === 'handleConnection') {
+        console.log('handleConnection')
+      } else if (data.event === 'join_game') {
+        console.log('join_game')
+        await this.addWalletToGame(data.payload.gameId, data.payload.wallet);
+
+        const gameDataBeforeDeploy = await this.getGameData(data.payload.gameId);
+        this.gameGateway.send('game_data', gameDataBeforeDeploy, data.payload.gameId)
+
+        await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
+        const gameData = await this.getGameData(data.payload.gameId);
+
+        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+      } else if (data.event === 'send_money') {
+        console.log('send_money')
+        await this.sendMoney(data.payload.gameId, data.payload.wallet);
+        const gameData = await this.getGameData(data.payload.gameId);
+        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+      } else if (data.event === 'leave_game') {
+        console.log('leave_game')
+        await this.leaveGame({
+          gameId: data.payload.gameId,
+          wallet: data.payload.wallet
+        });
+        const gameData = await this.getGameData(data.payload.gameId);
+        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+      }
+    })
+  }
 
   async createGame(data: ICreateGameData): Promise<Games> {
     const user = await this.usersRepository.findOne({
@@ -112,8 +146,11 @@ export class GameService {
       }
       await this.gamePlayersRepository.save({ gameId, wallet, userId: user.id });
     } else if (action === 'remove') {
-      if (!existingPlayer) throw new Error('Player not found in this game');
-      await this.gamePlayersRepository.delete({ gameId, wallet });
+      if (!existingPlayer) {
+        return { wallet };
+      } else {
+        await this.gamePlayersRepository.delete({ gameId, wallet });
+      }
     }
 
     await this.updatePlayerNumberSet(gameId);
@@ -121,6 +158,8 @@ export class GameService {
   }
 
   async getGameData(gameId: number): Promise<IGameData> {
+    await this.updatePlayerNumberSet(gameId);
+
     const gameDataById: any = (
         await this.getGameDataById(gameId.toString()));
 
@@ -328,7 +367,8 @@ export class GameService {
     await this.gameTypesRepository.update({ name: game.type }, { logicAddress });
   }
 
-  async checkEverythingIsReady(gameDataBeforeDeploy: IGameData, gameId: number) {
+  async checkEverythingIsReady(gameDataBeforeDeploy, gameId: number) {
+    console.log('gameDataBeforeDeploy', gameDataBeforeDeploy)
     const allReady = await this.areAllPlayersJoined(gameId);
     let logicAddress = await this.getGameLogicAddress(gameId);
 
@@ -365,7 +405,7 @@ export class GameService {
     const contract = this.blockchainService.getContract(storageAddress);
 
     contract.on("LogBet", (wallet, name, bet, event) => {
-      // const gameData = await this.gameService.getGameData(gameId);
+      const gameData = this.getGameData(gameId);
       console.log('LogBet', wallet, name);
       console.log('LogBet', bet, event);
       // this.gameGateway.sendGameData(gameId)
@@ -389,9 +429,6 @@ export class GameService {
       contractBet: game?.gameData.bet || 0,
       privateKey: userData?.encryptedPrivateKey || '',
     }
-
     const pay = await this.blockchainService.playerPayment(dataToPay);
-
-    console.log('pay', pay)
   }
 }
