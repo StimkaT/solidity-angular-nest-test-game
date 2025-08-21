@@ -8,18 +8,12 @@ import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
 import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
-import {IGameData} from "../types/gameData";
+import {ICreateGameData, IGameData} from "../types/gameData";
 import {GameDataDto} from "../dto/gameData.dto";
 import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
-
-export interface ICreateGameData {
-  wallet: string;
-  userId: number;
-  type: string;
-  playersNumber: number;
-  bet: number;
-}
+import {IPlayerBlockchain} from "../types/blockchain";
+import {IDataToPay} from "../types/dataToPay";
 
 @Injectable()
 export class GameService {
@@ -125,7 +119,8 @@ export class GameService {
   }
 
   async getGameData(gameId: number): Promise<IGameData> {
-    const gameDataById: any = (await this.getGameDataById(gameId.toString()));
+    const gameDataById: any = (
+        await this.getGameDataById(gameId.toString()));
 
     const gameData: IGameData = {
       gameInfo: {
@@ -146,12 +141,14 @@ export class GameService {
       }))
     };
     if (gameDataById.contractAddress) {
-      const playerData = await this.blockchainService.getPlayerData(gameDataById.contractAddress)
+      console.log('gameDataById.contractAddress', gameDataById.contractAddress)
+
+      const playerData = await this.blockchainService.getPlayerData(gameDataById.contractAddress);
+      console.log('123', playerData.players)
     }
 
     return gameData;
   }
-
 
   async updatePlayerNumberSet(gameId: number) {
     const playersCount = await this.gamePlayersRepository.count({
@@ -327,5 +324,55 @@ export class GameService {
     }
 
     await this.gameTypesRepository.update({ name: game.type }, { logicAddress });
+  }
+
+  async checkEverythingIsReady(gameDataBeforeDeploy: IGameData, gameId: number) {
+    const allReady = await this.areAllPlayersJoined(gameId);
+    let logicAddress = await this.getGameLogicAddress(gameId);
+
+    if (allReady) {
+      const gamePlayers = await this.getGamePlayers(gameId);
+      const players: IPlayerBlockchain[] = gamePlayers.map(player => ({
+        name: player.user?.login || 'Player',
+        wallet: player.wallet,
+        bet: gameDataBeforeDeploy.gameInfo.bet.toString(),
+        isPaid: false,
+        isPaidOut: false,
+        result: 0,
+      }));
+
+      // деплой
+      const contractData = await this.blockchainService.deployGameLogicAddress(
+          logicAddress
+      );
+
+      const storageAddress = await this.blockchainService.deployGameStorageAddress(
+          players,
+          5000 * 60,
+          30000 * 60,
+          contractData.logicAddress,
+          gameId
+      );
+
+      await this.updateContractAddress(gameId, storageAddress);
+
+    }
+  }
+
+  async sendMoney(gameId: number, wallet: string) {
+      const game = await this.getGameById(gameId);
+      const userData = await this.getUserDataByWallet(wallet);
+
+      const dataToPay: IDataToPay = {
+        wallet: wallet,
+        gameId: gameId,
+        contractAddress: game?.contractAddress || '',
+        contractBet: game?.gameData.bet || 0,
+        privateKey: userData?.encryptedPrivateKey || '',
+      }
+
+      const pay = await this.blockchainService.playerPayment(dataToPay);
+
+      console.log('pay', pay)
   }
 }

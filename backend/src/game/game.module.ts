@@ -14,7 +14,6 @@ import { Games } from '../entities/entities/Games';
 import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
 import {GameGateway} from './game-websocket';
-import { GameDeployNewService } from '../services/deploy-new';
 import {BlockchainService} from "../services/blockchain.service";
 
 @Module({
@@ -34,7 +33,7 @@ import {BlockchainService} from "../services/blockchain.service";
         signOptions: { expiresIn: config.get('JWT_EXPIRES_IN') },
       }),
     }),
-    PassportModule,
+    PassportModule
   ],
   controllers: [GameController],
   providers: [
@@ -43,8 +42,7 @@ import {BlockchainService} from "../services/blockchain.service";
     GameService,
     GameDeployService,
     GameGateway,
-    GameDeployNewService,
-    BlockchainService,
+    BlockchainService
   ],
   exports: [JwtModule, PassportModule],
 })

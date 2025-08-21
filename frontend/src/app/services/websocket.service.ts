@@ -28,17 +28,14 @@ export class WebsocketService {
 
     if (!this.socketExists()) {
       this.connect();
-
       this.socket!.off('connect');
-      this.socket!.off('data_update');
+      this.socket!.off('game_data');
 
       this.socket!.on('connect', () => {
-
-        this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
-
-        this.socket!.on('data_update', (data) => {
+        this.socket!.on('game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
         });
+        this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
       });
 
     } else {
@@ -69,7 +66,7 @@ export class WebsocketService {
 
   onPlayerJoin(callback: (data: any) => void) {
     if (this.socket) {
-      this.socket.on('game_data_response', callback);
+      this.socket.on('game_data', callback);
     }
   }
 

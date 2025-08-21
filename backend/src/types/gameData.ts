@@ -21,3 +21,12 @@ export interface IGameInfo {
     updatedAt: Date | null;
     contractAddress?: string | null;
 }
+
+
+export interface ICreateGameData {
+    wallet: string;
+    userId: number;
+    type: string;
+    playersNumber: number;
+    bet: number;
+}

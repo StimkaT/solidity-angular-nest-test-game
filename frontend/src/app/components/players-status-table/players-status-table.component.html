@@ -1,26 +1,21 @@
 <table>
   <thead>
   <tr>
-    <th>Parameter</th>
-    <th>Value</th>
+    <th>№</th>
+    <th>Player</th>
+    <th>Bet</th>
+    <th>Ready</th>
   </tr>
   </thead>
   <tbody>
-
-  <tr>
-    <td>Wallet</td>
-    <td>{{ data.wallet}}</td>
-  </tr>
-
-  <tr>
-    <td>Bet</td>
-    <td>{{ data.bet}}</td>
-  </tr>
-  <tr>
-    <td>Ready</td>
-    <td>{{ data.ready}}</td>
-  </tr>
-
+    @for (item of data; track item) {
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ item.wallet}}</td>
+        <td>{{ item.bet }}</td>
+        <td>{{ item.ready }}</td>
+      </tr>
+    }
   </tbody>
 </table>
 
