@@ -51,34 +51,32 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const roomName = `game_${payload.gameId}`;
     client.join(roomName);
 
-    this._websocketEvents.next({event: "connect_game", payload})
+    this._websocketEvents.next({event: "connect_game", payload});
   }
 
   @SubscribeMessage('join_game')
   async handleJoinGame(client: Socket, payload: { wallet: string; gameId: number }) {
-    const roomName = `game_${payload.gameId}`;
-    client.join(roomName);
-    try {
-      this._websocketEvents.next({event: "join_game", payload})
-    } catch (error) {
-      client.emit('error', { message: error.message });
-    }
+      this._websocketEvents.next({event: "join_game", payload});
   }
 
   @SubscribeMessage('send_money')
   async handleSendMoney(client: Socket, payload: { wallet: string; gameId: number }) {
-    try {
-      this._websocketEvents.next({event: "send_money", payload})
-    } catch (error) {
-      client.emit('error', { message: error.message });
-    }
+      this._websocketEvents.next({event: "send_money", payload});
+  }
+
+  @SubscribeMessage('win_game')
+  async handleWinGame(client: Socket, payload: { wallet: string; gameId: number }) {
+      this._websocketEvents.next({event: "win_game", payload});
+  }
+
+  @SubscribeMessage('lose_game')
+  async handleLoseGame(client: Socket, payload: { wallet: string; gameId: number }) {
+      this._websocketEvents.next({event: "lose_game", payload});
   }
 
   @SubscribeMessage('leave_game')
   async handleLeaveGame(client: Socket, payload: { gameId: number }) {
-    try {
       const wallet = client.handshake.query.wallet as string;
-
       this._websocketEvents.next({
         event: "leave_game",
         payload: {
@@ -86,19 +84,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           wallet: wallet
         }
       });
-    } catch (error) {
-      client.emit('leave_game_error', { message: error.message });
-    }
   }
 
   @SubscribeMessage('disconnect_game')
   async handleDisconnectGame(client: Socket, payload: { gameId: number }) {
-    try {
       const roomName = `game_${payload.gameId}`;
-
       client.leave(roomName);
-    } catch (error) {
-      client.emit('disconnect_game_error', { message: error.message });
-    }
   }
 }

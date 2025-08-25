@@ -13,12 +13,9 @@ export class RockPaperScissorsComponent {
   @Input() gameData!: IActiveGameList;
   @Output() emitter = new EventEmitter();
 
-  async checkDataBlockchain() {
-  }
-
-  payBlockchain() {
+  sendEvent(event: string) {
     const message = {
-      event: `Game:pay`,
+      event: `Game:${event}`,
     };
     this.emitter.emit(message);
   }

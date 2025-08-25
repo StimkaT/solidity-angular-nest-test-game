@@ -118,5 +118,17 @@ export class WebsocketService {
       this.socket.emit('send_money', { wallet, gameId });
     }
   }
+
+  winGame(wallet: string, gameId: number) {
+    if (this.socket) {
+      this.socket.emit('win_game', { wallet, gameId });
+    }
+  }
+
+  loseGame(wallet: string, gameId: number) {
+    if (this.socket) {
+      this.socket.emit('lose_game', { wallet, gameId });
+    }
+  }
 }
 

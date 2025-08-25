@@ -5,8 +5,8 @@ import {
   closeWebSocketConnection,
   createGame, disconnectGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadGameListSuccess, sendMoney, setGameData,
-  setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
+  loadGameListSuccess, loseGame, sendMoney, setGameData,
+  setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection, winGame
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
@@ -210,14 +210,40 @@ export class GameDataEffects {
           const gameId = gameData.id;
 
           this.wsService.sendMoney(wallet, gameId);
+        })
+      ),
+    { dispatch: false }
+  );
 
-          // this.wsService.onJoinGameSuccess((data: any) => {
-          //   this.store.dispatch(setGameData({ data }));
-          // });
-          //
-          // this.wsService.onError((error: any) => {
-          //   this.store.dispatch(gameError({ error: error.message }));
-          // });
+  winGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(winGame),
+        withLatestFrom(
+          this.store.select(getPlayer),
+          this.store.select(selectActiveGameData),
+        ),
+        tap(([, player, gameData]) => {
+          const wallet = player.wallet;
+          const gameId = gameData.id;
+
+          this.wsService.winGame(wallet, gameId);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  loseGame$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(loseGame),
+        withLatestFrom(
+          this.store.select(getPlayer),
+          this.store.select(selectActiveGameData),
+        ),
+        tap(([, player, gameData]) => {
+          const wallet = player.wallet;
+          const gameId = gameData.id;
+
+          this.wsService.loseGame(wallet, gameId);
         })
       ),
     { dispatch: false }

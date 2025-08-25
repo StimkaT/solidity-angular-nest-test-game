@@ -168,9 +168,9 @@ export const gameDataReducer = createReducer(
       finishedAt: item.game_finishedAt,
       createdAt: item.game_createdAt,
       updatedAt: item.game_updatedAt,
-      bet: item.gameData_bet || '-',
-      playersNumber: item.gameData_players_number || '-',
-      playerNumberSet: item.gameData_player_number_set || '-',
+      bet: item.gameData_bet || 0,
+      playersNumber: item.gameData_players_number || 0,
+      playerNumberSet: item.gameData_player_number_set || 0,
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {
@@ -187,8 +187,8 @@ export const gameDataReducer = createReducer(
         createdAt: gameInfo.createdAt || '-',
         updatedAt: gameInfo.updatedAt || '-',
         bet: gameInfo.bet || '-',
-        playersNumber: gameInfo.playersNumber || '-',
-        playerNumberSet: gameInfo.activePlayersCount || '-',
+        playersNumber: gameInfo.playersNumber || 0,
+        playerNumberSet: gameInfo.activePlayersCount || 0,
         players: players
       }
     }

@@ -28,17 +28,19 @@ export class BlockchainService {
     }
 
     async deployGameLogicAddress(logicAddress: any) {
-        const logicArtifact = JSON.parse(
-            fs.readFileSync(this.logicArtifactPath, 'utf8'),
-        );
-        const GameLogicFactory = new ethers.ContractFactory(
-            logicArtifact.abi,
-            logicArtifact.bytecode,
-            this.wallet,
-        );
-        const logicContract = await GameLogicFactory.deploy();
-        await logicContract.waitForDeployment();
-        logicAddress = await logicContract.getAddress();
+        if (!logicAddress) {
+            const logicArtifact = JSON.parse(
+                fs.readFileSync(this.logicArtifactPath, 'utf8'),
+            );
+            const GameLogicFactory = new ethers.ContractFactory(
+                logicArtifact.abi,
+                logicArtifact.bytecode,
+                this.wallet,
+            );
+            const logicContract = await GameLogicFactory.deploy();
+            await logicContract.waitForDeployment();
+            logicAddress = await logicContract.getAddress();
+        }
 
         return {
             logicAddress
@@ -71,9 +73,7 @@ export class BlockchainService {
         return await contract.getAddress();
     }
 
-
-
-    async getPlayerData(contractAddress: string) {
+    async getGameData(contractAddress: string) {
         this.contract = new ethers.Contract(contractAddress, DelegateCallGameStorage.abi, this.provider);
 
         try {
@@ -149,5 +149,53 @@ export class BlockchainService {
         if (!contract) throw new Error("Contract not initialized");
 
         return contract
+    }
+
+    // Добавляем async к функции finish
+    async finish(data: { contractAddress: string; playerResults: any[] }) {
+        try {
+            const { contractAddress, playerResults } = data;
+
+            // Загружаем ABI proxy-контракта
+            const storageArtifact = require(this.storageArtifactPath);
+            const abi = storageArtifact.abi;
+
+            // Создаем экземпляр контракта
+            const contract = new ethers.Contract(contractAddress, abi, this.wallet);
+
+            // Вызываем функцию finish
+            const tx = await contract.finish(playerResults);
+
+            // Ждем подтверждения транзакции
+            const receipt = await tx.wait();
+
+            return {
+                success: true,
+                transactionHash: tx.hash,
+                blockNumber: receipt.blockNumber
+            };
+
+        } catch (error) {
+            throw new Error(`Finish game error: ${error.message}`);
+        }
+    }
+
+    async getContractBalance(contractAddress: string): Promise<bigint> {
+        try {
+            // Загружаем ABI контракта
+            const storageArtifact = require(this.storageArtifactPath);
+            const abi = storageArtifact.abi;
+
+            // Создаем экземпляр контракта
+            const contract = new ethers.Contract(contractAddress, abi, this.provider);
+
+            // Вызываем view-функцию
+            const balance = await contract.getContractBalance();
+
+            return balance;
+
+        } catch (error) {
+            throw new Error(`Get balance error: ${error.message}`);
+        }
     }
 }

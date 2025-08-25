@@ -64,6 +64,14 @@ export const sendMoney = createAction(
   '[GameData] sendMoney',
 );
 
+export const winGame = createAction(
+  '[GameData] winGame',
+);
+
+export const loseGame = createAction(
+  '[GameData] loseGame',
+);
+
 export const setGameData = createAction(
   '[GameData] setGameData',
   props<{data: any}>()
