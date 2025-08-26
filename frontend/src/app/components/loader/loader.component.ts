@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-loader',
   standalone: true,
-  imports: [],
+  imports: [
+    MatIcon
+  ],
   templateUrl: './loader.component.html',
   styleUrl: './loader.component.scss'
 })

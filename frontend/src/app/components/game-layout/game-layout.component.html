@@ -15,10 +15,10 @@
   </div>
   <div class="footer">
     @if (isConnected) {
-      <button class="footer-button" mat-raised-button (click)="event('observe')">Disconnect & Stay</button>
-      <button mat-raised-button (click)="event('leave')">Disconnect & Leave</button>
+      <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('observe')">Disconnect & Stay</button>
+      <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('leave')">Disconnect & Leave</button>
     } @else {
-      <button class="footer-button" mat-raised-button (click)="event('connect')">Connect to game</button>
+      <button class="footer-button" mat-raised-button [disabled]="(gameData.playersNumber === gameData.playerNumberSet)" (click)="event('connect')">Connect to game</button>
     }
   </div>
 </div>

@@ -4,12 +4,14 @@ import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
 import {
   PlayersStatusTableContainerComponent
 } from '../players-status-table-container/players-status-table-container.component';
+import {LoaderComponent} from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
   imports: [
     RockPaperScissorsComponent,
     PlayersStatusTableContainerComponent,
+    LoaderComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-container.component.html',

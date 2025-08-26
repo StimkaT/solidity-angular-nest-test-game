@@ -116,6 +116,10 @@
   .footer-button {
     margin: 8px;
   }
+
+  .footer-button:disabled {
+    color: gray !important;
+  }
 }
 
 .mat-mdc-raised-button {

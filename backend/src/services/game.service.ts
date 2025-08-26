@@ -174,7 +174,6 @@ export class GameService {
         gameDataById.players.map(async (player: GamePlayerDto) => {
           const blockchainPlayer = playerData.players.find((playerBlock: any) => playerBlock.wallet === player.wallet);
           const playerWin = await this.getGamePlayerWin(player.wallet, gameDataById.id);
-          console.log('win', playerWin);
 
           return {
             wallet: player.wallet,
@@ -196,9 +195,9 @@ export class GameService {
         createdAt: !gameDataById.contractAddress ? gameDataById.createdAt : Number(playerData.gameData.createdAt),
         finishedAt: !gameDataById.contractAddress ? gameDataById.finishedAt : Number(playerData.gameData.finishedAt),
         updatedAt: !gameDataById.contractAddress ? gameDataById.startedAt : Number(playerData.gameData.startedAt),
-        status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'notPaid' : 'allPaid') ,
+        status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'notPaid' : (!gameDataById.finishedAt ? 'allPaid' : 'Finish')),
       },
-      players: players, // Теперь это массив реальных данных, а не промисов
+      players: players,
     };
 
     return gameData;
@@ -376,11 +375,9 @@ export class GameService {
   }
 
   async checkEverythingIsReady(gameDataBeforeDeploy, gameId: number) {
-    // console.log('gameDataBeforeDeploy', gameDataBeforeDeploy)
     const allReady = await this.areAllPlayersJoined(gameId);
     let logicAddress = await this.getGameLogicAddress(gameId);
 
-    console.log('logicAddress', logicAddress )
     if (allReady) {
       const gamePlayers = await this.getGamePlayers(gameId);
       const players: IPlayerBlockchain[] = gamePlayers.map(player => ({
@@ -412,10 +409,10 @@ export class GameService {
     const contract = this.blockchainService.getContract(storageAddress);
 
     contract.on("LogBet", async (wallet, name, bet, event) => {
-      console.log('Начинаю обновлять данные')
+      // console.log('Начинаю обновлять данные')
       const gameData = await this.getGameData(gameId);
       await this.gameGateway.send('game_data', gameData, gameId)
-      console.log('Заканчиваю обновлять данные')
+      // console.log('Заканчиваю обновлять данные')
       // const balance = await this.blockchainService.getContractBalance(storageAddress);
       // console.log('START Balance', balance)
       // console.log('LogBet', wallet, name);
@@ -427,34 +424,28 @@ export class GameService {
     });
 
     contract.on("GameFinalized", async (timestamp, event) => {
-      console.log('GameFinalized', timestamp)
+      // console.log('GameFinalized', timestamp)
 
       await this.updateDataBaseFromBlockchain(gameId);
       const gameData = await this.getGameData(gameId);
       await this.gameGateway.send('finish_game_data', gameData, gameId)
       const balance = await this.blockchainService.getContractBalance(storageAddress);
-      console.log('FINISH Balance', balance)
+      // console.log('FINISH Balance', balance)
     });
 
     return contract
   }
 
   async updateDataBaseFromBlockchain(gameId: number) {
-    try {
-      const gameDataById: any = await this.getGameDataById(gameId.toString());
+      const gameDataById = await this.getGameDataById(gameId.toString());
 
-      if (!gameDataById?.contractAddress) {
-        console.log('No contract address found for game:', gameId);
-        return;
-      }
+      if (gameDataById?.contractAddress) {
+        const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
+        const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
+        await this.gameRepository.update({ id: gameId }, {finishedAt: finishedAt,});
 
-      const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-      const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
-      await this.gameRepository.update({ id: gameId }, {finishedAt: finishedAt,});
-
-      if (playerData.players && Array.isArray(playerData.players)) {
-        for (const player of playerData.players) {
-          try {
+        if (playerData.players && Array.isArray(playerData.players)) {
+          for (const player of playerData.players) {
             const updateResult = await this.gamePlayersRepository.update(
                 {
                   gameId,
@@ -465,23 +456,9 @@ export class GameService {
                 }
             );
 
-            if (updateResult.affected === 0) {
-              console.warn(`No player found with wallet: ${player.wallet} for game: ${gameId}`);
-            } else {
-              console.log(`Updated player ${player.wallet}, win: ${player.result}`);
-            }
-          } catch (error) {
-            console.error(`Error updating player ${player.wallet}:`, error);
           }
         }
-        console.log(`Updated ${playerData.players.length} players`);
       }
-
-      console.log('Database updated successfully');
-    } catch (error) {
-      console.error('Error updating database:', error);
-      throw error;
-    }
   }
 
   async sendMoney(gameId: number, wallet: string) {
