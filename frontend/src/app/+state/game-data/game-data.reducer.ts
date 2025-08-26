@@ -49,6 +49,7 @@ export interface IPlayers {
   wallet: string;
   bet: boolean;
   ready: boolean;
+  win: number | null;
 }
 
 export interface IGameTypes {
