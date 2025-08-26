@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.game-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  app-timer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}

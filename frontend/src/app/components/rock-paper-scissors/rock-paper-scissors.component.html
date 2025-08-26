@@ -1,41 +1,41 @@
 <div class="content">
-  <h3 class="title">gameData:</h3>
-  <div>
-    id: {{ gameData.id }}
-  </div>
-  <div>
-    type: {{ gameData.type }}
-  </div>
-  <div>
-    status: {{ gameData.status }}
-  </div>
-  <div>
-    finishedAt: {{ gameData.finishedAt }}
-  </div>
-  <div>
-    createdAt: {{ gameData.createdAt }}
-  </div>
-  <div>
-    updatedAt: {{ gameData.updatedAt }}
-  </div>
-  <div>
-    bet: {{ gameData.bet }}
-  </div>
-  <div>
-    playersNumber: {{ gameData.playersNumber }}
-  </div>
-  <div>
-    playerNumberSet: {{ gameData.playerNumberSet }}
-  </div>
-  <div>
-    <button mat-button [disabled]="!(gameData.status === 'notPaid')" (click)="sendEvent('pay')">
-      Pay
-    </button>
-    <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('win')">
-      WIN
-    </button>
-    <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('lose')">
-      LOSE
-    </button>
-  </div>
+  <h3 class="title">Game Data:</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Created</th>
+      <th>Finished</th>
+      <th>Bet</th>
+      <th>Number of players needed</th>
+      <th>Current number of players</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{ gameData.id }}</td>
+      <td>{{ gameData.createdAt | date:'medium' }}</td>
+      <td>
+        @if (gameData.finishedAt && isValidDate(gameData.finishedAt)) {
+          {{ gameData.finishedAt | date:'medium' }}
+        } @else {
+          -
+        }
+      </td>
+      <td>{{ gameData.bet }}</td>
+      <td>{{ gameData.playersNumber}}</td>
+      <td>{{ gameData.playerNumberSet }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <button mat-button [disabled]="!(gameData.status === 'notPaid')" (click)="sendEvent('pay')">
+    Pay
+  </button>
+  <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('win')">
+    WIN
+  </button>
+  <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('lose')">
+    LOSE
+  </button>
 </div>

@@ -3,3 +3,10 @@
   (emitter)="events($event)"
 ></app-rock-paper-scissors>
 <app-players-status-table-container></app-players-status-table-container>
+<div class="game-container">
+  <app-timer
+    [initialSeconds]="15"
+    title="Time until event">
+  </app-timer>
+</div>
+

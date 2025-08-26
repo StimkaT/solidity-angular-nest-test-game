@@ -5,6 +5,7 @@ import {
   PlayersStatusTableContainerComponent
 } from '../players-status-table-container/players-status-table-container.component';
 import {LoaderComponent} from '../../components/loader/loader.component';
+import {TimerComponent} from '../../components/timer/timer.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
@@ -12,6 +13,7 @@ import {LoaderComponent} from '../../components/loader/loader.component';
     RockPaperScissorsComponent,
     PlayersStatusTableContainerComponent,
     LoaderComponent,
+    TimerComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-container.component.html',

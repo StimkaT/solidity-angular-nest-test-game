@@ -18,3 +18,36 @@ button {
     rgba(35, 238, 136, 0.4) 0 0 15px 0,
     rgb(29, 202, 106) 0 -2px 0 0 inset;
 }
+
+table  {
+  font-family: Arial, sans-serif;
+  border-collapse: collapse;
+  color: white;
+  width: 100%;
+  margin-bottom: 16px;
+
+  thead {
+    tr {
+      font-size: 18px;
+
+      th {
+        font-weight: 400;
+      }
+    }
+  }
+
+  tbody {
+    font-size: 12px;
+
+    td {
+      text-align: center;
+    }
+  }
+
+  tr, td, th {
+    padding: 4px;
+    border: 1px solid black;
+  }
+}
+
+

@@ -184,6 +184,8 @@ export class GameService {
         })
     );
 
+    const gameDataDB = await this.getGameDataById(gameId.toString());
+
     let gameData: IGameData;
     gameData = {
       gameInfo: {
@@ -192,9 +194,9 @@ export class GameService {
         bet: gameDataById.bet,
         activePlayersCount: gameDataById.activePlayersCount,
         playersNumber: gameDataById.playersNumber,
-        createdAt: !gameDataById.contractAddress ? gameDataById.createdAt : Number(playerData.gameData.createdAt),
-        finishedAt: !gameDataById.contractAddress ? gameDataById.finishedAt : Number(playerData.gameData.finishedAt),
-        updatedAt: !gameDataById.contractAddress ? gameDataById.startedAt : Number(playerData.gameData.startedAt),
+        createdAt: gameDataDB.createdAt,
+        finishedAt: gameDataDB.finishedAt,
+        updatedAt: gameDataDB.updatedAt,
         status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'notPaid' : (!gameDataById.finishedAt ? 'allPaid' : 'Finish')),
       },
       players: players,
@@ -441,9 +443,11 @@ export class GameService {
 
       if (gameDataById?.contractAddress) {
         const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-        const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
-        await this.gameRepository.update({ id: gameId }, {finishedAt: finishedAt,});
-
+        // const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
+        await this.gameRepository.update(
+            { id: gameId },
+            { finishedAt: () => "NOW()" }
+        );
         if (playerData.players && Array.isArray(playerData.players)) {
           for (const player of playerData.players) {
             const updateResult = await this.gamePlayersRepository.update(

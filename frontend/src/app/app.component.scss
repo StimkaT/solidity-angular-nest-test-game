@@ -1,5 +1,10 @@
+:host {
+  display: flex;
+  flex: 1;
+}
+
 app-main-container {
   display: flex;
-  height: 100%;
-  width: 100%;
+  flex-direction: column;
+  flex: 1;
 }
