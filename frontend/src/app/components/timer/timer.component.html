@@ -1,0 +1,13 @@
+<div class="timer-container">
+  <h2 class="timer-title">{{ title }}</h2>
+  <div class="timer-display">
+          <span class="time-value">{{ formattedHours }}</span>
+    <span class="time-separator">:</span>
+          <span class="time-value">{{ formattedMinutes }}</span>
+    <span class="time-separator">:</span>
+          <span class="time-value">{{ formattedSeconds }}</span>
+  </div>
+  @if (isFinished) {
+    <div class="timer-finished">{{ finishText }}</div>
+  }
+</div>

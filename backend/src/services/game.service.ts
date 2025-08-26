@@ -334,28 +334,13 @@ export class GameService {
       where: { id: gameId },
       select: ['type'],
     });
-
-    if (!game) {
-      throw new Error(`Game with ID ${gameId} not found`);
+    let gameTypeWithAddress: any;
+    if (game?.type) {
+      gameTypeWithAddress = await this.gameTypesRepository.findOne({
+        where: { name: game.type },
+        select: ['logicAddress']
+      });
     }
-
-    if (!game.type) {
-      throw new Error(`Game type not set for game ${gameId}`);
-    }
-
-    const gameTypeWithAddress = await this.gameTypesRepository.findOne({
-      where: { name: game.type },
-      select: ['logicAddress']
-    });
-
-    if (!gameTypeWithAddress) {
-      throw new Error(`Game type ${game.type} not found`);
-    }
-
-    if (!gameTypeWithAddress) {
-      throw new Error(`Logic address not set for game type ${game.type}`);
-    }
-
     return gameTypeWithAddress.logicAddress;
   }
 
