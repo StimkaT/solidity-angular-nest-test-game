@@ -2,7 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as gameSol from "./Game.sol";
-export * as testContractSol from "./TestContract.sol";
 export { GameBase__factory } from "./GameBase__factory";
 export { GameLogic__factory } from "./GameLogic__factory";
-export { Lock__factory } from "./Lock__factory";

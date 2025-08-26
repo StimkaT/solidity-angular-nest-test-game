@@ -25,14 +25,6 @@ declare module "hardhat/types/runtime" {
       name: "GameLogic",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GameLogic__factory>;
-    getContractFactory(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
-      name: "Game",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Game__factory>;
 
     getContractAt(
       name: "DelegateCallGameStorage",
@@ -49,16 +41,6 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.GameLogic>;
-    getContractAt(
-      name: "Lock",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "Game",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Game>;
 
     deployContract(
       name: "DelegateCallGameStorage",
@@ -72,14 +54,6 @@ declare module "hardhat/types/runtime" {
       name: "GameLogic",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.GameLogic>;
-    deployContract(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "Game",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Game>;
 
     deployContract(
       name: "DelegateCallGameStorage",
@@ -96,16 +70,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.GameLogic>;
-    deployContract(
-      name: "Lock",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
-    deployContract(
-      name: "Game",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Game>;
 
     // default types
     getContractFactory(

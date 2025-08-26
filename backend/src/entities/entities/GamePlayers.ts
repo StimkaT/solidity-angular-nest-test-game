@@ -27,6 +27,9 @@ export class GamePlayers {
   @Column("int", { name: "user_id" })
   userId: number;
 
+  @Column("float", { name: "win", nullable: true, precision: 12 })
+  win: number | null;
+
   @ManyToOne(() => Games, (games) => games.gamePlayers, {
     onDelete: "CASCADE",
     onUpdate: "NO ACTION",

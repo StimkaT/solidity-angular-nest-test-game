@@ -26,7 +26,7 @@ export interface GameLogicInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "calculatePayouts",
-    values: [BigNumberish, AddressLike[], BigNumberish[]]
+    values: [BigNumberish, AddressLike[], BigNumberish[], BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -79,7 +79,12 @@ export interface GameLogic extends BaseContract {
   ): Promise<this>;
 
   calculatePayouts: TypedContractMethod<
-    [balance: BigNumberish, wallets: AddressLike[], percents: BigNumberish[]],
+    [
+      balance: BigNumberish,
+      wallets: AddressLike[],
+      percents: BigNumberish[],
+      ownerFeePercent: BigNumberish
+    ],
     [bigint[]],
     "view"
   >;
@@ -91,7 +96,12 @@ export interface GameLogic extends BaseContract {
   getFunction(
     nameOrSignature: "calculatePayouts"
   ): TypedContractMethod<
-    [balance: BigNumberish, wallets: AddressLike[], percents: BigNumberish[]],
+    [
+      balance: BigNumberish,
+      wallets: AddressLike[],
+      percents: BigNumberish[],
+      ownerFeePercent: BigNumberish
+    ],
     [bigint[]],
     "view"
   >;

@@ -174,10 +174,11 @@ contract GameBase {
 
         (bool success, bytes memory result) = logicAddr.delegatecall(
             abi.encodeWithSignature(
-                "calculatePayouts(uint256,address[],uint8[])",
+                "calculatePayouts(uint256,address[],uint8[],uint8)",
                 balance,
                 wallets,
-                percents
+                percents,
+                2
             )
         );
         require(success, "Delegatecall failed");

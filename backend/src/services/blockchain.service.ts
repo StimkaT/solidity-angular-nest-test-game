@@ -151,22 +151,17 @@ export class BlockchainService {
         return contract
     }
 
-    // Добавляем async к функции finish
     async finish(data: { contractAddress: string; playerResults: any[] }) {
         try {
             const { contractAddress, playerResults } = data;
 
-            // Загружаем ABI proxy-контракта
             const storageArtifact = require(this.storageArtifactPath);
             const abi = storageArtifact.abi;
 
-            // Создаем экземпляр контракта
             const contract = new ethers.Contract(contractAddress, abi, this.wallet);
 
-            // Вызываем функцию finish
             const tx = await contract.finish(playerResults);
 
-            // Ждем подтверждения транзакции
             const receipt = await tx.wait();
 
             return {

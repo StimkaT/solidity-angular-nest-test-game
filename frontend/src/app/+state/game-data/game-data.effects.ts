@@ -114,34 +114,6 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
-  // getDataGame$ = createEffect(() =>
-  //     this.actions$.pipe(
-  //       ofType(getDataGame),
-  //       withLatestFrom(
-  //         this.store.select(getPlayer),
-  //       ),
-  //       tap(([{game}, player]) => {
-  //         const payload = {
-  //           gameId: game,
-  //           player: player.wallet
-  //         }
-  //         this.gameDataService.getDataGame(payload).subscribe({
-  //           next: (response) => {
-  //             this.store.dispatch(setGameData({ data: response.games }));
-  //             console.log(response.games)
-  //           },
-  //           error: (error) => {
-  //             console.error('Error creating game:', error);
-  //             // this.store.dispatch(loadGameDataFailre({ error }));
-  //           }
-  //         });
-  //
-  //         // this.store.dispatch(getGameDataApi())
-  //       })
-  //     ),
-  //   { dispatch: false }
-  // );
-
   setWebSocketConnection$ = createEffect(() =>
       this.actions$.pipe(
         ofType(setWebSocketConnection),
@@ -281,9 +253,7 @@ export class GameDataEffects {
           this.wsService.leaveGame(wallet, gameId);
 
           this.wsService.onLeaveGameSuccess((data: any) => {
-            // this.store.dispatch(joinGameSuccess({ data }));
             this.store.dispatch(setGameData({ data }));
-            console.log('tyt', data)
           });
 
         })

@@ -3,6 +3,8 @@ import { io, Socket } from 'socket.io-client';
 import {environment} from '../../environments/environment';
 import {setGameData} from '../+state/game-data/game-data.actions';
 import {Store} from '@ngrx/store';
+import {ResultsContainerComponent} from '../containers/results-container/results-container.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -11,6 +13,7 @@ export class WebsocketService {
   private wallet?: string;
 
   private store = inject(Store);
+  private dialog = inject(MatDialog);
 
   socketExists(): boolean {
     return !!this.socket && this.socket.connected;
@@ -35,12 +38,24 @@ export class WebsocketService {
         this.socket!.on('game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
         });
+        this.socket!.on('finish_game_data', (data) => {
+          this.store.dispatch(setGameData({ data }));
+          this.openLoginModal();
+        });
         this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
       });
 
     } else {
       this.socket!.emit('connect_game', { gameId: this.gameId });
     }
+  }
+
+  openLoginModal(): void {
+    const dialogRef = this.dialog.open(ResultsContainerComponent, {
+      width: '30%',
+      height: '30%',
+      hasBackdrop: true,
+    });
   }
 
   joinGame(wallet: string, gameId: number) {
