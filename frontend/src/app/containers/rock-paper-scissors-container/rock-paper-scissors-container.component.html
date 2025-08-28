@@ -4,9 +4,13 @@
 ></app-rock-paper-scissors>
 <app-players-status-table-container></app-players-status-table-container>
 <div class="game-container">
-  <app-timer
-    [initialSeconds]="15"
-    title="Time until event">
-  </app-timer>
+  @if ((getTimer$ | async)?.title) {
+    <app-timer
+      [timerData]="getTimer$ | async"
+      (emitter)="events($event)"
+    >
+    </app-timer>
+  }
+  <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
 </div>
 

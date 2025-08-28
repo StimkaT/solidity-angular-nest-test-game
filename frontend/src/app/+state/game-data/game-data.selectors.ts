@@ -31,6 +31,32 @@ export const selectActiveGames = createSelector(
   selectGameDataState,
   (state: GameDataState) => [...state.activeGameList].reverse()
 );
+export const selectActiveGamesWaitPlayers = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => [...state.activeGameList]
+    .filter(game =>
+      game.contractAddress === null &&
+      game.playersNumber > game.playerNumberSet
+    )
+    .reverse()
+);
+export const selectActiveGamesInProgress = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => [...state.activeGameList]
+    .filter(game =>
+      game.contractAddress !== null &&
+      game.finishedAt === null
+    )
+    .reverse()
+);
+export const selectActiveGamesFinished = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => [...state.activeGameList]
+    .filter(game =>
+      game.finishedAt !== null
+    )
+    .reverse()
+);
 export const selectActiveGameData = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.activeGameData
@@ -39,6 +65,11 @@ export const selectActiveGameData = createSelector(
 export const selectGameTypes = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.gameTypes
+);
+
+export const getTimer = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.timer
 );
 
 export const selectIsConnectedGame = createSelector(

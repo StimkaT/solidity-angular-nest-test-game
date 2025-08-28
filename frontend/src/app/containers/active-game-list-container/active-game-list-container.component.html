@@ -1,6 +1,37 @@
-<app-active-game-list
-  [gameType]="gameType"
-  [player]="getPlayer$ | async"
-  [activeGamesList]="selectActiveGames$ | async"
-  (emitter)="events($event)"
-></app-active-game-list>
+<mat-tab-group class="custom-tab-group" animationDuration="0ms">
+  <mat-tab label="All Games">
+    <app-active-game-list
+      [gameType]="gameType"
+      [player]="getPlayer$ | async"
+      [activeGamesList]="selectActiveGames$ | async"
+      (emitter)="events($event)"
+    ></app-active-game-list>
+  </mat-tab>
+  <mat-tab label="Wait Players">
+    <app-active-game-list
+      [gameType]="gameType"
+      [player]="getPlayer$ | async"
+      [activeGamesList]="selectActiveGamesWaitPlayers$ | async"
+      (emitter)="events($event)"
+    ></app-active-game-list>
+  </mat-tab>
+  <mat-tab label="Game in progress">
+    <app-active-game-list
+      [gameType]="gameType"
+      [player]="getPlayer$ | async"
+      [activeGamesList]="selectActiveGamesInProgress$ | async"
+      (emitter)="events($event)"
+    ></app-active-game-list>
+  </mat-tab>
+  <mat-tab label="Finished">
+    <app-active-game-list
+      [gameType]="gameType"
+      [player]="getPlayer$ | async"
+      [activeGamesList]="selectActiveGamesFinished$ | async"
+      (emitter)="events($event)"
+    ></app-active-game-list>
+  </mat-tab>
+</mat-tab-group>
+
+
+

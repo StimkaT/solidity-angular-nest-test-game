@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import {environment} from '../../environments/environment';
-import {setGameData} from '../+state/game-data/game-data.actions';
+import {setGameData, setTimer} from '../+state/game-data/game-data.actions';
 import {Store} from '@ngrx/store';
 import {ResultsContainerComponent} from '../containers/results-container/results-container.component';
 import {MatDialog} from '@angular/material/dialog';
@@ -40,7 +40,17 @@ export class WebsocketService {
         });
         this.socket!.on('finish_game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
-          this.openLoginModal();
+          this.store.dispatch(setTimer({ second: 0, title: '' }));
+          this.openFinishedModal();
+        });
+        this.socket!.on('playing_time', (data) => {
+          console.log('playing_time', (data))
+          console.log()
+          this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the game' }));
+        });
+        this.socket!.on('betting_time', (data) => {
+          console.log('betting_time', (data))
+          this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the betting' }));
         });
         this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
       });
@@ -50,7 +60,7 @@ export class WebsocketService {
     }
   }
 
-  openLoginModal(): void {
+  openFinishedModal(): void {
     const dialogRef = this.dialog.open(ResultsContainerComponent, {
       width: '30%',
       height: '30%',
@@ -73,9 +83,6 @@ export class WebsocketService {
   onJoinGameSuccess(callback: (data: any) => void) {
     if (this.socket) {
       this.socket.on('join_game_success', callback);
-      if (this.socket.on('join_game', callback)) {
-        console.log('join_game', callback)
-      }
     }
   }
 

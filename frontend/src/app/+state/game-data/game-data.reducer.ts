@@ -13,6 +13,12 @@ export interface IPlayer {
   amountPaid?: number | null; // Какая фактическая сумма пришла к оплате?
   percentage?: number | null; // процент выплат данному игроку от общего банка?
 }
+
+export interface ITimer {
+  second: number | null;
+  title: string;
+}
+
 export interface IGameData {
   gameId: string; // id игры
   launchTime: string; // время создания игры
@@ -45,6 +51,20 @@ export interface IActiveGameList {
   playerNumberSet: number;
   players: IPlayers[];
 }
+
+export interface IDataGameList {
+  id: number;
+  type: string | null;
+  contractAddress: string;
+  ownerAddress: string;
+  finishedAt: Date | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  bet: number;
+  playersNumber: number;
+  playerNumberSet: number;
+}
+
 export interface IPlayers {
   wallet: string;
   bet: boolean;
@@ -64,8 +84,9 @@ export interface GameDataState {
   gameDataAddress: string;
   gameTypes: IGameTypes[];
   gameList: IGameList[];
-  activeGameList: IActiveGameList[];
+  activeGameList: IDataGameList[];
   activeGameData: IActiveGameList;
+  timer: ITimer;
 }
 
 export interface SettingsPartialState {
@@ -111,14 +132,14 @@ export const initialState: GameDataState = {
     {
       id: 1,
       type: 'Rock-Paper-Scissors',
-      status: '',
+      contractAddress: '',
+      ownerAddress: '',
       finishedAt: null,
-      createdAt: '12333',
-      updatedAt: '123',
-      bet: 123444,
-      playersNumber: 3,
-      playerNumberSet: 2,
-      players: []
+      createdAt: '',
+      updatedAt: '',
+      bet: 0,
+      playersNumber: 0,
+      playerNumberSet: 0,
     }
   ],
   activeGameData: {
@@ -132,6 +153,10 @@ export const initialState: GameDataState = {
     playersNumber: 0,
     playerNumberSet: 0,
     players: []
+  },
+  timer: {
+    title: '',
+    second: null,
   }
 };
 
@@ -166,12 +191,13 @@ export const gameDataReducer = createReducer(
       type: item.game_type,
       contractAddress: item.game_contractAddress,
       ownerAddress: item.game_ownerAddress,
-      finishedAt: item.game_finishedAt,
-      createdAt: item.game_createdAt,
-      updatedAt: item.game_updatedAt,
+      finishedAt: item.game_finished_at,
+      createdAt: item.game_created_at,
+      updatedAt: item.game_updated_at,
       bet: item.gameData_bet || 0,
       playersNumber: item.gameData_players_number || 0,
       playerNumberSet: item.gameData_player_number_set || 0,
+
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {
@@ -197,5 +223,13 @@ export const gameDataReducer = createReducer(
   on(GameDataActions.getGameTypesSuccess, (state, { data }) => ({
     ...state,
     gameTypes: data
+  })),
+  on(GameDataActions.setTimer, (state, { second, title }) => ({
+    ...state,
+    timer: {
+      ...state.timer,
+      second,
+      title
+    }
   })),
 );

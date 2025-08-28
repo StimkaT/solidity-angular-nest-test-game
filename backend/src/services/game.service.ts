@@ -35,7 +35,6 @@ export class GameService {
   ) {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
       if(data.event === 'connect_game') {
-        console.log('connect_game')
         const gameData = await this.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       } else if (data.event === 'handleConnection') {
@@ -378,13 +377,15 @@ export class GameService {
 
       const contractData = await this.blockchainService.deployGameLogicAddress(logicAddress);
       await this.setGameLogicAddress(gameId, contractData.logicAddress);
-
+const bettingTime = 5000 * 60;
+const playingTime = 30000 * 60;
       const storageAddress = await this.blockchainService.deployGameStorageAddress(
           players,
-          5000 * 60,
-          30000 * 60,
+          bettingTime,
+          playingTime,
           contractData.logicAddress,
       );
+      this.startTimer('betting_time', bettingTime, gameId);
 
       await this.updateContractAddress(gameId, storageAddress);
       await this.contractListener(gameId, storageAddress);
@@ -392,32 +393,60 @@ export class GameService {
     }
   }
 
+  private timers = new Map<number, NodeJS.Timeout>();
+
+  private async startTimer(note: string, duration: number, gameId: number) {
+    this.stopTimer(gameId);
+
+    let remainingSeconds = duration;
+
+    const intervalId = setInterval(async () => {
+      try {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          await this.sendTimer(note, remainingSeconds, gameId);
+        } else {
+          this.stopTimer(gameId);
+        }
+      } catch (error) {
+        console.error(`Timer error for game ${gameId}:`, error);
+        this.stopTimer(gameId);
+      }
+    }, 1000);
+
+    this.timers.set(gameId, intervalId);
+  }
+
+  private stopTimer(gameId: number) {
+    const timer = this.timers.get(gameId);
+    if (timer) {
+      clearInterval(timer);
+      this.timers.delete(gameId);
+    }
+  }
+
+  async sendTimer(note: string, remainingSeconds: number, gameId: number) {
+    this.gameGateway.send(note, remainingSeconds, gameId)
+  }
+
   async contractListener(gameId: number, storageAddress: any) {
     const contract = this.blockchainService.getContract(storageAddress);
 
     contract.on("LogBet", async (wallet, name, bet, event) => {
-      // console.log('Начинаю обновлять данные')
       const gameData = await this.getGameData(gameId);
       await this.gameGateway.send('game_data', gameData, gameId)
-      // console.log('Заканчиваю обновлять данные')
-      // const balance = await this.blockchainService.getContractBalance(storageAddress);
-      // console.log('START Balance', balance)
-      // console.log('LogBet', wallet, name);
-      // console.log('LogBet', bet, event);
     });
 
-    contract.on("BettingFinished", (event) => {
-      console.log('BettingFinished')
+    contract.on("BettingFinished", async (event) => {
+      const playingTime = 30000 * 60;
+      await this.startTimer('playing_time', playingTime, gameId);
     });
 
     contract.on("GameFinalized", async (timestamp, event) => {
-      // console.log('GameFinalized', timestamp)
-
+      this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
       const gameData = await this.getGameData(gameId);
       await this.gameGateway.send('finish_game_data', gameData, gameId)
-      const balance = await this.blockchainService.getContractBalance(storageAddress);
-      // console.log('FINISH Balance', balance)
     });
 
     return contract

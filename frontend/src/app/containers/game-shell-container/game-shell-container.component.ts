@@ -67,16 +67,14 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
     } else if (event.event === 'Game:pay') {
       this.store.dispatch(sendMoney())
     } else if (event.event === 'Game:win') {
-      console.log('win')
       this.store.dispatch(winGame())
     } else if (event.event === 'Game:lose') {
-      console.log('lose')
       this.store.dispatch(loseGame())
     }
   }
 
   ngOnDestroy() {
-    // this.store.dispatch(disconnectGame())
+    this.store.dispatch(disconnectGame())
     // this.store.dispatch(closeWebSocketConnection({gameId: this.idGame!}))
   }
 }

@@ -5,7 +5,7 @@ import {
   closeWebSocketConnection,
   createGame, disconnectGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadGameListSuccess, loseGame, sendMoney, setGameData,
+  loadGameListSuccess, loseGame, sendMoney, setChoiceGame, setGameData,
   setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection, winGame
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
@@ -91,6 +91,7 @@ export class GameDataEffects {
           }
           this.gameDataService.getGameList(payload).subscribe({
             next: (response) => {
+
               this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },
             error: (error) => {
@@ -261,11 +262,15 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
-  disconnectGame$ = createEffect(() =>
+  setChoiceGame$ = createEffect(() =>
       this.actions$.pipe(
-        ofType(disconnectGame),
-        tap(({}) => {
-          this.wsService.disconnectGame();
+        ofType(setChoiceGame),
+        withLatestFrom(
+          this.store.select(getPlayer),
+        ),
+        tap(([action, player]) => {
+          console.log('action to ws', action)
+          // this.wsService.setChoiceGame(action, player.wallet);
         })
       ),
     { dispatch: false }

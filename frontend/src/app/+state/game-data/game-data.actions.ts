@@ -57,6 +57,10 @@ export const loadGameListSuccess = createAction(
   '[GameData] loadGameListSuccess',
   props<{data: any}>()
 );
+export const setChoiceGame = createAction(
+  '[GameData] setChoiceGame',
+  props<{result: string}>()
+);
 export const joinGame = createAction(
   '[GameData] joinGame',
 );
@@ -79,6 +83,11 @@ export const setGameData = createAction(
 export const gameError = createAction(
   '[GameData] gameError',
   props<{error: any}>()
+);
+
+export const setTimer = createAction(
+  '[GameData] setTimer',
+  props<{second: number, title: string}>()
 );
 
 export const leaveGame = createAction(

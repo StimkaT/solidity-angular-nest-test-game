@@ -1,0 +1,44 @@
+table {
+  width: 100%;
+  color: white;
+  text-align: center;
+
+  thead {
+    tr {
+
+      .first {
+        width: 200px;
+      }
+
+      th {
+        width: auto;
+
+        img {
+          width: 90%;
+          height: auto;
+          cursor: pointer;
+        }
+
+        img:active {
+          border: 3px solid green;
+        }
+      }
+    }
+  }
+
+  tbody {
+
+    td {
+      width: auto;
+    }
+
+    .lose-game {
+      background-color: #7f1d1d;
+    }
+
+    .beSelected {
+      background-color: #1aa964;
+      margin: 8px;
+    }
+  }
+}

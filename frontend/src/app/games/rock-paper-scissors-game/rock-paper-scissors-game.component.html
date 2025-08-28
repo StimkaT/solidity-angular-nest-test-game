@@ -1,0 +1,69 @@
+<table>
+  <thead>
+  <tr>
+    <th class="first"></th>
+    <th>
+      <img
+      class="rock-img"
+      src="./assets/games/rock-paper-scissors/Rock.png"
+      alt="Rock image"
+      (click)="event('rock')"
+    >
+    </th>
+    <th>
+      <img
+        class="scissors-img"
+        src="./assets/games/rock-paper-scissors/Scissors.png"
+        alt="Scissors image"
+        (click)="event('scissors')"
+      >
+    </th>
+    <th>
+      <img
+        class="paper-img"
+        src="./assets/games/rock-paper-scissors/Paper.png"
+        alt="Paper image"
+        (click)="event('paper')"
+      >
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+    @for (player of playerList; track player.wallet) {
+      <tr>
+        @if (player.selected === '') {
+          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        }
+        @if (player.selected === '1') {
+          <td></td>
+          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
+          <td></td>
+          <td></td>
+        }
+        @if (player.selected === '2') {
+          <td></td>
+          <td></td>
+          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
+          <td></td>
+        }
+        @if (player.selected === '3') {
+          <td></td>
+          <td></td>
+          <td></td>
+          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
+        }
+        @if (player.selected === '0') {
+          <td class="lose-game">{{ player.wallet }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+
+
