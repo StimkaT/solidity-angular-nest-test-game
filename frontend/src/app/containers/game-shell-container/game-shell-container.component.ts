@@ -16,6 +16,7 @@ import {
   RockPaperScissorsContainerComponent
 } from '../rock-paper-scissors-container/rock-paper-scissors-container.component';
 import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
+import {GameDiceComponent} from '../../games/game-dice/game-dice.component';
 
 @Component({
   selector: 'app-game-layout-container',
@@ -23,6 +24,7 @@ import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
     GameLayoutComponent,
     AsyncPipe,
     RockPaperScissorsContainerComponent,
+    GameDiceComponent
   ],
   standalone: true,
   templateUrl: './game-shell-container.component.html',

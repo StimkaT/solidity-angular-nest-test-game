@@ -6,10 +6,15 @@
   [isConnected]="!!(selectIsConnectedGame$ | async)"
   (emitter)="events($event)"
 >
-  <app-rock-paper-scissors-container
-    [gameData]="(selectActiveGameData$ | async)!"
-    (emitter)="events($event)"
-  >
-  </app-rock-paper-scissors-container>
+  @if ((selectActiveGameData$ | async)?.type ==='rock-paper-scissors')
+  {
+    <app-rock-paper-scissors-container
+      [gameData]="(selectActiveGameData$ | async)!"
+      (emitter)="events($event)"
+    />
+  } @else if ((selectActiveGameData$ | async)?.type ==='dice') {
+    <app-game-dice  (emitter)="events($event)"></app-game-dice>
+  }
+
 </app-game-layout>
 
