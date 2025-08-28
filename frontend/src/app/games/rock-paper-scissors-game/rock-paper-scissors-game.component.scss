@@ -2,6 +2,7 @@ table {
   width: 100%;
   color: white;
   text-align: center;
+  border-collapse: collapse;
 
   thead {
     tr {
@@ -14,13 +15,13 @@ table {
         width: auto;
 
         img {
-          width: 90%;
+          width: 80%;
           height: auto;
           cursor: pointer;
         }
 
         img:active {
-          border: 3px solid green;
+          border: 5px solid green;
         }
       }
     }
