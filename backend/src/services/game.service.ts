@@ -56,7 +56,7 @@ export class GameService {
         await this.sendMoney(data.payload.gameId, data.payload.wallet);
       } else if (data.event === 'win_game') {
         await this.finishGame('win', data.payload.gameId, data.payload.wallet);
-        } else if (data.event === 'lose_game') {
+      } else if (data.event === 'lose_game') {
         await this.finishGame('lose', data.payload.gameId, data.payload.wallet);
       } else if (data.event === 'leave_game') {
         await this.leaveGame({
@@ -65,8 +65,6 @@ export class GameService {
         });
         const gameData = await this.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
-      } else if (data.event === 'set_choice_game') {
-        await this.setChoiceGame(data.payload);
       }
     })
   }
@@ -365,7 +363,7 @@ export class GameService {
     await this.gameTypesRepository.update({ name: game.type }, { logicAddress });
   }
 
-  async checkEverythingIsReady(gameDataBeforeDeploy, gameId: number) {
+  async checkEverythingIsReady(gameDataBeforeDeploy: any, gameId: number) {
     const allReady = await this.areAllPlayersJoined(gameId);
     let logicAddress = await this.getGameLogicAddress(gameId);
 
@@ -382,15 +380,15 @@ export class GameService {
 
       const contractData = await this.blockchainService.deployGameLogicAddress(logicAddress);
       await this.setGameLogicAddress(gameId, contractData.logicAddress);
-const bettingTime = 5000 * 60;
-const playingTime = 30000 * 60;
+      const bettingTime = 5000 * 60;
+      const playingTime = 30000 * 60;
       const storageAddress = await this.blockchainService.deployGameStorageAddress(
           players,
           bettingTime,
           playingTime,
           contractData.logicAddress,
       );
-      this.startTimer('betting_time', bettingTime, gameId);
+      await this.startTimer('betting_time', bettingTime, gameId);
 
       await this.updateContractAddress(gameId, storageAddress);
       await this.contractListener(gameId, storageAddress);
@@ -437,51 +435,51 @@ const playingTime = 30000 * 60;
   async contractListener(gameId: number, storageAddress: any) {
     const contract = this.blockchainService.getContract(storageAddress);
 
-    contract.on("LogBet", async (wallet, name, bet, event) => {
+    await contract.on("LogBet", async () => {
       const gameData = await this.getGameData(gameId);
-      await this.gameGateway.send('game_data', gameData, gameId)
+      this.gameGateway.send('game_data', gameData, gameId)
     });
 
-    contract.on("BettingFinished", async (event) => {
+    await contract.on("BettingFinished", async () => {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
     });
 
-    contract.on("GameFinalized", async (timestamp, event) => {
+    await contract.on("GameFinalized", async () => {
       this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
       const gameData = await this.getGameData(gameId);
-      await this.gameGateway.send('finish_game_data', gameData, gameId)
+      this.gameGateway.send('finish_game_data', gameData, gameId)
     });
 
     return contract
   }
 
   async updateDataBaseFromBlockchain(gameId: number) {
-      const gameDataById = await this.getGameDataById(gameId.toString());
+    const gameDataById = await this.getGameDataById(gameId.toString());
 
-      if (gameDataById?.contractAddress) {
-        const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-        // const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
-        await this.gameRepository.update(
-            { id: gameId },
-            { finishedAt: () => "NOW()" }
-        );
-        if (playerData.players && Array.isArray(playerData.players)) {
-          for (const player of playerData.players) {
-            const updateResult = await this.gamePlayersRepository.update(
-                {
-                  gameId,
-                  wallet: player.wallet
-                },
-                {
-                  win: Number(player.result),
-                }
-            );
+    if (gameDataById?.contractAddress) {
+      const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
+      // const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
+      await this.gameRepository.update(
+          { id: gameId },
+          { finishedAt: () => "NOW()" }
+      );
+      if (playerData.players && Array.isArray(playerData.players)) {
+        for (const player of playerData.players) {
+          const updateResult = await this.gamePlayersRepository.update(
+              {
+                gameId,
+                wallet: player.wallet
+              },
+              {
+                win: Number(player.result),
+              }
+          );
 
-          }
         }
       }
+    }
   }
 
   async sendMoney(gameId: number, wallet: string) {
@@ -495,7 +493,7 @@ const playingTime = 30000 * 60;
       contractBet: game?.gameData.bet || 0,
       privateKey: userData?.encryptedPrivateKey || '',
     }
-    const pay = await this.blockchainService.playerPayment(dataToPay);
+    await this.blockchainService.playerPayment(dataToPay);
   }
 
   async finishGame(note: string, gameId: number, wallet: string) {
@@ -512,74 +510,15 @@ const playingTime = 30000 * 60;
     }
 
     const playerResults = [
-        {
-          wallet: wallet,
-          percent: (note === 'win') ? 100 : 0
-        }
-      ];
+      {
+        wallet: wallet,
+        percent: (note === 'win') ? 100 : 0
+      }
+    ];
 
-    console.log('send data playerResults', playerResults)
-
-    // Вызов функции finish
-    const result = await this.blockchainService.finish({
+    return await this.blockchainService.finish({
       contractAddress: game.contractAddress,
       playerResults: playerResults
     });
-
-    return result;
-  }
-
-  // Устанавливаем номер раунда setChoiceGame, createNewRound, isRoundFinished
-  async setChoiceGame(data: any) {
-    const { gameId, choice, wallet } = data;
-
-    let rpsRecord = await this.rpsRepository.findOne({
-      where: { gameId, wallets: wallet },
-    });
-
-    if (!rpsRecord) {
-      await this.createNewRound(gameId, wallet, 1, choice);
-    } else {
-      await this.isRoundFinished(gameId, wallet, choice);
-    }
-  }
-
-  async createNewRound(gameId: number, wallet: string, round: number, result: string) {
-    const rpsRecord = this.rpsRepository.create({
-      gameId,
-      wallets: wallet,
-      round,
-      result,
-    });
-    await this.rpsRepository.save(rpsRecord);
-  }
-
-  async isRoundFinished(gameId: number, wallet: string, choice: string) {
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-      relations: ['gameRockPaperScissors', 'gamePlayers', 'gameData'],
-    });
-
-    const allRounds = await this.rpsRepository.find({
-      where: {
-        gameId,
-        wallets: wallet
-      }
-    });
-
-    const maxRound = Math.max(...allRounds.map(record => record.round));
-
-    const countPlayersMadeChoice = await this.rpsRepository.count({
-      where: {
-        gameId,
-        round: maxRound
-      }
-    });
-
-    if (countPlayersMadeChoice === game?.gameData.playersNumber) {
-      const currentRound = maxRound + 1;
-      await this.createNewRound(gameId, wallet, currentRound, choice);
-    } else {
-    }
   }
 }
