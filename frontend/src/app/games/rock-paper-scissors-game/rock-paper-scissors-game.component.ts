@@ -52,6 +52,5 @@ export class RockPaperScissorsGameComponent {
 
   event(note: string) {
     this.store.dispatch(setChoiceGame({result: note}))
-    console.log(note)
   }
 }

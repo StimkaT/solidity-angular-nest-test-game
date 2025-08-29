@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { GameData } from "./GameData";
 import { GamePlayers } from "./GamePlayers";
+import { GameRockPaperScissors } from "./GameRockPaperScissors";
 import { GameTypes } from "./GameTypes";
 
 @Index("idx_games_type_name", ["type"], {})
@@ -49,6 +50,12 @@ export class Games {
 
   @OneToMany(() => GamePlayers, (gamePlayers) => gamePlayers.game)
   gamePlayers: GamePlayers[];
+
+  @OneToMany(
+    () => GameRockPaperScissors,
+    (gameRockPaperScissors) => gameRockPaperScissors.game
+  )
+  gameRockPaperScissors: GameRockPaperScissors[];
 
   @ManyToOne(() => GameTypes, (gameTypes) => gameTypes.games, {
     onDelete: "NO ACTION",

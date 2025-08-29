@@ -15,6 +15,7 @@ import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
 import {GameGateway} from './game-websocket';
 import {BlockchainService} from "../services/blockchain.service";
+import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import {BlockchainService} from "../services/blockchain.service";
       GameData,
       GameTypes,
       GamePlayers,
+      GameRockPaperScissors,
       Users,
     ]),
     JwtModule.registerAsync({
@@ -42,7 +44,7 @@ import {BlockchainService} from "../services/blockchain.service";
     GameService,
     GameDeployService,
     GameGateway,
-    BlockchainService
+    BlockchainService,
   ],
   exports: [JwtModule, PassportModule],
 })

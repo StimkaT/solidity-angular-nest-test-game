@@ -15,11 +15,14 @@ import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
 import {GameGateway} from "../game/game-websocket";
+import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors';
 
 @Injectable()
 export class GameService {
   constructor(
       private configService: ConfigService,
+      @InjectRepository(GameRockPaperScissors)
+      private rpsRepository: Repository<GameRockPaperScissors>,
       @InjectRepository(Games)
       private gameRepository: Repository<Games>,
       @InjectRepository(GamePlayers)
@@ -62,6 +65,8 @@ export class GameService {
         });
         const gameData = await this.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
+      } else if (data.event === 'set_choice_game') {
+        await this.setChoiceGame(data.payload);
       }
     })
   }
@@ -522,5 +527,59 @@ const playingTime = 30000 * 60;
     });
 
     return result;
+  }
+
+  // Устанавливаем номер раунда setChoiceGame, createNewRound, isRoundFinished
+  async setChoiceGame(data: any) {
+    const { gameId, choice, wallet } = data;
+
+    let rpsRecord = await this.rpsRepository.findOne({
+      where: { gameId, wallets: wallet },
+    });
+
+    if (!rpsRecord) {
+      await this.createNewRound(gameId, wallet, 1, choice);
+    } else {
+      await this.isRoundFinished(gameId, wallet, choice);
+    }
+  }
+
+  async createNewRound(gameId: number, wallet: string, round: number, result: string) {
+    const rpsRecord = this.rpsRepository.create({
+      gameId,
+      wallets: wallet,
+      round,
+      result,
+    });
+    await this.rpsRepository.save(rpsRecord);
+  }
+
+  async isRoundFinished(gameId: number, wallet: string, choice: string) {
+    const game = await this.gameRepository.findOne({
+      where: { id: gameId },
+      relations: ['gameRockPaperScissors', 'gamePlayers', 'gameData'],
+    });
+
+    const allRounds = await this.rpsRepository.find({
+      where: {
+        gameId,
+        wallets: wallet
+      }
+    });
+
+    const maxRound = Math.max(...allRounds.map(record => record.round));
+
+    const countPlayersMadeChoice = await this.rpsRepository.count({
+      where: {
+        gameId,
+        round: maxRound
+      }
+    });
+
+    if (countPlayersMadeChoice === game?.gameData.playersNumber) {
+      const currentRound = maxRound + 1;
+      await this.createNewRound(gameId, wallet, currentRound, choice);
+    } else {
+    }
   }
 }

@@ -59,6 +59,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this._websocketEvents.next({event: "join_game", payload});
   }
 
+  @SubscribeMessage('set_choice_game')
+  async handleSetChoiceGame(client: Socket, payload: { wallet: string; choice: string; gameId: number }) {
+      this._websocketEvents.next({event: "set_choice_game", payload});
+  }
+
   @SubscribeMessage('send_money')
   async handleSendMoney(client: Socket, payload: { wallet: string; gameId: number }) {
       this._websocketEvents.next({event: "send_money", payload});

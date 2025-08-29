@@ -7,7 +7,7 @@
         class="rock-img"
         src="./assets/games/rock-paper-scissors/Rock.png"
         alt="Rock image"
-        (click)="event('rock')"
+        (click)="event('1')"
       >
     </th>
     <th>
@@ -15,7 +15,7 @@
         class="scissors-img"
         src="./assets/games/rock-paper-scissors/Scissors.png"
         alt="Scissors image"
-        (click)="event('scissors')"
+        (click)="event('2')"
       >
     </th>
     <th>
@@ -23,7 +23,7 @@
         class="paper-img"
         src="./assets/games/rock-paper-scissors/Paper.png"
         alt="Paper image"
-        (click)="event('paper')"
+        (click)="event('3')"
       >
     </th>
   </tr>
@@ -31,36 +31,21 @@
   <tbody>
     @for (player of playerList; track player.wallet) {
       <tr>
-        @if (player.selected === '') {
-          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        }
-        @if (player.selected === '1') {
-          <td></td>
-          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
-          <td></td>
-          <td></td>
-        }
-        @if (player.selected === '2') {
-          <td></td>
-          <td></td>
-          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
-          <td></td>
-        }
-        @if (player.selected === '3') {
-          <td></td>
-          <td></td>
-          <td></td>
-          <td [class.beSelected]="player.chose" >{{ player.wallet }}</td>
-        }
-        @if (player.selected === '0') {
-          <td class="lose-game">{{ player.wallet }}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        }
+        <td [class.beSelected]="player.chose && player.selected === ''"
+            [class.lose-game]="player.selected === '0'">
+          @if (player.selected === '' || player.selected === '0') {
+            {{ player.wallet }}
+          }
+        </td>
+        <td [class.beSelected]="player.chose && player.selected === '1'">
+          @if (player.selected === '1') { {{ player.wallet }} }
+        </td>
+        <td [class.beSelected]="player.chose && player.selected === '2'">
+          @if (player.selected === '2') { {{ player.wallet }} }
+        </td>
+        <td [class.beSelected]="player.chose && player.selected === '3'">
+          @if (player.selected === '3') { {{ player.wallet }} }
+        </td>
       </tr>
     }
   </tbody>

@@ -80,6 +80,16 @@ export class WebsocketService {
     }
   }
 
+  setChoiceGame(data: string, wallet: string) {
+    if (this.socket) {
+      this.socket.emit('set_choice_game', {
+        gameId: this.gameId,
+        choice: data,
+        wallet,
+      });
+    }
+  }
+
   onJoinGameSuccess(callback: (data: any) => void) {
     if (this.socket) {
       this.socket.on('join_game_success', callback);

@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
   closeWebSocketConnection,
-  createGame, disconnectGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
+  createGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
   loadGameListSuccess, loseGame, sendMoney, setChoiceGame, setGameData,
   setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection, winGame
@@ -269,8 +269,7 @@ export class GameDataEffects {
           this.store.select(getPlayer),
         ),
         tap(([action, player]) => {
-          console.log('action to ws', action)
-          // this.wsService.setChoiceGame(action, player.wallet);
+          this.wsService.setChoiceGame(action.result, player.wallet);
         })
       ),
     { dispatch: false }
