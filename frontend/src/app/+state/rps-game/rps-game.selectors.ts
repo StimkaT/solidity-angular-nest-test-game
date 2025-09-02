@@ -6,3 +6,7 @@ export const selectRpsGameDataRounds = createSelector(
   selectRPSGameState,
   (state: RpsGameState) => state.gamesRounds
 );
+export const getActiveRound = createSelector(
+  selectRPSGameState,
+  (state: RpsGameState) => state.gamesRounds.activeRound
+);

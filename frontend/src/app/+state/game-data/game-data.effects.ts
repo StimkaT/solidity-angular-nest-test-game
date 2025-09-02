@@ -15,6 +15,7 @@ import {ethers} from 'ethers';
 import {getPlayer} from '../auth/auth.selectors';
 import {WebsocketService} from '../../services/websocket.service';
 import {IGameData} from './game-data.reducer';
+import {getActiveRound} from '../rps-game/rps-game.selectors';
 
 @Injectable()
 export class GameDataEffects {
@@ -267,9 +268,10 @@ export class GameDataEffects {
         ofType(setChoiceGame),
         withLatestFrom(
           this.store.select(getPlayer),
+          this.store.select(getActiveRound),
         ),
-        tap(([action, player]) => {
-          this.wsService.setChoiceGame(action.result, player.wallet);
+        tap(([action, player, activeRound]) => {
+          this.wsService.setChoiceGame(action.result, player.wallet, activeRound!);
         })
       ),
     { dispatch: false }

@@ -2,9 +2,9 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { setChoiceGame } from '../../+state/game-data/game-data.actions';
 import { selectRpsGameDataRounds } from '../../+state/rps-game/rps-game.selectors';
-import {AsyncPipe, NgOptimizedImage} from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { Subscription } from 'rxjs';
-import {IRoundResult} from '../../+state/rps-game/rps-game.reducer';
+import { IRoundResult } from '../../+state/rps-game/rps-game.reducer';
 
 @Component({
   selector: 'app-rock-paper-scissors-game',
@@ -22,30 +22,37 @@ export class RockPaperScissorsGameComponent implements OnInit, OnDestroy {
 
   rounds$ = this.store.select(selectRpsGameDataRounds);
   playerList: string[] = [];
-
-  //TODO: разобраться как работает В OnInit
   roundsData: (IRoundResult & { playerMap: Record<string, string | undefined> })[] = [];
 
   ngOnInit() {
-    console.log('roundsData', this.roundsData)
     this.subscription = this.rounds$.subscribe(rounds => {
-      this.playerList = rounds.gamePlayers;
+      if (!rounds || !rounds.roundsData) {
+        this.playerList = [];
+        this.roundsData = [];
+        return;
+      }
+
       this.roundsData = rounds.roundsData.map(round => ({
         ...round,
         playerMap: Object.fromEntries(
           round.players.map(p => [p.wallet, p.choice])
         )
       }));
+
+      this.playerList = Array.from(
+        new Set(
+          this.roundsData.flatMap(round => round.players.map(p => p.wallet))
+        )
+      );
     });
   }
+
 
   event(note: string) {
     this.store.dispatch(setChoiceGame({ result: note }));
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription?.unsubscribe();
   }
 }

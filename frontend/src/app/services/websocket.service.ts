@@ -81,13 +81,13 @@ export class WebsocketService {
     }
   }
 
-  setChoiceGame(data: string, wallet: string) {
+  setChoiceGame(data: string, wallet: string, round: number) {
     if (this.socket) {
       this.socket.emit('set_choice_game', {
         gameId: this.gameId,
         choice: data,
         wallet,
-        // round
+        round
       });
     }
   }

@@ -1,5 +1,7 @@
 <div>
-  @if (roundsData.length ) {
+  @if ((rounds$ | async); as roundsData1 ) {
+
+    @if (roundsData1!.roundsData.length ) {
     <table>
       <thead>
       <tr>
@@ -72,6 +74,7 @@
           }
     </tbody>
   </table>
+  }
 </div>
 
 

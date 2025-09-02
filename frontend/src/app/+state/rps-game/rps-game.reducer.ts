@@ -8,11 +8,13 @@ export interface IRoundResult {
   players: {
     wallet: string;
     choice?: string;
+    status?: string;
   }[];
 }
 
 export interface IRpsRoundsData {
   gameId: number;
+  activeRound: number | null;
   gamePlayers: string[];
   roundsData: IRoundResult[];
 }
@@ -28,6 +30,7 @@ export interface SettingsPartialState {
 export const initialState: RpsGameState = {
   gamesRounds: {
     gameId: 0,
+    activeRound: null,
     gamePlayers: [],
     roundsData: []
   },

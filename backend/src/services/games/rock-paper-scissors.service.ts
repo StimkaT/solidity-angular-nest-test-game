@@ -10,7 +10,6 @@ import {BlockchainService} from '../blockchain.service';
 
 @Injectable()
 export class RockPaperScissorsService {
-
     constructor(
         @InjectRepository(GameRockPaperScissors)
         private rpsRepository: Repository<GameRockPaperScissors>,
@@ -24,16 +23,42 @@ export class RockPaperScissorsService {
         this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
             const gameId = data.payload.gameId;
             const wallet = data.payload.wallet;
-            if (data.event === 'set_choice_game') { //приходит выбор игрока айди кошель
-                // const currentRound = await this.getCurrentRound(gameId);
-                // const gamePlayers = await this.gamePlayerList(gameId);
+            if (data.event === 'set_choice_game') {
+                console.log('выбор', data.payload);
                 const isConnect = await this.playerIsConnect(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameIsStartedButNotFinished(gameId);
                 if (isConnect.length > 0 && gameIsStartedButNotFinished) {
+                    await this.setChoicePlayer(data.payload);
+
                     await this.createRoundRockPaperScissors(gameId);
                 }
             }
         })
+    }
+
+    // сохраняем выбор игрока
+    async setChoicePlayer(data: { gameId: number, choice: string, wallet: string, round: number}) {
+        const hasPlayerBet = await this.checkPlayerBet(data.gameId, data.round, data.wallet);
+
+        if (!hasPlayerBet) {
+            const playerResult = await this.rpsRepository.findOne({
+                where: { gameId: data.gameId, round: data.round, wallets: data.wallet },
+            });
+
+            if (playerResult) {
+                playerResult.result = data.choice;
+                await this.rpsRepository.save(playerResult);
+                console.log('Choice updated for player:', data.wallet);
+            }
+        }
+    }
+
+    async sendRpsData(gameId: number) {
+        const wallets = await this.gamePlayerList(gameId);
+        const roundsData = await this.getRoundsInfo(gameId);
+        const activeRound = await this.getCurrentRound(gameId);
+        const rpsGameData = {gameId, activeRound, roundsData, wallets}
+        this.gameGateway.send('rpsGame_rounds_data', rpsGameData, gameId)
     }
 
     //создаем пустой первый уровень после того как все оплатили - логика нужна для определения статуса на текущий раунд
@@ -58,9 +83,7 @@ export class RockPaperScissorsService {
 
 
                     // await this.setChoiceGame(data.payload);
-                    // const roundsData = await this.getRoundsInfo(gameId);
-                    // const rpsGameData = {gameId, roundsData, gamePlayers}
-                    // this.gameGateway.send('rpsGame_rounds_data', rpsGameData, gameId)
+                    await this.sendRpsData(gameId);
                 }
             } else if (activeRound >= 1) {
                 const checkEveryoneBet = await this.checkEveryoneBet(gameId, activeRound);
@@ -68,6 +91,10 @@ export class RockPaperScissorsService {
                 if (checkEveryoneBet) {
                     await this.determiningWinners(gameId, activeRound, wallets);
                 }
+
+                //добавить логику отправки результата
+                await this.sendRpsData(gameId);
+
 
                 // for (const wallet of wallets) {
                 //     const resultValue = await this.lastRoundResult(wallet, activeRound, gameId);
@@ -86,17 +113,6 @@ export class RockPaperScissorsService {
 
     // определение победителей
     async determiningWinners(gameId: number, activeRound: number, wallets: string[]) {
-        // функция получает список с wallet: responce(ключ-значение)
-        // есть 4 варианта responce 1 2 3 0
-        // 0 - мы не учитываем
-        // сравниваем все остальные ответы
-        // если вариаций responce - более или = 3 то запускаем функцию createNewRound и передаем все ключи туда
-        // если вариаций responce - 1 то запускаем  функцию createNewRound и передаем все ключи туда
-        // если вариаций responce - 2 то проверяем какие это вариации
-        // если 1 и 2 то проигравшие - 1
-        // если 2 и 3 то проигравшие - 2
-        // если 1 и 3 то проигравшие - 3
-        // если победитетелей > 1 то передаем ключи победителей в функцию createNewRound
 
         const losersWallets: string[] = [];
         const winnerWallets: string[] = [];
@@ -241,7 +257,7 @@ export class RockPaperScissorsService {
         return result === 0;
     }
 
-    //определение кошельков которые проиграли
+    // проверка, что все кошельки поставили
     async checkEveryoneBet(gameId: number, activeRound: number) {
         const rpsRecords = await this.rpsRepository.find({
             where: { gameId, round: activeRound },
@@ -259,6 +275,16 @@ export class RockPaperScissorsService {
 
         return true;
     }
+
+    // проверка, что игрок поставил
+    async checkPlayerBet(gameId: number, activeRound: number, wallet: string) {
+        const playerResult = await this.rpsRepository.findOne({
+            where: { gameId, round: activeRound, wallets: wallet },
+        });
+
+        return playerResult!.result !== null;
+    }
+
 
     // Получаем текущий активный раунд
     async getCurrentRound(gameId: number): Promise<number> {
@@ -327,6 +353,14 @@ export class RockPaperScissorsService {
                     const playerData: any = {
                         wallet: bet.wallets
                     };
+
+                    if (bet.result === null) {
+                        playerData.status = "notBet";
+                    } else if (+bet.result === 0) {
+                        playerData.status = "loser";
+                    } else {
+                        playerData.status = "isBet";
+                    }
 
                     if (allPlayersMadeBets && bet.result !== null && bet.result !== undefined) {
                         playerData.choice = bet.result;
