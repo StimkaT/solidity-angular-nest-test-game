@@ -1,14 +1,15 @@
 <div class="content">
-  <h3 class="title">Game Data:</h3>
   <table>
     <thead>
+    <tr>
+      <th colspan="5" class="title">Game Data</th>
+    </tr>
     <tr>
       <th>#</th>
       <th>Created</th>
       <th>Finished</th>
       <th>Bet</th>
-      <th>Number of players needed</th>
-      <th>Current number of players</th>
+      <th>Number of players</th>
     </tr>
     </thead>
     <tbody>
@@ -16,22 +17,11 @@
       <td>{{ gameData.id }}</td>
       <td>{{ gameData.createdAt | date:'medium' }}</td>
       <td>
-        @if (gameData.finishedAt && isValidDate(gameData.finishedAt)) {
           {{ gameData.finishedAt | date:'medium' }}
-        } @else {
-          -
-        }
       </td>
       <td>{{ gameData.bet }}</td>
       <td>{{ gameData.playersNumber}}</td>
-      <td>{{ gameData.playerNumberSet }}</td>
     </tr>
     </tbody>
   </table>
-
-  @if (gameData.status === 'Waiting payment') {
-    <button mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
-      Pay
-    </button>
-  }
 </div>

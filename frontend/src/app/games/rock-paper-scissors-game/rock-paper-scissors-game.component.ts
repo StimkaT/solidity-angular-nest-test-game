@@ -7,13 +7,21 @@ import { Subscription } from 'rxjs';
 import { IRoundResult } from '../../+state/rps-game/rps-game.reducer';
 import {getTimer, selectActiveGameData} from '../../+state/game-data/game-data.selectors';
 import {TimerComponent} from '../../components/timer/timer.component';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import {RoundsStatisticsComponent} from '../../components/rounds-statistics/rounds-statistics.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-game',
   imports: [
     NgOptimizedImage,
     TimerComponent,
-    AsyncPipe
+    AsyncPipe,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RoundsStatisticsComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-game.component.html',

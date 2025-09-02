@@ -1,0 +1,36 @@
+<div>
+  @if ((rounds$ | async); as roundsData1 ) {
+
+    @if (roundsData1!.roundsData.length ) {
+      <table>
+        <thead>
+        <tr>
+          <th class="first">Rounds</th>
+          @for (round of roundsData; track round) {
+            <th>
+              {{round.roundNumber}}
+            </th>
+          }
+        </tr>
+        </thead>
+        <tbody>
+          @for (player of playerList; track player) {
+            <tr>
+              <td class="player-name" [title]="player">
+                {{player}}
+              </td>
+              @for (round of roundsData; track round) {
+                <td>
+                  {{ round.playerMap[player] || '-' }}
+                </td>
+
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</div>
+
+

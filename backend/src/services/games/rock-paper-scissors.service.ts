@@ -28,8 +28,9 @@ export class RockPaperScissorsService {
                 console.log('set_choice_game', data)
                 const isConnect = await this.playerIsConnect(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameIsStartedButNotFinished(gameId);
-                if (isConnect.length > 0 && gameIsStartedButNotFinished) {
+                console.log('11', isConnect.length , 'gameIsStartedButNotFinished', gameIsStartedButNotFinished)
 
+                if (isConnect.length > 0 && gameIsStartedButNotFinished) {
                     const status = await this.getGameStatus(gameId);
                     if (status === 'Game') {
                         await this.setChoicePlayer(data.payload);
@@ -339,7 +340,8 @@ export class RockPaperScissorsService {
         let result = false;
         const status = await this.getGameStatus(gameId)
         // finishedAt возможно лишнее, но для подстраховки - оставил
-        if (!game?.finishedAt && (status === 'Everyone paid')) {
+        console.log('status', status)
+        if (!game?.finishedAt && (status === 'Game')) {
             result = true;
         }
 

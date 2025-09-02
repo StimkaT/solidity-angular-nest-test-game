@@ -1,0 +1,28 @@
+.winner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #0a2919, #143d25); /* Темно-зеленый градиент */
+  box-shadow:
+    rgba(35, 238, 136, 0.4) 0 0 15px 0,
+    rgb(29, 202, 106) 0 -2px 0 0 inset;
+  width: 80%;
+  min-height: 200px;
+  border-radius: 40px;
+
+  .winner-text {
+    font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #cccccc, #f0f0f0, #cccccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      0 0 10px rgba(200, 200, 200, 0.5),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+}

@@ -3,10 +3,19 @@
   [gameData]="gameData"
   (emitter)="events($event)"
 ></app-rock-paper-scissors>
-<span style="color: whitesmoke">Winner: </span>
+  <app-winner
+    [name]="'nameWinner'"
+  ></app-winner>
+  <app-rounds-statistics></app-rounds-statistics>
+
 }
-@if ((selectActiveGameData$ | async)?.status === 'Waiting payment') {
+@if ((selectActiveGameData$ | async)?.status === 'Waiting payment' || (selectActiveGameData$ | async)?.status === 'notStarted') {
   <app-players-status-table-container></app-players-status-table-container>
+}
+@if (gameData.status === 'Waiting payment') {
+  <button class="pay-button" mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
+    Pay
+  </button>
 }
 @if ((selectActiveGameData$ | async)?.status === 'Game') {
   <div class="game-container">

@@ -8,6 +8,9 @@ import {RockPaperScissorsGameComponent} from '../../games/rock-paper-scissors-ga
 import {Store} from '@ngrx/store';
 import {selectActiveGameData} from '../../+state/game-data/game-data.selectors';
 import {AsyncPipe} from '@angular/common';
+import {MatButton} from '@angular/material/button';
+import {RoundsStatisticsComponent} from '../../components/rounds-statistics/rounds-statistics.component';
+import {WinnerComponent} from '../../components/winner/winner.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
@@ -16,6 +19,9 @@ import {AsyncPipe} from '@angular/common';
     PlayersStatusTableContainerComponent,
     RockPaperScissorsGameComponent,
     AsyncPipe,
+    MatButton,
+    RoundsStatisticsComponent,
+    WinnerComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-container.component.html',
@@ -24,6 +30,7 @@ import {AsyncPipe} from '@angular/common';
 export class RockPaperScissorsContainerComponent {
   @Input() gameData!: IActiveGameList;
   @Output() emitter = new EventEmitter();
+  nameWinner = '';
 
   private store = inject(Store)
   selectActiveGameData$ = this.store.select(selectActiveGameData);
@@ -32,5 +39,13 @@ export class RockPaperScissorsContainerComponent {
     } else {
       this.emitter.emit(event);
     }
+  }
+
+
+  sendEvent(event: string) {
+    const message = {
+      event: `Game:${event}`,
+    };
+    this.emitter.emit(message);
   }
 }

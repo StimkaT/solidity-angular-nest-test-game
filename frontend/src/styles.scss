@@ -132,7 +132,7 @@ html, body {
   touch-action: manipulation;
   user-select: none;
   width: 78.4844px;
-  word-spacing: 0px;
+  word-spacing: 0;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-border-image: none;
 
@@ -144,3 +144,19 @@ html, body {
     background-color: rgba(228, 234, 240, 0.1);
   }
 }
+.cdk-overlay-pane {
+  width: 100%;
+  margin: 0 16px 0 16px;
+}
+
+.mat-mdc-menu-panel.custom-menu {
+  background-color: rgba(50, 55, 56, 0.7);
+  width: unset !important;
+  min-width: 800px !important;
+  max-width: 80% !important;
+  min-height: 300px !important;
+  overflow-y: auto !important;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
