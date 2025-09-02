@@ -3,11 +3,13 @@
     <button mat-icon-button class="toggle home-icon" (click)="event('home')">
       <mat-icon>undo</mat-icon>
     </button>
-    <span>{{ title }}: {{ gameData.id }} - {{ gameData.status}}</span>
+    @if (gameData.status === 'notStarted') {
+      <span>{{ title }} | Wait Players: {{ gameData.playerNumberSet}}/{{ gameData.playersNumber}} </span>
+    } @else {
+      <span>{{ title }} | {{ gameData.status}}</span>
+    }
     <span class="example-spacer"></span>
-    <button mat-icon-button class="toggle">
-      <mat-icon>replay</mat-icon>
-    </button>
+    ID: {{ gameData.id }}
   </div>
   <div class="body">
     <ng-content/>

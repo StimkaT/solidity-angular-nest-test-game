@@ -54,10 +54,6 @@ export class GameService {
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       } else if (data.event === 'send_money') {
         await this.sendMoney(data.payload.gameId, data.payload.wallet);
-      } else if (data.event === 'win_game') {
-        await this.finishGame('win', data.payload.gameId, data.payload.wallet);
-      } else if (data.event === 'lose_game') {
-        await this.finishGame('lose', data.payload.gameId, data.payload.wallet);
       } else if (data.event === 'leave_game') {
         await this.leaveGame({
           gameId: data.payload.gameId,
@@ -66,6 +62,12 @@ export class GameService {
         const gameData = await this.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       }
+
+      // else if (data.event === 'win_game') {
+      //   await this.finishGame('win', data.payload.gameId, data.payload.wallet);
+      // } else if (data.event === 'lose_game') {
+      //   await this.finishGame('lose', data.payload.gameId, data.payload.wallet);
+      // }
     })
   }
 
@@ -94,11 +96,11 @@ export class GameService {
       userId: user.id,
     });
 
-    try {
-      await this.updatePlayerNumberSet(game.id);
-    } catch (error) {
-      console.error('Ошибка при обновлении playerNumberSet:', error);
-    }
+    // try {
+    //   await this.updatePlayerNumberSet(game.id);
+    // } catch (error) {
+    //   console.error('Ошибка при обновлении playerNumberSet:', error);
+    // }
 
     return game;
   }
@@ -196,7 +198,7 @@ export class GameService {
         createdAt: gameDataDB.createdAt,
         finishedAt: gameDataDB.finishedAt,
         updatedAt: gameDataDB.updatedAt,
-        status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'notPaid' : (!gameDataById.finishedAt ? 'allPaid' : 'Finish')),
+        status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'Waiting payment' : (!gameDataById.finishedAt ? 'Game' : 'Finished')),
       },
       players: players,
     };
@@ -446,6 +448,8 @@ export class GameService {
     await contract.on("BettingFinished", async () => {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
+      await this.createFirstRound(gameId);
+      await this.rockPaperScissorsService.sendRpsData(gameId);
     });
 
     await contract.on("GameFinalized", async () => {
@@ -497,32 +501,5 @@ export class GameService {
       privateKey: userData?.encryptedPrivateKey || '',
     }
     await this.blockchainService.playerPayment(dataToPay);
-    await this.createFirstRound(gameId);
-  }
-
-  async finishGame(note: string, gameId: number, wallet: string) {
-    const game = await this.getGameById(gameId);
-
-    // Проверяем, что game не null
-    if (!game) {
-      throw new Error(`Game with id ${gameId} not found`);
-    }
-
-    // Проверяем, что contractAddress не null
-    if (!game.contractAddress) {
-      throw new Error(`Contract address for game ${gameId} is not set`);
-    }
-
-    const playerResults = [
-      {
-        wallet: wallet,
-        percent: (note === 'win') ? 100 : 0
-      }
-    ];
-
-    return await this.blockchainService.finish({
-      contractAddress: game.contractAddress,
-      playerResults: playerResults
-    });
   }
 }

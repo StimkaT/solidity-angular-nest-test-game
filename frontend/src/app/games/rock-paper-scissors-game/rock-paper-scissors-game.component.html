@@ -6,20 +6,25 @@
       <thead>
       <tr>
         <th class="first">Раунды/Игроки</th>
-        @for (player of playerList; track player) {
+<!--        @for (player of playerList; track player) {-->
+<!--          <th>-->
+<!--            {{player}}-->
+<!--          </th>-->
+<!--        }-->
+        @for (round of roundsData; track round) {
           <th>
-            {{player}}
+            {{round.roundNumber}}
           </th>
         }
       </tr>
       </thead>
       <tbody>
-        @for (round of roundsData; track round) {
+        @for (player of playerList; track player) {
           <tr>
-            <td>
-              {{round.roundNumber}}
+            <td class="player-name" [title]="player">
+              {{player}}
             </td>
-            @for (player of playerList; track player) {
+            @for (round of roundsData; track round) {
               <td>
                 {{ round.playerMap[player] || '-' }}
               </td>
@@ -27,53 +32,75 @@
             }
           </tr>
         }
+<!--        @for (round of roundsData; track round) {-->
+<!--          <tr>-->
+<!--            <td>-->
+<!--              {{round.roundNumber}}-->
+<!--            </td>-->
+<!--            @for (player of playerList; track player) {-->
+<!--              <td>-->
+<!--                {{ round.playerMap[player] || '-' }}-->
+<!--              </td>-->
+
+<!--            }-->
+<!--          </tr>-->
+<!--        }-->
       </tbody>
     </table>
   }
 
-  <table>
-    <thead>
-    <tr>
-      <th class="first">Игроки</th>
-      <th>
-        <img
-          class="rock-img"
-          ngSrc="./assets/games/rock-paper-scissors/Rock.png"
-          alt="Rock image"
-          (click)="event('1')"
-          height="1024" width="1024">
-      </th>
-      <th>
-        <img
-          class="scissors-img"
-          ngSrc="./assets/games/rock-paper-scissors/Scissors.png"
-          alt="Scissors image"
-          (click)="event('2')"
-          height="1024" width="1024">
-      </th>
-      <th>
-        <img
-          class="paper-img"
-          ngSrc="./assets/games/rock-paper-scissors/Paper.png"
-          alt="Paper image"
-          (click)="event('3')"
-          height="1024" width="1024">
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-          @for (player of playerList; track player) {
-            <tr>
-                <td
-                  colspan="4"
-                >{{ player }}</td>
+    Round: ... time:
+    @if ((getTimer$ | async)?.title) {
+      <app-timer
+        [timerData]="getTimer$ | async"
+        (emitter)="events($event)"
+      >
+      </app-timer>
+    }
 
-<!--              [class.beSelected]="player.chose && player.selected === ''"-->
-<!--              [class.lose-game]="player.selected === '0'"-->
+    @if ((selectActiveGameData$ | async)?.status === 'Game') {
+      <table>
+        <thead>
+        <tr>
+          <th class="first"></th>
+          <th>
+            <img
+              class="rock-img"
+              ngSrc="./assets/games/rock-paper-scissors/Rock.png"
+              alt="Rock image"
+              (click)="event('1')"
+              height="1024" width="1024">
+          </th>
+          <th>
+            <img
+              class="scissors-img"
+              ngSrc="./assets/games/rock-paper-scissors/Scissors.png"
+              alt="Scissors image"
+              (click)="event('2')"
+              height="1024" width="1024">
+          </th>
+          <th>
+            <img
+              class="paper-img"
+              ngSrc="./assets/games/rock-paper-scissors/Paper.png"
+              alt="Paper image"
+              (click)="event('3')"
+              height="1024" width="1024">
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (player of playerList; track player; let i = $index) {
+            <tr>
+              @if (i === 0) {
+                <td [attr.rowspan]="playerList.length">Игроки</td>
+              }
+              <td colspan="3">{{ player }}</td>
             </tr>
           }
-    </tbody>
-  </table>
+        </tbody>
+      </table>
+    }
   }
 </div>
 

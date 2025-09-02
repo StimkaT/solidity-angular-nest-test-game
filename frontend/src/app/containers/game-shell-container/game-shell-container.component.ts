@@ -9,7 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
   disconnectGame,
   getDataGameAndSetWebSocket, joinGame,
-  leaveGame, loseGame, sendMoney, winGame
+  leaveGame, sendMoney
 } from '../../+state/game-data/game-data.actions';
 import {selectActiveGameData, selectIsConnectedGame} from '../../+state/game-data/game-data.selectors';
 import {
@@ -68,10 +68,6 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
       this.router.navigate([`/game-list/${event.title.toLowerCase()}`]);
     } else if (event.event === 'Game:pay') {
       this.store.dispatch(sendMoney())
-    } else if (event.event === 'Game:win') {
-      this.store.dispatch(winGame())
-    } else if (event.event === 'Game:lose') {
-      this.store.dispatch(loseGame())
     }
   }
 

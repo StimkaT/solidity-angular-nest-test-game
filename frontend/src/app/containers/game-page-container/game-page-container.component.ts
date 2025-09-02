@@ -40,7 +40,7 @@ export class GamePageContainerComponent implements OnInit {
       if (event.data === 'Start') {
         this.store.dispatch(loadGameData({data: event.gameData}));
       }
-      if (event.data === 'Finish') {
+      if (event.data === 'Finished') {
         this.store.dispatch(getGameData({data: event.gameData}));
       }
     } else if (event.event === 'MultiselectComponent:CHANGE') {

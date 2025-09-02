@@ -48,3 +48,15 @@ table {
 .players-in-game {
 
 }
+
+
+.player-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.player-name:hover {
+  background-color: #1aa964;
+}

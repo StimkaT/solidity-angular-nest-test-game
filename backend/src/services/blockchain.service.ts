@@ -152,6 +152,7 @@ export class BlockchainService {
     }
 
     async finish(data: { contractAddress: string; playerResults: any[] }) {
+        console.log('finishBlock', data)
         try {
             const { contractAddress, playerResults } = data;
 

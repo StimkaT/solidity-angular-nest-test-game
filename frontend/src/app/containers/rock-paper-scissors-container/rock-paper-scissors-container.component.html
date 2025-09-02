@@ -1,16 +1,17 @@
-<app-rock-paper-scissors
+@if ((selectActiveGameData$ | async)?.status === 'Finished') {
+  <app-rock-paper-scissors
   [gameData]="gameData"
   (emitter)="events($event)"
 ></app-rock-paper-scissors>
-<app-players-status-table-container></app-players-status-table-container>
-<div class="game-container">
-  @if ((getTimer$ | async)?.title) {
-    <app-timer
-      [timerData]="getTimer$ | async"
-      (emitter)="events($event)"
-    >
-    </app-timer>
-  }
-  <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
-</div>
+<span style="color: whitesmoke">Winner: </span>
+}
+@if ((selectActiveGameData$ | async)?.status === 'Waiting payment') {
+  <app-players-status-table-container></app-players-status-table-container>
+}
+@if ((selectActiveGameData$ | async)?.status === 'Game') {
+  <div class="game-container">
+    <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
+  </div>
+}
+
 

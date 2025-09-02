@@ -29,13 +29,9 @@
     </tbody>
   </table>
 
-  <button mat-button [disabled]="!(gameData.status === 'notPaid')" (click)="sendEvent('pay')">
-    Pay
-  </button>
-  <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('win')">
-    WIN
-  </button>
-  <button mat-button [disabled]="!(gameData.status === 'allPaid')" (click)="sendEvent('lose')">
-    LOSE
-  </button>
+  @if (gameData.status === 'Waiting payment') {
+    <button mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
+      Pay
+    </button>
+  }
 </div>
