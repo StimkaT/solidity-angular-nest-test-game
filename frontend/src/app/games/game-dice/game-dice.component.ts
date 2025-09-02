@@ -6,6 +6,7 @@ import {DiceComponent} from './components/dice/dice.component';
   imports: [
     DiceComponent
   ],
+  standalone: true,
   templateUrl: './game-dice.component.html',
   styleUrl: './game-dice.component.scss'
 })

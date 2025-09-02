@@ -16,6 +16,7 @@ import { GameTypes } from '../entities/entities/GameTypes';
 import {GameGateway} from './game-websocket';
 import {BlockchainService} from "../services/blockchain.service";
 import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors';
+import {RockPaperScissorsService} from '../services/games/rock-paper-scissors.service';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors'
     GameDeployService,
     GameGateway,
     BlockchainService,
+    RockPaperScissorsService
   ],
   exports: [JwtModule, PassportModule],
 })

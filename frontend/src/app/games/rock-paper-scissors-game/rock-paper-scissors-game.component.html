@@ -1,54 +1,77 @@
-<table>
-  <thead>
-  <tr>
-    <th class="first"></th>
-    <th>
-      <img
-        class="rock-img"
-        src="./assets/games/rock-paper-scissors/Rock.png"
-        alt="Rock image"
-        (click)="event('1')"
-      >
-    </th>
-    <th>
-      <img
-        class="scissors-img"
-        src="./assets/games/rock-paper-scissors/Scissors.png"
-        alt="Scissors image"
-        (click)="event('2')"
-      >
-    </th>
-    <th>
-      <img
-        class="paper-img"
-        src="./assets/games/rock-paper-scissors/Paper.png"
-        alt="Paper image"
-        (click)="event('3')"
-      >
-    </th>
-  </tr>
-  </thead>
-  <tbody>
-    @for (player of playerList; track player.wallet) {
+<div>
+  @if (roundsData.length ) {
+    <table>
+      <thead>
       <tr>
-        <td [class.beSelected]="player.chose && player.selected === ''"
-            [class.lose-game]="player.selected === '0'">
-          @if (player.selected === '' || player.selected === '0') {
-            {{ player.wallet }}
-          }
-        </td>
-        <td [class.beSelected]="player.chose && player.selected === '1'">
-          @if (player.selected === '1') { {{ player.wallet }} }
-        </td>
-        <td [class.beSelected]="player.chose && player.selected === '2'">
-          @if (player.selected === '2') { {{ player.wallet }} }
-        </td>
-        <td [class.beSelected]="player.chose && player.selected === '3'">
-          @if (player.selected === '3') { {{ player.wallet }} }
-        </td>
+        <th class="first">Раунды/Игроки</th>
+        @for (player of playerList; track player) {
+          <th>
+            {{player}}
+          </th>
+        }
       </tr>
-    }
-  </tbody>
-</table>
+      </thead>
+      <tbody>
+        @for (round of roundsData; track round) {
+          <tr>
+            <td>
+              {{round.roundNumber}}
+            </td>
+            @for (player of playerList; track player) {
+              <td>
+                {{ round.playerMap[player] || '-' }}
+              </td>
+
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <table>
+    <thead>
+    <tr>
+      <th class="first">Игроки</th>
+      <th>
+        <img
+          class="rock-img"
+          ngSrc="./assets/games/rock-paper-scissors/Rock.png"
+          alt="Rock image"
+          (click)="event('1')"
+          height="1024" width="1024">
+      </th>
+      <th>
+        <img
+          class="scissors-img"
+          ngSrc="./assets/games/rock-paper-scissors/Scissors.png"
+          alt="Scissors image"
+          (click)="event('2')"
+          height="1024" width="1024">
+      </th>
+      <th>
+        <img
+          class="paper-img"
+          ngSrc="./assets/games/rock-paper-scissors/Paper.png"
+          alt="Paper image"
+          (click)="event('3')"
+          height="1024" width="1024">
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+          @for (player of playerList; track player) {
+            <tr>
+                <td
+                  colspan="4"
+                >{{ player }}</td>
+
+<!--              [class.beSelected]="player.chose && player.selected === ''"-->
+<!--              [class.lose-game]="player.selected === '0'"-->
+            </tr>
+          }
+    </tbody>
+  </table>
+</div>
 
 

@@ -5,6 +5,7 @@ import {setGameData, setTimer} from '../+state/game-data/game-data.actions';
 import {Store} from '@ngrx/store';
 import {ResultsContainerComponent} from '../containers/results-container/results-container.component';
 import {MatDialog} from '@angular/material/dialog';
+import {setRpsRoundsData} from '../+state/rps-game/rps-game.actions';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -44,13 +45,13 @@ export class WebsocketService {
           this.openFinishedModal();
         });
         this.socket!.on('playing_time', (data) => {
-          console.log('playing_time', (data))
-          console.log()
           this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the game' }));
         });
         this.socket!.on('betting_time', (data) => {
-          console.log('betting_time', (data))
           this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the betting' }));
+        });
+        this.socket!.on('rpsGame_rounds_data', (data) => {
+          this.store.dispatch(setRpsRoundsData({ data }));
         });
         this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
       });
@@ -86,6 +87,7 @@ export class WebsocketService {
         gameId: this.gameId,
         choice: data,
         wallet,
+        // round
       });
     }
   }

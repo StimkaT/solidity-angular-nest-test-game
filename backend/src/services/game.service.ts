@@ -15,14 +15,12 @@ import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
 import {GameGateway} from "../game/game-websocket";
-import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors';
+import {RockPaperScissorsService} from './games/rock-paper-scissors.service';
 
 @Injectable()
 export class GameService {
   constructor(
       private configService: ConfigService,
-      @InjectRepository(GameRockPaperScissors)
-      private rpsRepository: Repository<GameRockPaperScissors>,
       @InjectRepository(Games)
       private gameRepository: Repository<Games>,
       @InjectRepository(GamePlayers)
@@ -34,6 +32,7 @@ export class GameService {
       @InjectRepository(GameData)
       private gameDataRepository: Repository<GameData>,
       private blockchainService: BlockchainService,
+      private rockPaperScissorsService: RockPaperScissorsService,
       private readonly gameGateway: GameGateway
   ) {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
@@ -167,9 +166,6 @@ export class GameService {
 
     if (gameDataById.contractAddress) {
       playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-      console.log('По этому адресу запрос за данными в блокчейн', gameDataById.contractAddress)
-      console.log('Это ответ по запросу players', playerData.players)
-      console.log('Это ответ по запросу gameData', playerData.gameData)
     }
 
     const players = await Promise.all(
@@ -389,10 +385,16 @@ export class GameService {
           contractData.logicAddress,
       );
       await this.startTimer('betting_time', bettingTime, gameId);
-
       await this.updateContractAddress(gameId, storageAddress);
       await this.contractListener(gameId, storageAddress);
 
+    }
+  }
+
+  async createFirstRound(gameId: number) {
+    const type = (await this.getGameDataById(gameId.toString())).type
+    if (type === 'rock-paper-scissors') {
+      await this.rockPaperScissorsService.createRoundRockPaperScissors(gameId);
     }
   }
 
@@ -494,6 +496,7 @@ export class GameService {
       privateKey: userData?.encryptedPrivateKey || '',
     }
     await this.blockchainService.playerPayment(dataToPay);
+    await this.createFirstRound(gameId);
   }
 
   async finishGame(note: string, gameId: number, wallet: string) {

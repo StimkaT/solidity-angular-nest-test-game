@@ -3,6 +3,7 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@an
 @Component({
   selector: 'app-dice',
   imports: [],
+  standalone: true,
   templateUrl: './dice.component.html',
   styleUrl: './dice.component.scss'
 })

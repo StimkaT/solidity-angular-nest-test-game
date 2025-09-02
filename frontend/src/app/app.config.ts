@@ -5,12 +5,14 @@ import { routes } from './app.routes';
 import {provideStore} from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import {GAME_DATA_FEATURE_KEY, gameDataReducer} from './+state/game-data/game-data.reducer';
-import {GameDataEffects} from './+state/game-data/game-data.effects';
-import {provideHttpClient, withInterceptors} from '@angular/common/http';
-import {AuthEffects} from './+state/auth/auth.effects';
-import {AUTH_FEATURE_KEY, authReducer} from './+state/auth/auth.reducer';
 import {AuthInterceptor} from './services/auth.interceptor';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {GAME_DATA_FEATURE_KEY, gameDataReducer} from './+state/game-data/game-data.reducer';
+import {RPS_GAME_FEATURE_KEY, rpsGameReducer} from './+state/rps-game/rps-game.reducer';
+import {AUTH_FEATURE_KEY, authReducer} from './+state/auth/auth.reducer';
+import {GameDataEffects} from './+state/game-data/game-data.effects';
+import {AuthEffects} from './+state/auth/auth.effects';
+import {RpsGameEffects} from './+state/rps-game/rps-game.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,10 +25,12 @@ export const appConfig: ApplicationConfig = {
     ),
     provideEffects([
       GameDataEffects,
-      AuthEffects
+      AuthEffects,
+      RpsGameEffects,
     ]),
     provideStore({
       [GAME_DATA_FEATURE_KEY]: gameDataReducer,
+      [RPS_GAME_FEATURE_KEY]: rpsGameReducer,
       [AUTH_FEATURE_KEY]: authReducer,
     }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
