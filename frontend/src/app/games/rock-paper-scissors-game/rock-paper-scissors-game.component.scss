@@ -110,6 +110,7 @@ section {
       background-color: rgba(255, 255, 255, 0.3);
       border-radius: 15px;
       border: 2px solid #808080FF;
+      cursor: pointer;
 
       .name {
         padding: 12px 10px;
@@ -135,6 +136,7 @@ section {
 
     .is-selected {
       background-color: #03a51d;
+      //background-color: #808080FF;
       box-shadow:
         0 0 0 2px rgba(255, 255, 255, 0.3),
         0 8px 25px rgba(255, 255, 255, 0.4),
@@ -147,6 +149,11 @@ section {
       mat-icon {
         color: white;
       }
+    }
+
+    .no-clicks {
+      pointer-events: none;
+      cursor: not-allowed;
     }
   }
 }

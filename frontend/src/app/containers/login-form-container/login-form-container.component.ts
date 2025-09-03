@@ -6,13 +6,13 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {RegistrationFormContainerComponent} from '../registration-form-container/registration-form-container.component';
 import {login} from '../../+state/auth/auth.actions';
 import {Store} from '@ngrx/store';
-import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-login-form-container',
   imports: [
     LoginFormComponent,
-    MatButtonModule, MatIconModule, NgOptimizedImage
+    MatButtonModule,
+    MatIconModule,
   ],
   standalone: true,
   templateUrl: './login-form-container.component.html',

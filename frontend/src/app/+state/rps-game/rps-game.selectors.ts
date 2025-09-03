@@ -1,12 +1,42 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {RPS_GAME_FEATURE_KEY, RpsGameState} from './rps-game.reducer';
+import {IRoundsViewData, RPS_GAME_FEATURE_KEY, RpsGameState} from './rps-game.reducer';
 
 export const selectRPSGameState = createFeatureSelector<RpsGameState>(RPS_GAME_FEATURE_KEY);
+export const getActiveRound = createSelector(
+  selectRPSGameState,
+  (state: RpsGameState) => state.gamesRounds.activeRound
+);
+
+export const getGameElements = createSelector(
+  selectRPSGameState,
+  (state: RpsGameState) => state.gameElements
+);
+
 export const selectRpsGameDataRounds = createSelector(
   selectRPSGameState,
   (state: RpsGameState) => state.gamesRounds
 );
-export const getActiveRound = createSelector(
-  selectRPSGameState,
-  (state: RpsGameState) => state.gamesRounds.activeRound
+
+export const selectRoundsViewData = createSelector(
+  selectRpsGameDataRounds,
+  (rounds): IRoundsViewData => {
+    if (!rounds?.roundsData?.length) {
+      return { roundsData: [], playerList: [], hasData: false };
+    }
+
+    const enhancedRoundsData = rounds.roundsData.map(round => ({
+      ...round,
+      playerDataMap: new Map(round.players.map(p => [p.wallet, p]))
+    }));
+
+    const playerList = Array.from(
+      new Set(enhancedRoundsData.flatMap(round => round.players.map(p => p.wallet)))
+    );
+
+    return {
+      roundsData: enhancedRoundsData,
+      playerList,
+      hasData: true
+    };
+  }
 );

@@ -25,15 +25,13 @@ export class RockPaperScissorsService {
             const wallet = data.payload.wallet;
             const round = data.payload.round;
             if (data.event === 'set_choice_game') {
-                console.log('set_choice_game', data)
                 const isConnect = await this.playerIsConnect(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameIsStartedButNotFinished(gameId);
-                console.log('11', isConnect.length , 'gameIsStartedButNotFinished', gameIsStartedButNotFinished)
-
                 if (isConnect.length > 0 && gameIsStartedButNotFinished) {
                     const status = await this.getGameStatus(gameId);
                     if (status === 'Game') {
                         await this.setChoicePlayer(data.payload);
+                        await this.sendRpsIntermediateData(gameId);
                         const checkEveryoneBet = await this.checkEveryoneBet(gameId, round);
                         console.log('checkEveryoneBet', checkEveryoneBet)
                         if (checkEveryoneBet) {
@@ -69,6 +67,14 @@ export class RockPaperScissorsService {
         const activeRound = await this.getCurrentRound(gameId);
         const rpsGameData = {gameId, activeRound, roundsData, wallets}
         this.gameGateway.send('rpsGame_rounds_data', rpsGameData, gameId)
+    }
+
+    async sendRpsIntermediateData(gameId: number) {
+        const activeRound = await this.getCurrentRound(gameId);
+        const roundsData = await this.getRoundsInfo(gameId);
+        const wallets = await this.gamePlayerList(gameId);
+        const rpsGameData = {gameId, activeRound, roundsData, wallets}
+        this.gameGateway.send('rpsGame_intermediate_round_data', rpsGameData, gameId)
     }
 
     //создаем пустой первый уровень после того как все оплатили - логика нужна для определения статуса на текущий раунд

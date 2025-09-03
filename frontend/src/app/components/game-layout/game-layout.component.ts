@@ -3,8 +3,6 @@ import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {Store} from '@ngrx/store';
-import {AsyncPipe} from '@angular/common';
-import {TimerComponent} from '../timer/timer.component';
 import {setTimer} from '../../+state/game-data/game-data.actions';
 
 @Component({
@@ -14,8 +12,6 @@ import {setTimer} from '../../+state/game-data/game-data.actions';
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
-    AsyncPipe,
-    TimerComponent,
   ],
   standalone: true,
   templateUrl: './game-layout.component.html',

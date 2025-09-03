@@ -1,40 +1,50 @@
 <div class="table-container">
-  @if ((rounds$ | async); as roundsData1 ) {
-
-    @if (roundsData1!.roundsData.length ) {
+  @if (roundsViewData$ | async; as data) {
+    @if (data.hasData) {
       <table>
         <thead>
         <tr>
           <th class="first"></th>
-          <th [attr.colspan]="roundsData.length">Rounds</th>
+          <th [attr.colspan]="data.roundsData.length">Rounds</th>
         </tr>
         <tr>
           <th class="first"></th>
-          @for (round of roundsData; track round) {
-            <th>
-              {{round.roundNumber}}
-            </th>
+          @for (round of data.roundsData; track round.roundNumber) {
+            <th>{{ round.roundNumber }}</th>
           }
         </tr>
         </thead>
         <tbody>
-          @for (player of playerList; track player) {
+          @for (player of data.playerList; track player) {
             <tr>
               <td class="player-name" [title]="player">
-                {{player}}
+                {{ player }}
               </td>
-              @for (round of roundsData; track round) {
-                <td>
-                  {{ round.playerMap[player] || '-' }}
-                </td>
 
+              @for (round of data.roundsData; track round.roundNumber) {
+                <td>
+                  @if (round.playerDataMap.has(player)) {
+                    <!-- Получаем данные напрямую из Map -->
+                    @if (round.playerDataMap.get(player)!.choice) {
+                      @if (round.playerDataMap.get(player)!.typeChoice === 'icon') {
+                        <mat-icon>{{ round.playerDataMap.get(player)!.choice }}</mat-icon>
+                      } @else {
+                        {{ round.playerDataMap.get(player)!.choice }}
+                      }
+                    } @else {
+                      -
+                    }
+                  } @else {
+                    -
+                  }
+                </td>
               }
             </tr>
           }
         </tbody>
       </table>
+    } @else {
+      <p class="no-data">No rounds data available</p>
     }
   }
 </div>
-
-

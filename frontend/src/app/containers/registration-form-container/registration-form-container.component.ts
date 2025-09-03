@@ -4,13 +4,11 @@ import {LoginFormContainerComponent} from '../login-form-container/login-form-co
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {addAccount} from '../../+state/auth/auth.actions';
-import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-registration-form-container',
   imports: [
     RegistrationFormComponent,
-    NgOptimizedImage,
   ],
   standalone: true,
   templateUrl: './registration-form-container.component.html',

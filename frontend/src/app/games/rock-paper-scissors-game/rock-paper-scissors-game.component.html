@@ -1,11 +1,12 @@
 <div class="main-game">
   @if ((selectActiveGameData$ | async)?.status === 'Game') {
     <div class="game-container">
-      @for (element of gameElements; track element) {
+      @for (element of (getGameElements$ | async); track element) {
         <div
           class="profile-box"
           [class.is-selected]="element.check === true"
           [class.is-not-selected]="element.check === false"
+          [class.no-clicks]="element.check !== null"
           (click)="event(element.eventText)"
         >
           <mat-icon>

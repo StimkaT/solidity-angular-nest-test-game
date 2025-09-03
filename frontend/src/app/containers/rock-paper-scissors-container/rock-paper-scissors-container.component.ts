@@ -8,7 +8,6 @@ import {RockPaperScissorsGameComponent} from '../../games/rock-paper-scissors-ga
 import {Store} from '@ngrx/store';
 import {selectActiveGameData} from '../../+state/game-data/game-data.selectors';
 import {AsyncPipe} from '@angular/common';
-import {MatButton} from '@angular/material/button';
 import {RoundsStatisticsComponent} from '../../components/rounds-statistics/rounds-statistics.component';
 import {WinnerComponent} from '../../components/winner/winner.component';
 import {PlayersListInGameComponent} from '../../components/players-list-in-game/players-list-in-game.component';
@@ -21,7 +20,6 @@ import {StatisticButtonComponent} from '../../components/statistic-button/statis
     PlayersStatusTableContainerComponent,
     RockPaperScissorsGameComponent,
     AsyncPipe,
-    MatButton,
     RoundsStatisticsComponent,
     WinnerComponent,
     PlayersListInGameComponent,
