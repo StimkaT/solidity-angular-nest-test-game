@@ -1,32 +1,44 @@
 <div class="players-in-game">
   <div class="players-result">
-    @for (player of playerList; track player.wallet) {
+    @for (player of gameFlow.players; track player.wallet) {
       <div
         class="result-color-box"
-        [class.choice-made]="player.choice === 'ready' || player.choice === 'win' || player.choice === 'lose'"
-        [class.show-winner-choice]="player.choice === 'win'"
-        [class.show-loser-choice]="player.choice === 'lose'"
+        [class.choice-made]="player.status === 'isBet' || player.status === 'win' || player.status === 'loser'"
+        [class.show-winner-choice]="player.status === 'win'"
+        [class.show-loser-choice]="player.status === 'loser'"
       >
-        @if (player.resultType === 'icon') {
-          <mat-icon>
-            {{ player.result }}
-          </mat-icon>
-        } @else if (player.resultType === 'text') {
-          <span> {{ player.result }} </span>
+        @if (player.typeChoice === 'icon') {
+          @if (player.status === 'loser' && player.choice === '') {
+            <mat-icon>
+              clear
+            </mat-icon>
+          }
+          @if (player.status !== 'loser' && player.choice === '') {
+            <mat-icon>
+              question_mark
+            </mat-icon>
+          }
+          @if (player.choice !== '') {
+            <mat-icon>
+              {{ player.choice }}
+            </mat-icon>
+          }
+        } @else if (player.typeChoice === 'text') {
+          <span> {{ player.choice }} </span>
         }
       </div>
     }
   </div>
 
   <div class="players-profile">
-    @for (player of playerList; track player.wallet) {
+    @for (player of gameFlow.players; track player.wallet) {
       <div class="profile-box">
         <div class="profile-photo">
           <mat-icon>
-            {{ player.photo }}
+            person_outline
           </mat-icon>
         </div>
-        <span class="profile-name">{{ player.name }}</span>
+        <span class="profile-name">{{ player.wallet }}</span>
       </div>
     }
   </div>

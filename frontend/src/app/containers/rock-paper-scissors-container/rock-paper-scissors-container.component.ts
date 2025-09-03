@@ -12,6 +12,9 @@ import {RoundsStatisticsComponent} from '../../components/rounds-statistics/roun
 import {WinnerComponent} from '../../components/winner/winner.component';
 import {PlayersListInGameComponent} from '../../components/players-list-in-game/players-list-in-game.component';
 import {StatisticButtonComponent} from '../../components/statistic-button/statistic-button.component';
+import {
+  PlayerListInGameContainerComponent
+} from '../player-list-in-game-container/player-list-in-game-container.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
@@ -24,6 +27,7 @@ import {StatisticButtonComponent} from '../../components/statistic-button/statis
     WinnerComponent,
     PlayersListInGameComponent,
     StatisticButtonComponent,
+    PlayerListInGameContainerComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-container.component.html',
@@ -36,6 +40,7 @@ export class RockPaperScissorsContainerComponent {
 
   private store = inject(Store)
   selectActiveGameData$ = this.store.select(selectActiveGameData);
+
   events(event: any) {
     if(event.event === 'RockPaperScissorsComponent:someEvents') {
     } else {

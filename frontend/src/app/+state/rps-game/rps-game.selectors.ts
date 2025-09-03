@@ -17,6 +17,11 @@ export const selectRpsGameDataRounds = createSelector(
   (state: RpsGameState) => state.gamesRounds
 );
 
+export const selectRpsDataRound = createSelector(
+  selectRPSGameState,
+  (state: RpsGameState) => state.gamesRounds.roundsData[state.gamesRounds.roundsData.length - 1],
+);
+
 export const selectRoundsViewData = createSelector(
   selectRpsGameDataRounds,
   (rounds): IRoundsViewData => {

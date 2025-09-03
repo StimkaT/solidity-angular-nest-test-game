@@ -32,6 +32,7 @@ export class RockPaperScissorsService {
                     if (status === 'Game') {
                         await this.setChoicePlayer(data.payload);
                         await this.sendRpsIntermediateData(gameId);
+                        await new Promise(resolve => setTimeout(resolve, 10000));
                         const checkEveryoneBet = await this.checkEveryoneBet(gameId, round);
                         console.log('checkEveryoneBet', checkEveryoneBet)
                         if (checkEveryoneBet) {

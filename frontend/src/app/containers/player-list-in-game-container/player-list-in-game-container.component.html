@@ -1,0 +1,5 @@
+@if ((selectRpsDataRound | async)) {
+  <app-players-list-in-game
+    [gameFlow]="(selectRpsDataRound | async)!"
+  ></app-players-list-in-game>
+}
