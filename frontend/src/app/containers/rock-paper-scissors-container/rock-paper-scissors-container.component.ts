@@ -11,6 +11,8 @@ import {AsyncPipe} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {RoundsStatisticsComponent} from '../../components/rounds-statistics/rounds-statistics.component';
 import {WinnerComponent} from '../../components/winner/winner.component';
+import {PlayersListInGameComponent} from '../../components/players-list-in-game/players-list-in-game.component';
+import {StatisticButtonComponent} from '../../components/statistic-button/statistic-button.component';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
@@ -22,6 +24,8 @@ import {WinnerComponent} from '../../components/winner/winner.component';
     MatButton,
     RoundsStatisticsComponent,
     WinnerComponent,
+    PlayersListInGameComponent,
+    StatisticButtonComponent,
   ],
   standalone: true,
   templateUrl: './rock-paper-scissors-container.component.html',
@@ -39,13 +43,5 @@ export class RockPaperScissorsContainerComponent {
     } else {
       this.emitter.emit(event);
     }
-  }
-
-
-  sendEvent(event: string) {
-    const message = {
-      event: `Game:${event}`,
-    };
-    this.emitter.emit(message);
   }
 }

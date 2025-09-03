@@ -1,0 +1,92 @@
+.players-in-game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 16px 0;
+
+  .players-result {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .result-color-box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      margin: 4px;
+      background-color: gray;
+      border: 2px solid white;
+      opacity: 0.3;
+    }
+
+    .choice-made {
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        0 8px 25px rgba(255, 255, 255, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.3),
+        inset 0 3px 6px rgba(255, 255, 255, 0.5),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+      transform: translateY(-4px);
+      opacity: 1;
+
+      mat-icon {
+        color: white;
+      }
+    }
+
+    .show-winner-choice {
+      background-color: #006400FF;
+    }
+
+    .show-loser-choice {
+      background-color: #7f1d1d;
+    }
+  }
+
+  .players-profile {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .profile-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+
+      .profile-photo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        height: 100px;
+        margin: 4px;
+        background-color: #006400FF;
+        border: 2px solid #808080FF;
+      }
+
+      .profile-name {
+        font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+        color: white;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
+
+mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}

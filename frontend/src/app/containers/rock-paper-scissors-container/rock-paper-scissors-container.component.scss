@@ -20,15 +20,6 @@ app-rock-paper-scissors-game {
   flex: 1;
 }
 
-.pay-button {
-  border: 1px solid black;
-  margin: 8px;
-  background: linear-gradient(90deg, #1aa964, #8bca5d);
-  box-shadow:
-    rgba(35, 238, 136, 0.4) 0 0 15px 0,
-    rgb(29, 202, 106) 0 -2px 0 0 inset;
-}
-
 app-winner {
   display: flex;
   flex: 1;

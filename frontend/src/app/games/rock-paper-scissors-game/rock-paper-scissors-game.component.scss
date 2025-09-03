@@ -86,11 +86,69 @@ section {
   flex-wrap: wrap;
 }
 
-.mat-mdc-button {
-  background: linear-gradient(90deg, #24ee89, #9fe871);
+
+.main-game {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .game-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1;
+    width: 100%;
+
+    .profile-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 250px;
+      height: 250px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      border: 2px solid #808080FF;
+
+      .name {
+        padding: 12px 10px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #ffffff;
+        letter-spacing: 1px;
+      }
+
+      mat-icon {
+        width: 150px;
+        height: 150px;
+        font-size: 150px;
+      }
+    }
+
+    .is-not-selected {
+      opacity: 0.3;
+    }
+
+    .is-selected {
+      background-color: #03a51d;
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        0 8px 25px rgba(255, 255, 255, 0.4),
+        0 4px 12px rgba(255, 255, 255, 0.3),
+        inset 0 3px 6px rgba(255, 255, 255, 0.5),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+      transform: translateY(-4px);
+      opacity: 1;
+
+      mat-icon {
+        color: white;
+      }
+    }
+  }
 }
 
-.statistic-menu-button {
-  margin: 16px 16px 16px 0;
-}
 

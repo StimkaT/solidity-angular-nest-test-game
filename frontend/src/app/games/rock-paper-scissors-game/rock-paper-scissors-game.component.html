@@ -1,63 +1,20 @@
-<div>
-  <button class="statistic-menu-button" mat-button="tonal" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-    Statistics
-  </button>
-  <mat-menu #menu="matMenu" class="custom-menu">
-    <app-rounds-statistics></app-rounds-statistics>
-  </mat-menu>
-  <div>
-    Round: ... time:
-  </div>
-  @if ((getTimer$ | async)?.title) {
-    <app-timer
-      [timerData]="getTimer$ | async"
-      (emitter)="events($event)"
-    >
-    </app-timer>
-  }
-
+<div class="main-game">
   @if ((selectActiveGameData$ | async)?.status === 'Game') {
-    <table>
-      <thead>
-      <tr>
-        <th class="first"></th>
-        <th>
-          <img
-            class="rock-img"
-            ngSrc="./assets/games/rock-paper-scissors/Rock.png"
-            alt="Rock image"
-            (click)="event('1')"
-            height="1024" width="1024">
-        </th>
-        <th>
-          <img
-            class="scissors-img"
-            ngSrc="./assets/games/rock-paper-scissors/Scissors.png"
-            alt="Scissors image"
-            (click)="event('2')"
-            height="1024" width="1024">
-        </th>
-        <th>
-          <img
-            class="paper-img"
-            ngSrc="./assets/games/rock-paper-scissors/Paper.png"
-            alt="Paper image"
-            (click)="event('3')"
-            height="1024" width="1024">
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (player of playerList; track player; let i = $index) {
-          <tr>
-            @if (i === 0) {
-              <td [attr.rowspan]="playerList.length">Игроки</td>
-            }
-            <td colspan="3">{{ player }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+    <div class="game-container">
+      @for (element of gameElements; track element) {
+        <div
+          class="profile-box"
+          [class.is-selected]="element.check === true"
+          [class.is-not-selected]="element.check === false"
+          (click)="event(element.eventText)"
+        >
+          <mat-icon>
+            {{ element.icon }}
+          </mat-icon>
+          <span class="name"> {{ element.name }} </span>
+        </div>
+      }
+    </div>
   }
 </div>
 

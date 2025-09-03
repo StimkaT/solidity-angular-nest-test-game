@@ -1,26 +1,21 @@
+@if ((selectActiveGameData$ | async)?.status === 'Waiting payment' || (selectActiveGameData$ | async)?.status === 'notStarted') {
+  <app-players-status-table-container></app-players-status-table-container>
+}
+@if ((selectActiveGameData$ | async)?.status === 'Game') {
+  <app-statistic-button></app-statistic-button>
+  <div class="game-container">
+    <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
+  </div>
+  <app-players-list-in-game></app-players-list-in-game>
+}
 @if ((selectActiveGameData$ | async)?.status === 'Finished') {
   <app-rock-paper-scissors
-  [gameData]="gameData"
-  (emitter)="events($event)"
-></app-rock-paper-scissors>
+    [gameData]="gameData"
+  ></app-rock-paper-scissors>
   <app-winner
     [name]="'nameWinner'"
   ></app-winner>
   <app-rounds-statistics></app-rounds-statistics>
-
-}
-@if ((selectActiveGameData$ | async)?.status === 'Waiting payment' || (selectActiveGameData$ | async)?.status === 'notStarted') {
-  <app-players-status-table-container></app-players-status-table-container>
-}
-@if (gameData.status === 'Waiting payment') {
-  <button class="pay-button" mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
-    Pay
-  </button>
-}
-@if ((selectActiveGameData$ | async)?.status === 'Game') {
-  <div class="game-container">
-    <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
-  </div>
 }
 
 

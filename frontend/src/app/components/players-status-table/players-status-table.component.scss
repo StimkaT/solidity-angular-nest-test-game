@@ -1,32 +1,58 @@
-table  {
-  font-family: Arial, sans-serif;
-  border-collapse: collapse;
-  color: white;
+table {
   width: 100%;
-  margin-bottom: 16px;
-
-  thead {
-    tr {
-      font-size: 18px;
-
-      th {
-        font-weight: 400;
-      }
-    }
-  }
-
-  tbody {
-    font-size: 12px;
-
-    td {
-      text-align: center;
-    }
-  }
-
-  tr, td, th {
-    padding: 4px;
-    border: 1px solid black;
-  }
+  border-collapse: collapse;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow:
+    0 0 15px rgba(150, 150, 150, 0.2),
+    0 0 25px rgba(150, 150, 150, 0.05);
+  background: linear-gradient(90deg, #2a2a2a, #3a3a3a);
+  border: 1px solid rgba(200, 200, 200, 0.15);
+  margin: 20px 0;
 }
 
+thead {
+  background: linear-gradient(90deg, #555555, #666666);
+}
 
+th {
+  padding: 12px 10px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(200, 200, 200, 0.3);
+}
+
+td {
+  padding: 10px 8px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(200, 200, 200, 0.1);
+  transition: all 0.2s ease;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(150, 150, 150, 0.05);
+}
+
+tbody tr:nth-child(odd) {
+  background: rgba(80, 80, 80, 0.05);
+}
+
+tbody tr:hover {
+  background: rgba(200, 200, 200, 0.1);
+  transform: translateY(-0.5px);
+}
+
+tbody tr:hover td {
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+}

@@ -1,57 +1,90 @@
+.table-container {
+  width: 90%;
+  margin: 20px auto;
+}
+
 table {
   width: 100%;
-  color: white;
-  text-align: center;
   border-collapse: collapse;
-  table-layout: fixed;
-
-  thead {
-    tr {
-
-      .first {
-        width: 100px;
-      }
-
-      th {
-        width: auto;
-
-        img {
-          width: 80%;
-          height: auto;
-          cursor: pointer;
-        }
-
-        img:active {
-          border: 5px solid green;
-        }
-      }
-    }
-  }
-
-  tbody {
-
-    td {
-      width: auto;
-    }
-
-    .lose-game {
-      background-color: #7f1d1d;
-    }
-
-    .beSelected {
-      background-color: #1aa964;
-      margin: 8px;
-    }
-  }
-}
-
-.player-name {
-  white-space: nowrap;
+  border-radius: 15px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
+  box-shadow:
+    0 0 15px rgba(150, 150, 150, 0.2),
+    0 0 25px rgba(150, 150, 150, 0.05);
+  background: linear-gradient(90deg, #2a2a2a, #3a3a3a);
+  border: 1px solid rgba(200, 200, 200, 0.15);
+  margin: 20px 0;
 }
 
-.player-name:hover {
-  background-color: #1aa964;
+thead {
+  background: linear-gradient(90deg, #555555, #666666);
+}
+
+th {
+  padding: 12px 10px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(200, 200, 200, 0.3);
+}
+
+/* Специальный стиль для заголовка "Rounds" */
+th[colspan] {
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #666666, #777777);
+}
+
+/* Стиль для первой ячейки с классом first */
+th.first {
+  background: linear-gradient(90deg, #666666, #777777);
+  font-weight: 700;
+  width: 200px;
+}
+
+td {
+  padding: 10px 8px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(200, 200, 200, 0.1);
+  transition: all 0.2s ease;
+}
+
+/* Стиль для ячеек с именами игроков */
+td.player-name {
+  text-align: left;
+  font-weight: 600;
+  color: #f0f0f0;
+  background: linear-gradient(90deg, #444444, #555555);
+  border-right: 1px solid rgba(200, 200, 200, 0.2);
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(150, 150, 150, 0.05);
+}
+
+tbody tr:nth-child(odd) {
+  background: rgba(80, 80, 80, 0.05);
+}
+
+tbody tr:hover {
+  background: rgba(200, 200, 200, 0.1);
+  transform: translateY(-0.5px);
+}
+
+tbody tr:hover td {
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+tbody tr:hover td.player-name {
+  background: linear-gradient(90deg, #555555, #666666);
 }

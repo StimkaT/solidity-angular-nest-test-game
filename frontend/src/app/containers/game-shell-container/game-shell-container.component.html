@@ -4,6 +4,7 @@
   [active]="isGameReady"
   [gameData]="selectActiveGameData$ | async"
   [isConnected]="!!(selectIsConnectedGame$ | async)"
+  [timer]="getTimer$ | async"
   (emitter)="events($event)"
 >
   @if ((selectActiveGameData$ | async)?.type ==='rock-paper-scissors')

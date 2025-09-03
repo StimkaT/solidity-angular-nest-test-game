@@ -138,30 +138,6 @@
   padding: 0 16px;
 }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  transition: all 0.2s;
-  cursor: pointer;
-
-  &-m {
-    height: 2.5rem;
-    padding: 0 1rem;
-    font-size: 0.875rem;
-  }
-
-  &-brand {
-    background-color: rgb(var(--brand));
-    color: rgb(var(--primary_brand));
-
-    &:hover {
-      background-color: rgb(var(--brand_secondary));
-    }
-  }
-}
 
 .bg-layer5 {
   background-color: rgb(var(--layer5));

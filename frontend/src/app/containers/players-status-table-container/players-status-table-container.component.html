@@ -1,5 +1,7 @@
 @if (selectActiveGameData$ | async; as activeGameData) {
+  @if (activeGameData.players.length > 0) {
     <app-players-status-table
       [data]="activeGameData.players"
     ></app-players-status-table>
+  }
 }

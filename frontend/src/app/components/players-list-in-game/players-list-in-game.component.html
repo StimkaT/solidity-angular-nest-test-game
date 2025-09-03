@@ -1,0 +1,34 @@
+<div class="players-in-game">
+  <div class="players-result">
+    @for (player of playerList; track player.wallet) {
+      <div
+        class="result-color-box"
+        [class.choice-made]="player.choice === 'ready' || player.choice === 'win' || player.choice === 'lose'"
+        [class.show-winner-choice]="player.choice === 'win'"
+        [class.show-loser-choice]="player.choice === 'lose'"
+      >
+        @if (player.resultType === 'icon') {
+          <mat-icon>
+            {{ player.result }}
+          </mat-icon>
+        } @else if (player.resultType === 'text') {
+          <span> {{ player.result }} </span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="players-profile">
+    @for (player of playerList; track player.wallet) {
+      <div class="profile-box">
+        <div class="profile-photo">
+          <mat-icon>
+            {{ player.photo }}
+          </mat-icon>
+        </div>
+        <span class="profile-name">{{ player.name }}</span>
+      </div>
+    }
+  </div>
+</div>
+

@@ -11,7 +11,7 @@ import {
   getDataGameAndSetWebSocket, joinGame,
   leaveGame, sendMoney
 } from '../../+state/game-data/game-data.actions';
-import {selectActiveGameData, selectIsConnectedGame} from '../../+state/game-data/game-data.selectors';
+import {getTimer, selectActiveGameData, selectIsConnectedGame} from '../../+state/game-data/game-data.selectors';
 import {
   RockPaperScissorsContainerComponent
 } from '../rock-paper-scissors-container/rock-paper-scissors-container.component';
@@ -41,7 +41,7 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   getPlayer$ = this.store.select(getPlayer);
   selectActiveGameData$ = this.store.select(selectActiveGameData);
   selectIsConnectedGame$ = this.store.select(selectIsConnectedGame);
-
+  getTimer$ = this.store.select(getTimer)
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));

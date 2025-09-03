@@ -1,11 +1,15 @@
-<div>
+<div class="table-container">
   @if ((rounds$ | async); as roundsData1 ) {
 
     @if (roundsData1!.roundsData.length ) {
       <table>
         <thead>
         <tr>
-          <th class="first">Rounds</th>
+          <th class="first"></th>
+          <th [attr.colspan]="roundsData.length">Rounds</th>
+        </tr>
+        <tr>
+          <th class="first"></th>
           @for (round of roundsData; track round) {
             <th>
               {{round.roundNumber}}

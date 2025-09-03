@@ -1,25 +1,50 @@
 <div class="container">
   <div class="header">
-    <button mat-icon-button class="toggle home-icon" (click)="event('home')">
-      <mat-icon>undo</mat-icon>
-    </button>
-    @if (gameData.status === 'notStarted') {
-      <span>{{ title }} | Wait Players: {{ gameData.playerNumberSet}}/{{ gameData.playersNumber}} </span>
-    } @else {
-      <span>{{ title }} | {{ gameData.status}}</span>
-    }
-    <span class="example-spacer"></span>
-    ID: {{ gameData.id }}
+    <div class="left-group">
+      <button mat-icon-button class="toggle home-icon" (click)="event('home')">
+        <mat-icon>undo</mat-icon>
+      </button>
+      <span>ID: {{ gameData.id }} | &nbsp;</span>
+      @if (gameData.status === 'notStarted') {
+        <span>{{ title }} | Wait Players: {{ gameData.playerNumberSet}}/{{ gameData.playersNumber}} </span>
+      } @else {
+        <span>{{ title }} | {{ gameData.status}}</span>
+      }
+    </div>
+
+    <div class="middle-group">
+      @if (timer.title) {
+        <span> ROUND: / TIMER </span>
+      }
+
+<!--      @if (timer.title) {-->
+<!--        <app-timer-->
+<!--          [timerData]="timer"-->
+<!--          (emitter)="events($event)"-->
+<!--        >-->
+<!--        </app-timer>-->
+<!--      }-->
+    </div>
+
+    <div class="right-group">
+      @if (gameData.status === 'Waiting payment') {
+        <button class="pay-button" mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
+          Pay
+        </button>
+      }
+      @if (gameData.status === 'notStarted') {
+        @if (isConnected) {
+          <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('observe')">Disconnect & Stay</button>
+          <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('leave')">Disconnect & Leave</button>
+        } @else {
+          <button class="footer-button" mat-raised-button [disabled]="(gameData.playersNumber === gameData.playerNumberSet)" (click)="event('connect')">Connect to game</button>
+        }
+      }
+    </div>
+    <!--    <span class="example-spacer"></span>-->
+
   </div>
   <div class="body">
     <ng-content/>
-  </div>
-  <div class="footer">
-    @if (isConnected) {
-      <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('observe')">Disconnect & Stay</button>
-      <button class="footer-button" mat-raised-button [disabled]="!(gameData.status === 'notStarted')" (click)="event('leave')">Disconnect & Leave</button>
-    } @else {
-      <button class="footer-button" mat-raised-button [disabled]="(gameData.playersNumber === gameData.playerNumberSet)" (click)="event('connect')">Connect to game</button>
-    }
   </div>
 </div>
