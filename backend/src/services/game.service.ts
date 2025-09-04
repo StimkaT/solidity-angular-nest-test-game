@@ -434,7 +434,8 @@ export class GameService {
   }
 
   async sendTimer(note: string, remainingSeconds: number, gameId: number) {
-    this.gameGateway.send(note, remainingSeconds, gameId)
+    let dataTimer = {remainingSeconds, gameId};
+    this.gameGateway.send(note, dataTimer, gameId)
   }
 
   async contractListener(gameId: number, storageAddress: any) {

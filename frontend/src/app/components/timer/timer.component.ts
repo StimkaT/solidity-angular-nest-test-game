@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
-import { ITimer } from '../../+state/game-data/game-data.reducer';
 
 @Component({
   selector: 'app-timer',
@@ -9,8 +8,7 @@ import { ITimer } from '../../+state/game-data/game-data.reducer';
   styleUrl: './timer.component.scss'
 })
 export class TimerComponent implements OnChanges, OnDestroy {
-  @Input() timerData: ITimer | null = null;
-  @Input() finishText: string = '';
+  @Input() timerData: number | null = null;
   @Output() emitter = new EventEmitter();
 
   formattedHours: string = '00';
@@ -25,16 +23,16 @@ export class TimerComponent implements OnChanges, OnDestroy {
   }
 
   private updateDisplay() {
-    if (this.timerData && this.timerData.second) {
-      const hours = Math.floor(this.timerData.second / 3600);
-      const minutes = Math.floor((this.timerData.second % 3600) / 60);
-      const seconds = this.timerData.second % 60;
+    if (this.timerData && this.timerData) {
+      const hours = Math.floor(this.timerData / 3600);
+      const minutes = Math.floor((this.timerData % 3600) / 60);
+      const seconds = this.timerData % 60;
 
       this.formattedHours = hours.toString().padStart(2, '0');
       this.formattedMinutes = minutes.toString().padStart(2, '0');
       this.formattedSeconds = seconds.toString().padStart(2, '0');
 
-      this.isFinished = this.timerData.second === 0;
+      this.isFinished = this.timerData === 0;
     } else {
       this.formattedHours = '00';
       this.formattedMinutes = '00';

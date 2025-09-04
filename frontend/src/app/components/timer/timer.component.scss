@@ -6,14 +6,7 @@
   flex: 1;
   text-align: center;
   font-family: 'Arial', sans-serif;
-  padding: 20px;
-}
-
-.timer-title {
-  font-size: 32px;
-  margin-bottom: 30px;
-  font-weight: bold;
-  color: #24ee89;
+  margin-top: 4px;
 }
 
 .timer-display {
@@ -21,16 +14,15 @@
   align-items: center;
   justify-content: center;
   border: 2px solid #000;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 4px;
+  padding: 2px 8px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-  background: white;
+  background: transparent;
 }
 
 .time-value {
-  font-size: 54px;
+  font-size: 16px;
   font-weight: bold;
-  min-width: 80px;
 }
 
 .time-label {
@@ -40,7 +32,7 @@
 }
 
 .time-separator {
-  font-size: 54px;
+  font-size: 14px;
   font-weight: bold;
   margin: 0 5px;
   align-self: center;

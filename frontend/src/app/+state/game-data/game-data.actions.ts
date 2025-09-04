@@ -79,7 +79,7 @@ export const gameError = createAction(
 
 export const setTimer = createAction(
   '[GameData] setTimer',
-  props<{second: number, title: string}>()
+  props<{gameId: number, second: number, title: string}>()
 );
 
 export const leaveGame = createAction(

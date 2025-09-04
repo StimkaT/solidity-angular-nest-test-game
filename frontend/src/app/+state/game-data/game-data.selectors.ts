@@ -69,7 +69,15 @@ export const selectGameTypes = createSelector(
 
 export const getTimer = createSelector(
   selectGameDataState,
-  (state: GameDataState) => state.timer
+  selectActiveGameData,
+  (GameDataState, activeGameData) => {
+    if (activeGameData?.id) {
+      const gameTimer = GameDataState.timer.find(timer => timer.gameId === activeGameData.id);
+
+      return gameTimer?.second ?? 0;
+    }
+    return 0;
+  }
 );
 
 export const selectIsConnectedGame = createSelector(
@@ -78,5 +86,17 @@ export const selectIsConnectedGame = createSelector(
   (activeGameData, player): boolean => {
     if (!activeGameData?.players || !player?.wallet) return false;
     return activeGameData.players.some(p => p.wallet === player.wallet);
+  }
+);
+
+export const selectIsBetGame = createSelector(
+  selectActiveGameData,
+  getPlayer,
+  (activeGameData, player): boolean => {
+    if (!activeGameData?.players || !player?.wallet) return false;
+
+    return activeGameData.players.some(p =>
+      p.wallet === player.wallet && p.bet === true
+    );
   }
 );

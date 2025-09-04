@@ -41,14 +41,15 @@ export class WebsocketService {
         });
         this.socket!.on('finish_game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
-          this.store.dispatch(setTimer({ second: 0, title: '' }));
+          this.store.dispatch(setTimer({ gameId: data.gameId, second: 0, title: '' }));
           this.openFinishedModal();
         });
         this.socket!.on('playing_time', (data) => {
-          this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the game' }));
+          this.store.dispatch(setTimer({ gameId: data.gameId, second: data.remainingSeconds, title: 'Time left until the end of the game' }));
         });
         this.socket!.on('betting_time', (data) => {
-          this.store.dispatch(setTimer({ second: data, title: 'Time left until the end of the betting' }));
+          console.log('timerBet-gameId', data)
+          this.store.dispatch(setTimer({ gameId: data.gameId, second: data.remainingSeconds, title: 'Time left until the end of the betting' }));
         });
         this.socket!.on('rpsGame_rounds_data', (data) => {
           this.store.dispatch(setRpsRoundsData({ data }));

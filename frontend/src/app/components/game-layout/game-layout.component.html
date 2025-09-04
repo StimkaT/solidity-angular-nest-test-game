@@ -13,21 +13,19 @@
     </div>
 
     <div class="middle-group">
-      @if (timer.title) {
-        <span> ROUND: / TIMER </span>
+      @if (round && (gameData.finishedAt === '-')) {
+        <span> ROUND: {{round}} | TIME TO END GAME: &nbsp;</span>
       }
-
-<!--      @if (timer.title) {-->
-<!--        <app-timer-->
-<!--          [timerData]="timer"-->
-<!--          (emitter)="events($event)"-->
-<!--        >-->
-<!--        </app-timer>-->
-<!--      }-->
+      @if (timer > 0) {
+        <app-timer
+          [timerData]="timer"
+        >
+        </app-timer>
+      }
     </div>
 
     <div class="right-group">
-      @if (gameData.status === 'Waiting payment') {
+      @if (gameData.status === 'Waiting payment' && !playerIsBet) {
         <button class="pay-button" mat-button [disabled]="!(gameData.status === 'Waiting payment')" (click)="sendEvent('pay')">
           Pay
         </button>
@@ -41,8 +39,6 @@
         }
       }
     </div>
-    <!--    <span class="example-spacer"></span>-->
-
   </div>
   <div class="body">
     <ng-content/>

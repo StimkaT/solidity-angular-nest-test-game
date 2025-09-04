@@ -3,7 +3,7 @@ import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {Store} from '@ngrx/store';
-import {setTimer} from '../../+state/game-data/game-data.actions';
+import {TimerComponent} from '../timer/timer.component';
 
 @Component({
   selector: 'app-game-layout',
@@ -12,6 +12,7 @@ import {setTimer} from '../../+state/game-data/game-data.actions';
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
+    TimerComponent,
   ],
   standalone: true,
   templateUrl: './game-layout.component.html',
@@ -26,9 +27,10 @@ export class GameLayoutComponent {
   @Input() isConnected= false;
   @Input() gameData: any;
   @Input() timer: any;
+  @Input() round: number | null = null;
+  @Input() playerIsBet: boolean = false;
 
   @Output() emitter = new EventEmitter();
-  private store = inject(Store);
 
   event(event: string) {
     const message = {
@@ -44,12 +46,5 @@ export class GameLayoutComponent {
       event: `Game:${event}`,
     };
     this.emitter.emit(message);
-  }
-
-
-  events(event: any) {
-    if(event.event === 'TimerComponent:clearTimer') {
-      this.store.dispatch(setTimer({second: 0, title: ''}))
-    }
   }
 }

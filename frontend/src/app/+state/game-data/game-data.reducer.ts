@@ -15,6 +15,7 @@ export interface IPlayer {
 }
 
 export interface ITimer {
+  gameId: number;
   second: number | null;
   title: string;
 }
@@ -86,7 +87,7 @@ export interface GameDataState {
   gameList: IGameList[];
   activeGameList: IDataGameList[];
   activeGameData: IActiveGameList;
-  timer: ITimer;
+  timer: ITimer[];
 }
 
 export interface SettingsPartialState {
@@ -154,10 +155,7 @@ export const initialState: GameDataState = {
     playerNumberSet: 0,
     players: []
   },
-  timer: {
-    title: '',
-    second: null,
-  }
+  timer: [],
 };
 
 export const gameDataReducer = createReducer(
@@ -224,12 +222,25 @@ export const gameDataReducer = createReducer(
     ...state,
     gameTypes: data
   })),
-  on(GameDataActions.setTimer, (state, { second, title }) => ({
-    ...state,
-    timer: {
-      ...state.timer,
-      second,
-      title
+  on(GameDataActions.setTimer, (state, { gameId, second, title }) => {
+    const existingTimerIndex = state.timer.findIndex(t => t.gameId === gameId);
+
+    if (existingTimerIndex !== -1) {
+      // Обновляем существующий таймер
+      return {
+        ...state,
+        timer: state.timer.map(timer =>
+          timer.gameId === gameId
+            ? { ...timer, second, title }
+            : timer
+        )
+      };
+    } else {
+      // Добавляем новый таймер
+      return {
+        ...state,
+        timer: [...state.timer, { gameId, second, title }]
+      };
     }
-  })),
+  }),
 );

@@ -54,10 +54,6 @@
     rgb(29, 202, 106) 0 -2px 0 0 inset;
 }
 
-app-timer {
-  color: black;
-}
-
 .left-group {
   display: flex;
   flex: 1;
@@ -67,11 +63,14 @@ app-timer {
 
 .middle-group {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   flex: 1;
   align-items: center;
-  background-color: #7f1d1d;
+
+  font-size: 16px;
+  font-weight: bold;
+  //background-color: #7f1d1d;
 }
 
 .right-group {

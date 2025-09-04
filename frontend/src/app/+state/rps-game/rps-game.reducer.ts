@@ -1,18 +1,19 @@
 import {createReducer, on,} from '@ngrx/store';
 import * as RpsGameActions from './rps-game.actions';
+import {IActiveGameList} from '../game-data/game-data.reducer';
 
 export const RPS_GAME_FEATURE_KEY = 'rps-game';
+
+export interface IPlayerRoundData {
+  wallet: string;
+  choice?: string;
+  status?: string;
+  typeChoice?: string;
+}
 
 export interface IRoundResult {
   roundNumber: number;
   players: IPlayerRoundData[];
-}
-
-export interface IGameElements {
-  icon: string;
-  check: boolean | null;
-  name: string;
-  eventText: string;
 }
 
 export interface IRpsRoundsData {
@@ -27,11 +28,12 @@ export interface RpsGameState {
   gameElements: IGameElements[];
 }
 
-export interface IPlayerRoundData {
-  wallet: string;
-  choice?: string;
-  status?: string;
-  typeChoice?: string;
+
+export interface IGameElements {
+  icon: string;
+  check: boolean | null;
+  name: string;
+  eventText: string;
 }
 
 export interface IEnhancedRoundResult extends IRoundResult {
