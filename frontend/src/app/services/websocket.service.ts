@@ -66,6 +66,7 @@ export class WebsocketService {
   }
 
   openFinishedModal(): void {
+    console.log('openFinishedModal')
     const dialogRef = this.dialog.open(ResultsContainerComponent, {
       width: '30%',
       height: '30%',

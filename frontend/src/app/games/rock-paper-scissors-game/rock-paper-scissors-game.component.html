@@ -1,7 +1,7 @@
 <div class="main-game">
   @if ((selectActiveGameData$ | async)?.status === 'Game') {
     <div class="game-container">
-      @for (element of (getGameElements$ | async); track element) {
+      @for (element of (getGameElements$ | async); track element.name) {
         <div
           class="profile-box"
           [class.is-selected]="element.check === true"

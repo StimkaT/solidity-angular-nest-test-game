@@ -38,7 +38,7 @@ export class GameService {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
       if(data.event === 'connect_game') {
         const gameData = await this.getGameData(data.payload.gameId);
-        await this.rockPaperScissorsService.sendRpsData(data.payload.gameId);
+        await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data',data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
@@ -449,7 +449,7 @@ export class GameService {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
-      await this.rockPaperScissorsService.sendRpsData(gameId);
+      await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data', gameId);
     });
 
     await contract.on("GameFinalized", async () => {
