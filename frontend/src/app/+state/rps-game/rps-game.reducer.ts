@@ -1,6 +1,5 @@
 import {createReducer, on,} from '@ngrx/store';
 import * as RpsGameActions from './rps-game.actions';
-import {IActiveGameList} from '../game-data/game-data.reducer';
 
 export const RPS_GAME_FEATURE_KEY = 'rps-game';
 

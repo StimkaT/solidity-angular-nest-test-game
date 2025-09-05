@@ -8,14 +8,13 @@ import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
 import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
-import {ICreateGameData, IGameData} from "../types/gameData";
-import {GameDataDto} from "../dto/gameData.dto";
-import {GamePlayerDto} from "../dto/GamePlayer.dto";
+import {ICreateGameData} from "../types/gameData";
 import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
 import {GameGateway} from "../game/game-websocket";
 import {RockPaperScissorsService} from './games/rock-paper-scissors.service';
+import {GameCommonService} from './game-common.service';
 
 @Injectable()
 export class GameService {
@@ -30,26 +29,27 @@ export class GameService {
       @InjectRepository(Users)
       private usersRepository: Repository<Users>,
       @InjectRepository(GameData)
-      private gameDataRepository: Repository<GameData>,
       private blockchainService: BlockchainService,
       private rockPaperScissorsService: RockPaperScissorsService,
+      private gameCommonService: GameCommonService,
       private readonly gameGateway: GameGateway
   ) {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
       if(data.event === 'connect_game') {
-        const gameData = await this.getGameData(data.payload.gameId);
-        await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data',data.payload.gameId);
+        const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+        await this.rockPaperScissorsService.sendRpsData('game_data', gameData, data.payload.gameId);
+        // await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data',data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
       } else if (data.event === 'join_game') {
         await this.addWalletToGame(data.payload.gameId, data.payload.wallet);
 
-        const gameDataBeforeDeploy = await this.getGameData(data.payload.gameId);
+        const gameDataBeforeDeploy = await this.gameCommonService.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameDataBeforeDeploy, data.payload.gameId)
 
         await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
-        const gameData = await this.getGameData(data.payload.gameId);
+        const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
 
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       } else if (data.event === 'send_money') {
@@ -59,7 +59,7 @@ export class GameService {
           gameId: data.payload.gameId,
           wallet: data.payload.wallet
         });
-        const gameData = await this.getGameData(data.payload.gameId);
+        const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       }
 
@@ -142,7 +142,7 @@ export class GameService {
     });
 
     if (action === 'add') {
-      const gameData = await this.getGameDataById(gameId.toString());
+      const gameData = await this.gameCommonService.getGameDataById(gameId.toString());
       if (existingPlayer) throw new Error('This user is already participating in the game');
       if (gameData.activePlayersCount >= gameData.playersNumber) {
         throw new Error('No available spots in this game');
@@ -156,91 +156,8 @@ export class GameService {
       }
     }
 
-    await this.updatePlayerNumberSet(gameId);
+    await this.gameCommonService.updatePlayerNumberSet(gameId);
     return { wallet };
-  }
-
-  async getGameData(gameId: number): Promise<IGameData> {
-    await this.updatePlayerNumberSet(gameId);
-
-    const gameDataById: any = await this.getGameDataById(gameId.toString());
-
-    let playerData: any = { players: [] };
-
-    if (gameDataById.contractAddress) {
-      playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-    }
-
-    const players = await Promise.all(
-        gameDataById.players.map(async (player: GamePlayerDto) => {
-          const blockchainPlayer = playerData.players.find((playerBlock: any) => playerBlock.wallet === player.wallet);
-          const playerWin = await this.getGamePlayerWin(player.wallet, gameDataById.id);
-
-          return {
-            wallet: player.wallet,
-            win: playerWin,
-            bet: blockchainPlayer ? blockchainPlayer.isPaid : false,
-            ready: false,
-          };
-        })
-    );
-
-    const gameDataDB = await this.getGameDataById(gameId.toString());
-
-    let gameData: IGameData;
-    gameData = {
-      gameInfo: {
-        id: gameDataById.id,
-        type: gameDataById.type,
-        bet: gameDataById.bet,
-        activePlayersCount: gameDataById.activePlayersCount,
-        playersNumber: gameDataById.playersNumber,
-        createdAt: gameDataDB.createdAt,
-        finishedAt: gameDataDB.finishedAt,
-        updatedAt: gameDataDB.updatedAt,
-        status: !gameDataById.contractAddress ? 'notStarted' : (!playerData.gameData.isBettingComplete ? 'Waiting payment' : (!gameDataById.finishedAt ? 'Game' : 'Finished')),
-      },
-      players: players,
-    };
-
-    return gameData;
-  }
-
-  async getGamePlayerWin(wallet: string, gameId: number) {
-    const player = await this.gamePlayersRepository.findOne({
-      where: { wallet, gameId },
-    });
-
-    return player?.win;
-  }
-
-  async updatePlayerNumberSet(gameId: number) {
-    const playersCount = await this.gamePlayersRepository.count({
-      where: { gameId },
-    });
-
-    const game = await this.gameDataRepository.findOne({
-      where: { gameId: gameId },
-    });
-    if (!game) {
-      throw new Error('Game not found');
-    }
-
-    await this.gameDataRepository.update(
-        { gameId },
-        { playerNumberSet: playersCount },
-    );
-
-    const [gameData] = await Promise.all([
-      this.gameDataRepository.findOne({ where: { gameId } }),
-      this.gamePlayersRepository.find({ where: { gameId } }),
-    ]);
-    if (
-        gameData &&
-        playersCount === game.playersNumber &&
-        gameData.playerNumberSet === playersCount
-    ) {
-    }
   }
 
   async getGamesByTypeWithPlayerFlag(type: string, playerWallet: string) {
@@ -269,31 +186,10 @@ export class GameService {
         ])
         .getRawMany();
   }
-
-  async getGameDataById(gameId: string): Promise<GameDataDto> {
-    const game = await this.gameRepository.findOne({
-      where: { id: Number(gameId) },
-      relations: ['gameData', 'gamePlayers', 'gamePlayers.user', 'gamePlayers.game'],
-    });
-    if (!game) throw new Error('Game not found');
-
-    return {
-      id: game.id,
-      type: game.type,
-      finishedAt: game.finishedAt,
-      createdAt: game.createdAt,
-      updatedAt: game.updatedAt,
-      bet: game.gameData.bet,
-      playersNumber: game.gameData.playersNumber,
-      activePlayersCount: game.gameData.playerNumberSet,
-      contractAddress: game.contractAddress,
-      players: game.gamePlayers
-    };
-  }
-
+  
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
 
-    const game = await this.getGameDataById(
+    const game = await this.gameCommonService.getGameDataById(
         gameId.toString(),
     );
 
@@ -395,7 +291,7 @@ export class GameService {
   }
 
   async createFirstRound(gameId: number) {
-    const type = (await this.getGameDataById(gameId.toString())).type
+    const type = (await this.gameCommonService.getGameDataById(gameId.toString())).type
     if (type === 'rock-paper-scissors') {
       await this.rockPaperScissorsService.createRoundRockPaperScissors(gameId);
     }
@@ -442,7 +338,7 @@ export class GameService {
     const contract = this.blockchainService.getContract(storageAddress);
 
     await contract.on("LogBet", async () => {
-      const gameData = await this.getGameData(gameId);
+      const gameData = await this.gameCommonService.getGameData(gameId);
       this.gameGateway.send('game_data', gameData, gameId)
     });
 
@@ -450,13 +346,15 @@ export class GameService {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
-      await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data', gameId);
+      // await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data', gameId);
+      const gameData = await this.gameCommonService.getGameData(gameId);
+      await this.rockPaperScissorsService.sendRpsData('game_data', gameData, gameId);
     });
 
     await contract.on("GameFinalized", async () => {
       this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
-      const gameData = await this.getGameData(gameId);
+      const gameData = await this.gameCommonService.getGameData(gameId);
       this.gameGateway.send('finish_game_data', gameData, gameId)
     });
 
@@ -464,18 +362,17 @@ export class GameService {
   }
 
   async updateDataBaseFromBlockchain(gameId: number) {
-    const gameDataById = await this.getGameDataById(gameId.toString());
+    const gameDataById = await this.gameCommonService.getGameDataById(gameId.toString());
 
     if (gameDataById?.contractAddress) {
       const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);
-      // const finishedAt = new Date(Number(playerData.gameData.finishedAt) * 1000);
       await this.gameRepository.update(
           { id: gameId },
           { finishedAt: () => "NOW()" }
       );
       if (playerData.players && Array.isArray(playerData.players)) {
         for (const player of playerData.players) {
-          const updateResult = await this.gamePlayersRepository.update(
+          await this.gamePlayersRepository.update(
               {
                 gameId,
                 wallet: player.wallet
@@ -484,7 +381,6 @@ export class GameService {
                 win: Number(player.result),
               }
           );
-
         }
       }
     }
