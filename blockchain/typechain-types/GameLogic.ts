@@ -22,15 +22,30 @@ import type {
 } from "./common";
 
 export interface GameLogicInterface extends Interface {
-  getFunction(nameOrSignature: "calculatePayouts"): FunctionFragment;
+  getFunction(
+    nameOrSignature: "calculatePayouts" | "getRandom" | "getRandomNumbers"
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "calculatePayouts",
     values: [BigNumberish, AddressLike[], BigNumberish[], BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getRandom",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRandomNumbers",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "calculatePayouts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getRandom", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getRandomNumbers",
     data: BytesLike
   ): Result;
 }
@@ -89,6 +104,18 @@ export interface GameLogic extends BaseContract {
     "view"
   >;
 
+  getRandom: TypedContractMethod<
+    [a: BigNumberish, b: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getRandomNumbers: TypedContractMethod<
+    [a: BigNumberish, b: BigNumberish, count: BigNumberish],
+    [bigint[]],
+    "view"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -102,6 +129,16 @@ export interface GameLogic extends BaseContract {
       percents: BigNumberish[],
       ownerFeePercent: BigNumberish
     ],
+    [bigint[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getRandom"
+  ): TypedContractMethod<[a: BigNumberish, b: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getRandomNumbers"
+  ): TypedContractMethod<
+    [a: BigNumberish, b: BigNumberish, count: BigNumberish],
     [bigint[]],
     "view"
   >;
