@@ -30,6 +30,5 @@ export class RockPaperScissorsGameComponent {
   event(data: string) {
     this.store.dispatch(setChoiceGame({ result: data }));
     this.store.dispatch(setActiveGameElements({ data }));
-
   }
 }

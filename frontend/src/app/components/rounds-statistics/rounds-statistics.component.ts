@@ -14,6 +14,5 @@ import { MatIconModule } from '@angular/material/icon';
 export class RoundsStatisticsComponent {
   private store = inject(Store);
 
-  // Используем готовые данные из селектора
   roundsViewData$ = this.store.select(selectRoundsViewData);
 }

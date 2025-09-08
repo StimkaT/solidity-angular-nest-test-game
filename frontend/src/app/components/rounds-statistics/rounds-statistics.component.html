@@ -24,12 +24,11 @@
               @for (round of data.roundsData; track round.roundNumber) {
                 <td>
                   @if (round.playerDataMap.has(player)) {
-                    <!-- Получаем данные напрямую из Map -->
-                    @if (round.playerDataMap.get(player)!.choice) {
-                      @if (round.playerDataMap.get(player)!.typeChoice === 'icon') {
-                        <mat-icon>{{ round.playerDataMap.get(player)!.choice }}</mat-icon>
+                    @if (round.playerDataMap.get(player)!.result) {
+                      @if (round.playerDataMap.get(player)!.typeResult === 'icon') {
+                        <mat-icon>{{ round.playerDataMap.get(player)!.result }}</mat-icon>
                       } @else {
-                        {{ round.playerDataMap.get(player)!.choice }}
+                        {{ round.playerDataMap.get(player)!.result }}
                       }
                     } @else {
                       -

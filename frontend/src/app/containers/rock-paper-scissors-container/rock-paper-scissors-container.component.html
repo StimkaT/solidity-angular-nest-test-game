@@ -13,7 +13,7 @@
     [gameData]="gameData"
   ></app-rock-paper-scissors>
   <app-winner
-    [name]="'nameWinner'"
+    [name]="(selectNameWinner$ | async) || ''"
   ></app-winner>
   <app-rounds-statistics></app-rounds-statistics>
 }

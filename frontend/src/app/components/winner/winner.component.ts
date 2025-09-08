@@ -8,5 +8,5 @@ import {Component, Input} from '@angular/core';
   styleUrl: './winner.component.scss'
 })
 export class WinnerComponent {
-  @Input() name: string = '123';
+  @Input() name: string = '';
 }

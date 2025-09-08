@@ -69,6 +69,7 @@ export interface IDataGameList {
 export interface IPlayers {
   wallet: string;
   bet: boolean;
+  name: string;
   ready: boolean;
   win: number | null;
 }
@@ -199,8 +200,8 @@ export const gameDataReducer = createReducer(
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {
-    const gameInfo = data.gameInfo;
-    const players = data.players;
+    const gameInfo = data.gameData.gameInfo;
+    const players = data.gameData.players;
 
     return {
       ...state,

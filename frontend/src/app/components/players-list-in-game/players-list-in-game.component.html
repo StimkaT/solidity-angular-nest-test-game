@@ -3,28 +3,28 @@
     @for (player of gameFlow.players; track player.wallet) {
       <div
         class="result-color-box"
-        [class.choice-made]="player.status === 'isBet' || player.status === 'win' || player.status === 'loser'"
-        [class.show-winner-choice]="player.status === 'win'"
-        [class.show-loser-choice]="player.status === 'loser'"
+        [class.choice-made]="player.hasActed || player.hasActed || !player.isPlaying"
+        [class.show-winner-choice]="player.hasActed"
+        [class.show-loser-choice]="!player.isPlaying"
       >
-        @if (player.typeChoice === 'icon') {
-          @if (player.status === 'loser' && player.choice === '') {
+        @if (player.typeResult === 'icon') {
+          @if (!player.isPlaying && player.result === '') {
             <mat-icon>
               clear
             </mat-icon>
           }
-          @if (player.status !== 'loser' && player.choice === '') {
+          @if (player.result === '') {
             <mat-icon>
               question_mark
             </mat-icon>
           }
-          @if (player.choice !== '') {
+          @if (player.result !== '') {
             <mat-icon>
-              {{ player.choice }}
+              {{ player.result }}
             </mat-icon>
           }
-        } @else if (player.typeChoice === 'text') {
-          <span> {{ player.choice }} </span>
+        } @else if (player.typeResult === 'text') {
+          <span> {{ player.result }} </span>
         }
       </div>
     }
@@ -38,7 +38,7 @@
             person_outline
           </mat-icon>
         </div>
-        <span class="profile-name">{{ player.wallet }}</span>
+        <span class="profile-name">{{ player.name }}</span>
       </div>
     }
   </div>

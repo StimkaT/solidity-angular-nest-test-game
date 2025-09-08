@@ -6,15 +6,14 @@ import { Games } from '../entities/entities/Games';
 import { Repository } from 'typeorm';
 import { GamePlayers } from '../entities/entities/GamePlayers';
 import { Users } from '../entities/entities/Users';
-import { GameData } from '../entities/entities/GameData';
 import { GameTypes } from '../entities/entities/GameTypes';
 import {ICreateGameData} from "../types/gameData";
-import {BlockchainService} from "./blockchain.service";
 import {IPlayerBlockchain} from "../types/blockchain";
 import {IDataToPay} from "../types/dataToPay";
 import {GameGateway} from "../game/game-websocket";
 import {RockPaperScissorsService} from './games/rock-paper-scissors.service';
 import {GameCommonService} from './game-common.service';
+import {BlockchainService} from './blockchain.service';
 
 @Injectable()
 export class GameService {
@@ -28,7 +27,6 @@ export class GameService {
       private gameTypesRepository: Repository<GameTypes>,
       @InjectRepository(Users)
       private usersRepository: Repository<Users>,
-      @InjectRepository(GameData)
       private blockchainService: BlockchainService,
       private rockPaperScissorsService: RockPaperScissorsService,
       private gameCommonService: GameCommonService,
@@ -37,21 +35,17 @@ export class GameService {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
       if(data.event === 'connect_game') {
         const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-        await this.rockPaperScissorsService.sendRpsData('game_data', gameData, data.payload.gameId);
-        // await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data',data.payload.gameId);
-        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+        await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
       } else if (data.event === 'join_game') {
         await this.addWalletToGame(data.payload.gameId, data.payload.wallet);
-
         const gameDataBeforeDeploy = await this.gameCommonService.getGameData(data.payload.gameId);
-        this.gameGateway.send('game_data', gameDataBeforeDeploy, data.payload.gameId)
+        await this.rockPaperScissorsService.sendRpsData('game_data', 'before_deploy', gameDataBeforeDeploy, data.payload.gameId);
 
         await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
         const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-
-        this.gameGateway.send('game_data', gameData, data.payload.gameId)
+        await this.rockPaperScissorsService.sendRpsData('game_data', 'after_deploy', gameData, data.payload.gameId);
       } else if (data.event === 'send_money') {
         await this.sendMoney(data.payload.gameId, data.payload.wallet);
       } else if (data.event === 'leave_game') {
@@ -62,12 +56,6 @@ export class GameService {
         const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
         this.gameGateway.send('game_data', gameData, data.payload.gameId)
       }
-
-      // else if (data.event === 'win_game') {
-      //   await this.finishGame('win', data.payload.gameId, data.payload.wallet);
-      // } else if (data.event === 'lose_game') {
-      //   await this.finishGame('lose', data.payload.gameId, data.payload.wallet);
-      // }
     })
   }
 
@@ -95,12 +83,6 @@ export class GameService {
       wallet: data.wallet,
       userId: user.id,
     });
-
-    // try {
-    //   await this.updatePlayerNumberSet(game.id);
-    // } catch (error) {
-    //   console.error('Ошибка при обновлении playerNumberSet:', error);
-    // }
 
     return game;
   }
@@ -186,7 +168,7 @@ export class GameService {
         ])
         .getRawMany();
   }
-  
+
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
 
     const game = await this.gameCommonService.getGameDataById(
@@ -339,23 +321,22 @@ export class GameService {
 
     await contract.on("LogBet", async () => {
       const gameData = await this.gameCommonService.getGameData(gameId);
-      this.gameGateway.send('game_data', gameData, gameId)
+      await this.rockPaperScissorsService.sendRpsData('game_data', 'player_is_bet', gameData, gameId);
     });
 
     await contract.on("BettingFinished", async () => {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
-      // await this.rockPaperScissorsService.sendRpsData('rpsGame_rounds_data', gameId);
       const gameData = await this.gameCommonService.getGameData(gameId);
-      await this.rockPaperScissorsService.sendRpsData('game_data', gameData, gameId);
+      await this.rockPaperScissorsService.sendRpsData('game_data', 'betting_finished', gameData, gameId);
     });
 
     await contract.on("GameFinalized", async () => {
       this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
       const gameData = await this.gameCommonService.getGameData(gameId);
-      this.gameGateway.send('finish_game_data', gameData, gameId)
+      await this.rockPaperScissorsService.sendRpsData('game_data', 'finish_game_data', gameData, gameId);
     });
 
     return contract

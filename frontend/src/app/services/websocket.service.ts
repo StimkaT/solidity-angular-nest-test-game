@@ -38,25 +38,21 @@ export class WebsocketService {
       this.socket!.on('connect', () => {
         this.socket!.on('game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
-        });
-        this.socket!.on('finish_game_data', (data) => {
-          this.store.dispatch(setGameData({ data }));
-          this.store.dispatch(setTimer({ gameId: data.gameId, second: 0, title: '' }));
-          this.openFinishedModal();
+
+          this.store.dispatch(setRpsRoundsData({ data }));
+          if (data.sendNote === 'new_round') {
+            this.store.dispatch(resetActiveGameElements());
+          } else if (data.sendNote === 'finish_game_data') {
+            this.store.dispatch(setGameData({ data }));
+            this.store.dispatch(setTimer({ gameId: data.gameData.gameInfo.gameId, second: 0, title: '' }));
+            this.openFinishedModal();
+          }
         });
         this.socket!.on('playing_time', (data) => {
           this.store.dispatch(setTimer({ gameId: data.gameId, second: data.remainingSeconds, title: 'Time left until the end of the game' }));
         });
         this.socket!.on('betting_time', (data) => {
-          console.log('timerBet-gameId', data)
           this.store.dispatch(setTimer({ gameId: data.gameId, second: data.remainingSeconds, title: 'Time left until the end of the betting' }));
-        });
-        this.socket!.on('rpsGame_rounds_data', (data) => {
-          this.store.dispatch(setRpsRoundsData({ data }));
-          this.store.dispatch(resetActiveGameElements());
-        });
-        this.socket!.on('rpsGame_intermediate_round_data', (data) => {
-          this.store.dispatch(setRpsRoundsData({ data }));
         });
         this.socket!.emit('connect_game', { gameId: this.gameId, wallet });
       });
@@ -67,7 +63,6 @@ export class WebsocketService {
   }
 
   openFinishedModal(): void {
-    console.log('openFinishedModal')
     const dialogRef = this.dialog.open(ResultsContainerComponent, {
       width: '30%',
       height: '30%',
@@ -156,18 +151,6 @@ export class WebsocketService {
   sendMoney(wallet: string, gameId: number) {
     if (this.socket) {
       this.socket.emit('send_money', { wallet, gameId });
-    }
-  }
-
-  winGame(wallet: string, gameId: number) {
-    if (this.socket) {
-      this.socket.emit('win_game', { wallet, gameId });
-    }
-  }
-
-  loseGame(wallet: string, gameId: number) {
-    if (this.socket) {
-      this.socket.emit('lose_game', { wallet, gameId });
     }
   }
 }

@@ -6,7 +6,7 @@ import {
 } from '../players-status-table-container/players-status-table-container.component';
 import {RockPaperScissorsGameComponent} from '../../games/rock-paper-scissors-game/rock-paper-scissors-game.component';
 import {Store} from '@ngrx/store';
-import {selectActiveGameData} from '../../+state/game-data/game-data.selectors';
+import {selectActiveGameData, selectNameWinner} from '../../+state/game-data/game-data.selectors';
 import {AsyncPipe} from '@angular/common';
 import {RoundsStatisticsComponent} from '../../components/rounds-statistics/rounds-statistics.component';
 import {WinnerComponent} from '../../components/winner/winner.component';
@@ -34,10 +34,10 @@ import {
 export class RockPaperScissorsContainerComponent {
   @Input() gameData!: IActiveGameList;
   @Output() emitter = new EventEmitter();
-  nameWinner = '';
 
   private store = inject(Store)
   selectActiveGameData$ = this.store.select(selectActiveGameData);
+  selectNameWinner$ = this.store.select(selectNameWinner);
 
   events(event: any) {
     if(event.event === 'RockPaperScissorsComponent:someEvents') {

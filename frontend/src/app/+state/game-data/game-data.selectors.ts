@@ -62,6 +62,22 @@ export const selectActiveGameData = createSelector(
   (state: GameDataState) => state.activeGameData
 );
 
+export const selectNameWinner = createSelector(
+  selectGameDataState,
+  (state) => {
+    const players = state.activeGameData.players;
+    if (!players || !players.length) return null;
+
+    const winner = players.reduce((prev, current) => {
+      const currentWin = current.win ?? 0;
+      const prevWin = prev.win ?? 0;
+      return currentWin > prevWin ? current : prev;
+    }, players[0]);
+
+    return winner.name;
+  }
+);
+
 export const selectGameTypes = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.gameTypes
@@ -96,7 +112,7 @@ export const selectIsBetGame = createSelector(
     if (!activeGameData?.players || !player?.wallet) return false;
 
     return activeGameData.players.some(p =>
-      p.wallet === player.wallet && p.bet === true
+      p.wallet === player.wallet && p.bet
     );
   }
 );

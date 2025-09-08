@@ -1,9 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import {IRpsRoundsData} from './rps-game.reducer';
+import {IActiveGameRps} from './rps-game.reducer';
 
 export const setRpsRoundsData = createAction(
   '[RpsGame] setRoundsData',
-  props<{ data: IRpsRoundsData }>()
+  props<{ data: IActiveGameRps }>()
 );
 
 export const setActiveGameElements = createAction(

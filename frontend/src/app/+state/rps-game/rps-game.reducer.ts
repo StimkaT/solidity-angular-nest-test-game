@@ -1,13 +1,16 @@
 import {createReducer, on,} from '@ngrx/store';
 import * as RpsGameActions from './rps-game.actions';
+import {IActiveGameList} from '../game-data/game-data.reducer';
 
 export const RPS_GAME_FEATURE_KEY = 'rps-game';
 
 export interface IPlayerRoundData {
   wallet: string;
-  choice?: string;
-  status?: string;
-  typeChoice?: string;
+  name: string;
+  result: string;
+  typeResult: string;
+  isPlaying: boolean;
+  hasActed: boolean;
 }
 
 export interface IRoundResult {
@@ -15,15 +18,14 @@ export interface IRoundResult {
   players: IPlayerRoundData[];
 }
 
-export interface IRpsRoundsData {
-  gameId: number;
+export interface IActiveGameRps extends IActiveGameList {
+  type: 'rock-paper-scissors';
   activeRound: number | null;
-  gamePlayers: string[];
   roundsData: IRoundResult[];
 }
 
 export interface RpsGameState {
-  gamesRounds: IRpsRoundsData;
+  gamesRounds: IActiveGameRps;
   gameElements: IGameElements[];
 }
 
@@ -51,9 +53,17 @@ export interface SettingsPartialState {
 
 export const initialState: RpsGameState = {
   gamesRounds: {
-    gameId: 0,
+    id: 0,
+    type: 'rock-paper-scissors',
+    status: '',
+    finishedAt: null,
+    createdAt: '',
+    updatedAt: '',
+    bet: 0,
+    playersNumber: 0,
+    playerNumberSet: 0,
+    players: [],
     activeRound: null,
-    gamePlayers: [],
     roundsData: [],
   },
   gameElements: [
@@ -84,18 +94,24 @@ export const rpsGameReducer = createReducer(
     ...state,
     gamesRounds: {
       ...data,
-      roundsData: data.roundsData ? data.roundsData.map(round => ({
+      roundsData: (data.roundsData ?? []).map((round: IRoundResult) => ({
         ...round,
-        players: round.players ? round.players.map(player => ({
+        players: (round.players ?? []).map((player: IPlayerRoundData) => ({
           ...player,
-          typeChoice: 'icon',
-          choice: player.choice === '1' ? 'sports_mma' :
-            player.choice === '2' ? 'content_cut' :
-              player.choice === '3' ? 'insert_drive_file' :
-                player.choice === '0' ? 'close' : ''
-        })) : []
-      })) : []
-    }
+          typeResult: 'icon',
+          result:
+            player.result === '1'
+              ? 'sports_mma'
+              : player.result === '2'
+                ? 'content_cut'
+                : player.result === '3'
+                  ? 'insert_drive_file'
+                  : player.result === '0'
+                    ? 'close'
+                    : '',
+        })),
+      })),
+    },
   })),
   on(RpsGameActions.setActiveGameElements, (state, { data }) => ({
     ...state,

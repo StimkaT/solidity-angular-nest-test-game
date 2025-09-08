@@ -31,11 +31,15 @@ export const selectRoundsViewData = createSelector(
 
     const enhancedRoundsData = rounds.roundsData.map(round => ({
       ...round,
-      playerDataMap: new Map(round.players.map(p => [p.wallet, p]))
+      playerDataMap: new Map(round.players.map(p => [p.name, p]))
     }));
 
     const playerList = Array.from(
-      new Set(enhancedRoundsData.flatMap(round => round.players.map(p => p.wallet)))
+      new Set(
+        enhancedRoundsData.flatMap(round =>
+          round.players.map(p => p.name)
+        )
+      )
     );
 
     return {

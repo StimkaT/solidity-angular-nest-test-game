@@ -8,6 +8,7 @@ import {IGameData} from "../types/gameData";
 import {GameDataDto} from "../dto/gameData.dto";
 import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
+import {Users} from '../entities/entities/Users';
 
 @Injectable()
 export class GameCommonService {
@@ -18,7 +19,10 @@ export class GameCommonService {
         private gamePlayersRepository: Repository<GamePlayers>,
         @InjectRepository(GameData)
         private gameDataRepository: Repository<GameData>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
         private blockchainService: BlockchainService,
+
     ) {}
 
     async getGameData(gameId: number): Promise<IGameData> {
@@ -36,9 +40,11 @@ export class GameCommonService {
             gameDataById.players.map(async (player: GamePlayerDto) => {
                 const blockchainPlayer = playerData.players.find((playerBlock: any) => playerBlock.wallet === player.wallet);
                 const playerWin = await this.getGamePlayerWin(player.wallet, gameDataById.id);
+                const getUserData = await this.getUserData(player.wallet);
 
                 return {
                     wallet: player.wallet,
+                    name: getUserData?.login || '',
                     win: playerWin,
                     bet: blockchainPlayer ? blockchainPlayer.isPaid : false,
                     ready: false,
@@ -126,6 +132,12 @@ export class GameCommonService {
         });
 
         return player?.win;
+    }
+
+    async getUserData(wallet: string) {
+        return await this.usersRepository.findOne({
+            where: { wallet: wallet },
+        });
     }
 
 }

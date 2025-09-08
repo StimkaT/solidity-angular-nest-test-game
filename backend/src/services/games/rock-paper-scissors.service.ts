@@ -7,6 +7,8 @@ import {GamePlayers} from '../../entities/entities/GamePlayers';
 import {GameGateway} from '../../game/game-websocket';
 import {IRoundResult} from '../../types/rpsGame';
 import {BlockchainService} from '../blockchain.service';
+import {GameCommonService} from '../game-common.service';
+import {Users} from '../../entities/entities/Users';
 
 @Injectable()
 export class RockPaperScissorsService {
@@ -17,7 +19,10 @@ export class RockPaperScissorsService {
         private gameRepository: Repository<Games>,
         @InjectRepository(GamePlayers)
         private gamePlayersRepository: Repository<GamePlayers>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
         private blockchainService: BlockchainService,
+        private gameCommonService: GameCommonService,
         private readonly gameGateway: GameGateway
     ) {
         this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
@@ -29,13 +34,13 @@ export class RockPaperScissorsService {
                 const gameIsStartedButNotFinished = await this.gameIsStartedButNotFinished(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
                     await this.setChoicePlayer(data.payload);
-                    await this.sendRpsData('rpsGame_intermediate_round_data', gameId);
+                    const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+                    await this.sendRpsData('game_data', 'set_choice_game', gameData, data.payload.gameId);
                     await new Promise(resolve => setTimeout(resolve, 5000));
                     const lastRound = await this.getLastRoundGame(gameId);
                     const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
                     if (checkEveryoneBet) {
                         await this.determiningWinners(gameId, lastRound);
-                        // await this.sendRpsData('rpsGame_rounds_data', gameId);
                     }
                 }
 
@@ -74,11 +79,10 @@ export class RockPaperScissorsService {
         await this.rpsRepository.save(playerResult);
     }
 
-    async sendRpsData(note: string, gameId: number) {
-        const wallets = await this.gamePlayerList(gameId);
-        const roundsData = await this.getRoundsInfo(gameId);
+    async sendRpsData(note: string, sendNote: string, gameData: any, gameId: number) {
+        let roundsData = await this.getRoundsInfo(gameId);
         const activeRound = await this.getCurrentRound(gameId);
-        const rpsGameData = {gameId, activeRound, roundsData, wallets}
+        const rpsGameData = {sendNote, gameData, activeRound, roundsData}
         this.gameGateway.send(note, rpsGameData, gameId)
     }
 
@@ -90,22 +94,18 @@ export class RockPaperScissorsService {
             const nextRound = activeRound + 1;
             const wallets = await this.gamePlayerList(gameId);
 
-            // Если это первый раунд
             if (activeRound < 1) {
                 for (const wallet of wallets) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
                         wallets: wallet,
                         round: nextRound,
-                        result: null // Все игроки начинают с null
+                        result: null
                     });
                     await this.rpsRepository.save(rpsRecord);
                 }
-            }
-            // Если это не первый раунд и у нас есть информация о победителях/проигравших
-            else if (activeRound >= 1 && losersWallets.length > 0) {
+            } else if (activeRound >= 1 && losersWallets.length > 0) {
 
-                // Для проигравших устанавливаем result = 0
                 for (const wallet of losersWallets) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
@@ -116,19 +116,17 @@ export class RockPaperScissorsService {
                     await this.rpsRepository.save(rpsRecord);
                 }
 
-                // Для победителей устанавливаем result = null
                 for (const wallet of finalWinners) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
                         wallets: wallet,
                         round: nextRound,
-                        result: null // Победители получают result = null
+                        result: null
                     });
                     await this.rpsRepository.save(rpsRecord);
                 }
 
             }
-            // Если это не первый раунд, но нет информации о победителях/проигравших
             else if (activeRound >= 1) {
                 for (const wallet of wallets) {
                     const resultValue = await this.lastRoundResult(wallet, activeRound, gameId);
@@ -143,7 +141,8 @@ export class RockPaperScissorsService {
                 }
             }
 
-            await this.sendRpsData('rpsGame_rounds_data', gameId);
+            const gameData = await this.gameCommonService.getGameData(gameId);
+            await this.sendRpsData('game_data', 'new_round', gameData, gameId);
         }
     }
 
@@ -375,36 +374,38 @@ export class RockPaperScissorsService {
         }
 
         for (const [roundNumber, roundBets] of roundsMap.entries()) {
-            const betsWithChoices = roundBets.filter(bet => bet.result !== null && bet.result !== undefined);
+            const betsWithChoices = roundBets.filter(bet => bet.result != null);
             const allPlayersMadeBets = betsWithChoices.length >= playersCount;
 
-            const roundResult: IRoundResult = {
-                roundNumber,
-                players: roundBets.map(bet => {
+            const players = await Promise.all(
+                roundBets.map(async (bet) => {
+                    const user = await this.getUserData(bet.wallets);
                     const playerData: any = {
-                        wallet: bet.wallets
+                        wallet: bet.wallets,
+                        name: user?.login || '',
+                        isPlaying: bet.result !== 0,
+                        hasActed: bet.result != null,
+                        result: ''
                     };
 
-                    if (bet.result === null) {
-                        playerData.status = "notBet";
-                    } else if (+bet.result === 0) {
-                        playerData.status = "loser";
-                    } else {
-                        playerData.status = "isBet";
-                    }
-
-                    if (allPlayersMadeBets && bet.result !== null && bet.result !== undefined) {
-                        playerData.choice = bet.result;
+                    if (allPlayersMadeBets && bet.result != null) {
+                        playerData.result = bet.result;
                     }
 
                     return playerData;
                 })
-            };
+            );
 
-            result.push(roundResult);
+            result.push({ roundNumber, players });
         }
 
         return result.sort((a, b) => a.roundNumber - b.roundNumber);
+    }
+
+    async getUserData(wallet: string) {
+        return await this.usersRepository.findOne({
+            where: { wallet },
+        });
     }
 
     //кол-во человек в игре
