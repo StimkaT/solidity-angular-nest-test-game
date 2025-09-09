@@ -14,6 +14,7 @@ import {GameGateway} from "../game/game-websocket";
 import {RockPaperScissorsService} from './games/rock-paper-scissors.service';
 import {GameCommonService} from './game-common.service';
 import {BlockchainService} from './blockchain.service';
+import {DiceService} from './games/dice.service';
 
 @Injectable()
 export class GameService {
@@ -29,6 +30,7 @@ export class GameService {
       private usersRepository: Repository<Users>,
       private blockchainService: BlockchainService,
       private rockPaperScissorsService: RockPaperScissorsService,
+      private diceService: DiceService,
       private gameCommonService: GameCommonService,
       private readonly gameGateway: GameGateway
   ) {
@@ -128,7 +130,7 @@ export class GameService {
     });
 
     if (action === 'add') {
-      const gameData = await this.gameCommonService.getGameDataById(gameId.toString());
+      const gameData = await this.gameCommonService.getGameDataById(gameId);
       if (existingPlayer) throw new Error('This user is already participating in the game');
       if (gameData.activePlayersCount >= gameData.playersNumber) {
         throw new Error('No available spots in this game');
@@ -176,7 +178,7 @@ export class GameService {
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
 
     const game = await this.gameCommonService.getGameDataById(
-        gameId.toString(),
+        gameId,
     );
 
     if (!game) {
@@ -277,9 +279,12 @@ export class GameService {
   }
 
   async createFirstRound(gameId: number) {
-    const type = (await this.gameCommonService.getGameDataById(gameId.toString())).type
+    const type = (await this.gameCommonService.getGameDataById(gameId)).type
     if (type === 'rock-paper-scissors') {
       await this.rockPaperScissorsService.createRoundRockPaperScissors(gameId);
+    }
+    if (type === 'dice') {
+      await this.diceService.createRoundDice(gameId);
     }
   }
 
@@ -347,7 +352,7 @@ export class GameService {
   }
 
   async updateDataBaseFromBlockchain(gameId: number) {
-    const gameDataById = await this.gameCommonService.getGameDataById(gameId.toString());
+    const gameDataById = await this.gameCommonService.getGameDataById(gameId);
 
     if (gameDataById?.contractAddress) {
       const playerData = await this.blockchainService.getGameData(gameDataById.contractAddress);

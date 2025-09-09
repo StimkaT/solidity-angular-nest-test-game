@@ -5,7 +5,7 @@ import {
   closeWebSocketConnection,
   createGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadGameListSuccess, sendMoney, setChoiceGame, setGameData,
+  loadGameListSuccess, makeAction, sendMoney, setGameData,
   setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
@@ -23,7 +23,6 @@ export class GameDataEffects {
   private gameDataService = inject(GameDataService);
   private store = inject(Store);
   private wsService = inject(WebsocketService);
-
 
   setSelectedPlayerList$ = createEffect(() =>
       this.actions$.pipe(
@@ -229,15 +228,15 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
-  setChoiceGame$ = createEffect(() =>
+  makeAction$ = createEffect(() =>
       this.actions$.pipe(
-        ofType(setChoiceGame),
+        ofType(makeAction),
         withLatestFrom(
           this.store.select(getPlayer),
           this.store.select(getActiveRound),
         ),
         tap(([action, player, activeRound]) => {
-          this.wsService.setChoiceGame(action.result, player.wallet, activeRound!);
+          this.wsService.makeAction(action.result, player.wallet, activeRound!);
         })
       ),
     { dispatch: false }

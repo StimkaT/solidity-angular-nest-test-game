@@ -6,9 +6,9 @@
       </button>
       <span>ID: {{ gameData.id }} | &nbsp;</span>
       @if (gameData.status === 'notStarted') {
-        <span>{{ title }} | Wait Players: {{ gameData.playerNumberSet}}/{{ gameData.playersNumber}} </span>
+        <span>{{ gameData.type }} | Wait Players: {{ gameData.playerNumberSet}}/{{ gameData.playersNumber}} </span>
       } @else {
-        <span>{{ title }} | {{ gameData.status}}</span>
+        <span>{{ gameData.type }} | {{ gameData.status}}</span>
       }
     </div>
 

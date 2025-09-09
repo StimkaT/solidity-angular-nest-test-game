@@ -18,5 +18,4 @@ export class PlayerListInGameContainerComponent {
   private store = inject(Store);
 
   selectRpsDataRound = this.store.select(selectRpsDataRound);
-
 }

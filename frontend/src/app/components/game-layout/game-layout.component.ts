@@ -19,7 +19,7 @@ import {TimerComponent} from '../timer/timer.component';
   styleUrl: './game-layout.component.scss'
 })
 export class GameLayoutComponent {
-  @Input() title: string = '';
+  // @Input() title: string = '';
   @Input() link: string = '';
   @Input() activeGamesList: any;
   @Input() player: any;
@@ -36,7 +36,7 @@ export class GameLayoutComponent {
     const message = {
       event: `GameLayoutComponent:${event}`,
       wallet: this.player.wallet,
-      title: this.title
+      title: this.gameData.type
     }
     this.emitter.emit(message)
   }

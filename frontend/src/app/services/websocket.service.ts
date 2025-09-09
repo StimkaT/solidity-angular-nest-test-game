@@ -82,11 +82,11 @@ export class WebsocketService {
     }
   }
 
-  setChoiceGame(data: string, wallet: string, round: number) {
+  makeAction(data: string, wallet: string, round: number) {
     if (this.socket) {
-      this.socket.emit('set_choice_game', {
+      this.socket.emit('make_action', {
         gameId: this.gameId,
-        choice: data,
+        data,
         wallet,
         round
       });

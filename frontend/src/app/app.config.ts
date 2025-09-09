@@ -13,6 +13,7 @@ import {AUTH_FEATURE_KEY, authReducer} from './+state/auth/auth.reducer';
 import {GameDataEffects} from './+state/game-data/game-data.effects';
 import {AuthEffects} from './+state/auth/auth.effects';
 import {RpsGameEffects} from './+state/rps-game/rps-game.effects';
+import {DICE_GAME_FEATURE_KEY, diceGameReducer} from './+state/dice-game/dice-game.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       [GAME_DATA_FEATURE_KEY]: gameDataReducer,
       [RPS_GAME_FEATURE_KEY]: rpsGameReducer,
+      [DICE_GAME_FEATURE_KEY]: diceGameReducer,
       [AUTH_FEATURE_KEY]: authReducer,
     }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]

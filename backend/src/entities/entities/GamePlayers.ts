@@ -9,10 +9,10 @@ import {
 import { Games } from "./Games";
 import { Users } from "./Users";
 
-@Index("fk_game_players_user", ["userId"], {})
 @Index("game_id", ["gameId"], {})
 @Index("idx_game_players_game_id", ["gameId"], {})
 @Index("idx_game_players_wallet", ["wallet"], {})
+@Index("fk_game_players_user", ["userId"], {})
 @Entity("game_players", { schema: "game" })
 export class GamePlayers {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })

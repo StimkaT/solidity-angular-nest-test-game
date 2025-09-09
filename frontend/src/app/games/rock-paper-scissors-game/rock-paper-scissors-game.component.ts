@@ -1,6 +1,6 @@
 import { Component, inject} from '@angular/core';
 import { Store } from '@ngrx/store';
-import {setChoiceGame} from '../../+state/game-data/game-data.actions';
+import {makeAction} from '../../+state/game-data/game-data.actions';
 import {AsyncPipe} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
@@ -28,7 +28,7 @@ export class RockPaperScissorsGameComponent {
   getGameElements$ = this.store.select(getGameElements);
 
   event(data: string) {
-    this.store.dispatch(setChoiceGame({ result: data }));
+    this.store.dispatch(makeAction({ result: data }));
     this.store.dispatch(setActiveGameElements({ data }));
   }
 }

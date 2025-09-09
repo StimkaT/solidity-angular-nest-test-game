@@ -28,14 +28,14 @@ export class RockPaperScissorsService {
         this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
             const gameId = data.payload.gameId;
             const wallet = data.payload.wallet;
-            const round = data.payload.round;
-            if (data.event === 'set_choice_game') {
-                const isConnect = await this.playerIsConnected(gameId, wallet);
-                const gameIsStartedButNotFinished = await this.gameIsStartedButNotFinished(gameId);
+            const gameDataById = await this.gameCommonService.getGameDataById(gameId);
+            if (data.event === 'make_action' && gameDataById.type === 'rock-paper-scissors') {
+                const isConnect = await this.gameCommonService.playerIsConnected(gameId, wallet);
+                const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
+                const gameData = await this.gameCommonService.getGameData(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
                     await this.setChoicePlayer(data.payload);
-                    const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-                    await this.sendRpsData('game_data', 'set_choice_game', gameData, data.payload.gameId);
+                    await this.sendRpsData('game_data', 'make_action', gameData, gameId);
                     await new Promise(resolve => setTimeout(resolve, 5000));
                     const lastRound = await this.getLastRoundGame(gameId);
                     const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
@@ -48,21 +48,8 @@ export class RockPaperScissorsService {
         })
     }
 
-    async playerIsConnected(gameId: number, wallet: string): Promise<boolean> {
-        const playerConnection = await this.gamePlayersRepository.find({
-            where: { gameId, wallet },
-        });
-
-        return playerConnection.length > 0;
-    }
-
-    async gameIsStartedButNotFinished(gameId: number): Promise<boolean> {
-        const status = await this.getGameStatus(gameId);
-        return status === 'Game';
-    }
-
     // сохраняем выбор игрока
-    async setChoicePlayer(data: { gameId: number, choice: string, wallet: string, round: number}) {
+    async setChoicePlayer(data: { gameId: number, data: any, wallet: string, round: number}) {
         const playerResult = await this.rpsRepository.findOne({
             where: {
                 gameId: data.gameId,
@@ -75,7 +62,7 @@ export class RockPaperScissorsService {
             return;
         }
 
-        playerResult.result = data.choice;
+        playerResult.result = data.data;
         await this.rpsRepository.save(playerResult);
     }
 
@@ -87,7 +74,7 @@ export class RockPaperScissorsService {
     }
 
     async createRoundRockPaperScissors(gameId: number, losersWallets: string[] = [], finalWinners: string[] = []) {
-        const status = await this.getGameStatus(gameId);
+        const status = await this.gameCommonService.getGameStatus(gameId);
 
         if (status === 'Game') {
             const activeRound = await this.getCurrentRound(gameId);
@@ -222,7 +209,7 @@ export class RockPaperScissorsService {
             if (finalWinners.length > 1) {
                 await this.createRoundRockPaperScissors(gameId, losersWallets, finalWinners);
             } else {
-                const notFinished = await this.getGameStatus(gameId);
+                const notFinished = await this.gameCommonService.getGameStatus(gameId);
                 if (notFinished !== 'Finished') {
                     await this.finishGame(gameId, finalWinners[0])
                 }
@@ -244,7 +231,7 @@ export class RockPaperScissorsService {
 
 
     async finishGame(gameId: number, wallet: string) {
-        const game = await this.getGameData(gameId);
+        const game = await this.gameCommonService.getGameDataById(gameId);
 
         // Проверяем, что game не null
         if (!game) {
@@ -336,7 +323,7 @@ export class RockPaperScissorsService {
         return true;
     }
 
-    // Получаем текущий активный раунд
+    // Получаем текущий активный раунд RPC
     async getCurrentRound(gameId: number): Promise<number> {
         const lastRecord = await this.rpsRepository.findOne({
             where: { gameId },
@@ -352,7 +339,7 @@ export class RockPaperScissorsService {
             order: { round: 'ASC' }
         });
 
-        const game = await this.getGameData(gameId);
+        const game = await this.gameCommonService.getGameDataById(gameId);
         if (!game) {
             return [];
         }
@@ -418,14 +405,6 @@ export class RockPaperScissorsService {
         return 0;
     }
 
-    // получаем все данные об игре
-    async getGameData(gameId: number): Promise<Games | null> {
-        return await this.gameRepository.findOne({
-            where: {id: gameId},
-            relations: ['gameRockPaperScissors', 'gamePlayers', 'gameData'],
-        });
-    }
-
     async getGamePlayersData(gameId: number): Promise<GamePlayers[]> {
         return await this.gamePlayersRepository.find({
             where: {gameId: gameId},
@@ -458,19 +437,6 @@ export class RockPaperScissorsService {
         });
 
         return lastRound ? lastRound.round : 0;
-    }
-
-    //получаем статус
-    async getGameStatus(gameId: number): Promise<string> {
-        const game = await this.getGameData(gameId);
-
-        if (!game || !game.contractAddress) return 'notStarted';
-
-        const blockchainData = await this.blockchainService.getGameData(game.contractAddress);
-
-        return !blockchainData.gameData.isBettingComplete
-            ? 'Waiting payment'
-            : (game.finishedAt ? 'Finished' : 'Game');
     }
 
 }

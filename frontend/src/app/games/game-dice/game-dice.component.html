@@ -1,8 +1,27 @@
-<div class="container">
-  <div class="dice-wrapper"><app-dice [diceValue]="dice1Value" [isRotate]="isRotate"/></div>
-  <div class="dice-wrapper"><app-dice [diceValue]="dice2Value" [isRotate]="isRotate"/></div>
-</div>
-<div class="container">
-  <button (click)="roll()">Roll Dice</button>
-</div>
+@if ((selectActiveGameData$ | async)?.status === 'Waiting payment' || (selectActiveGameData$ | async)?.status === 'notStarted') {
+  <app-players-status-table-container></app-players-status-table-container>
+}
+@if ((selectActiveGameData$ | async)?.status === 'Game') {
+  <app-statistic-button></app-statistic-button>
+  <div class="game-container">
+    <div class="container">
+      <div class="dice-wrapper"><app-dice [diceValue]="dice1Value" [isRotate]="isRotate"/></div>
+      <div class="dice-wrapper"><app-dice [diceValue]="dice2Value" [isRotate]="isRotate"/></div>
+    </div>
+    <div class="container">
+      <button (click)="roll()">Roll Dice</button>
+    </div>
+  </div>
+  <app-player-list-in-game-container></app-player-list-in-game-container>
+}
+@if ((selectActiveGameData$ | async)?.status === 'Finished') {
+<!--  <app-rock-paper-scissors-->
+<!--    [gameData]="gameData"-->
+<!--  ></app-rock-paper-scissors>-->
+  <app-winner
+    [name]="(selectNameWinner$ | async) || ''"
+  ></app-winner>
+  <app-rounds-statistics></app-rounds-statistics>
+}
+
 

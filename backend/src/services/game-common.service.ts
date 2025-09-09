@@ -28,7 +28,7 @@ export class GameCommonService {
     async getGameData(gameId: number): Promise<IGameData> {
         await this.updatePlayerNumberSet(gameId);
 
-        const gameDataById: any = await this.getGameDataById(gameId.toString());
+        const gameDataById: any = await this.getGameDataById(gameId);
 
         let playerData: any = { players: [] };
 
@@ -52,7 +52,7 @@ export class GameCommonService {
             })
         );
 
-        const gameDataDB = await this.getGameDataById(gameId.toString());
+        const gameDataDB = await this.getGameDataById(gameId);
 
         let gameData: IGameData;
         gameData = {
@@ -105,7 +105,7 @@ export class GameCommonService {
         }
     }
 
-    async getGameDataById(gameId: string): Promise<GameDataDto> {
+    async getGameDataById(gameId: number): Promise<GameDataDto> {
         const game = await this.gameRepository.findOne({
             where: { id: Number(gameId) },
             relations: ['gameData', 'gamePlayers', 'gamePlayers.user', 'gamePlayers.game'],
@@ -137,6 +137,56 @@ export class GameCommonService {
     async getUserData(wallet: string) {
         return await this.usersRepository.findOne({
             where: { wallet: wallet },
+        });
+    }
+
+    async playerIsConnected(gameId: number, wallet: string): Promise<boolean> {
+        const playerConnection = await this.gamePlayersRepository.find({
+            where: { gameId, wallet },
+        });
+
+        return playerConnection.length > 0;
+    }
+
+    // // получаем все данные об игре
+    // async getGameDataById(gameId: number): Promise<Games | null> {
+    //     return await this.gameRepository.findOne({
+    //         where: {id: gameId},
+    //         relations: ['gameRockPaperScissors', 'gamePlayers', 'gameData'],
+    //     });
+    // }
+
+    //получаем статус
+    async getGameStatus(gameId: number): Promise<string> {
+        const game = await this.getGameDataById(gameId);
+
+        if (!game || !game.contractAddress) return 'notStarted';
+
+        const blockchainData = await this.blockchainService.getGameData(game.contractAddress);
+
+        return !blockchainData.gameData.isBettingComplete
+            ? 'Waiting payment'
+            : (game.finishedAt ? 'Finished' : 'Game');
+    }
+
+    async gameIsStartedButNotFinished(gameId: number): Promise<boolean> {
+        const status = await this.getGameStatus(gameId);
+        return status === 'Game';
+    }
+
+
+    async getGamePlayersData(gameId: number): Promise<GamePlayers[]> {
+        return await this.gamePlayersRepository.find({
+            where: {gameId: gameId},
+        });
+    }
+
+
+    async gamePlayerList(gameId: number): Promise<string[]> {
+        const gamePlayers = await this.getGamePlayersData(gameId);
+
+        return gamePlayers.map(player => {
+            return player.wallet;
         });
     }
 

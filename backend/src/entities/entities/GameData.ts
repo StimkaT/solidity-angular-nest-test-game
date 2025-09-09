@@ -9,8 +9,8 @@ import {
 import { Games } from "./Games";
 
 @Index("game_id", ["gameId"], { unique: true })
-@Index("idx_game_data_game_id", ["gameId"], {})
 @Index("uk_game_data_game", ["gameId"], { unique: true })
+@Index("idx_game_data_game_id", ["gameId"], {})
 @Entity("game_data", { schema: "game" })
 export class GameData {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })

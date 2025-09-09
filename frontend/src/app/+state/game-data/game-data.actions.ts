@@ -57,8 +57,8 @@ export const loadGameListSuccess = createAction(
   '[GameData] loadGameListSuccess',
   props<{data: any}>()
 );
-export const setChoiceGame = createAction(
-  '[GameData] setChoiceGame',
+export const makeAction = createAction(
+  '[GameData] makeAction',
   props<{result: string}>()
 );
 export const joinGame = createAction(
