@@ -14,6 +14,6 @@ export class GameDice {
   @Column("int", { name: "round", default: () => "'1'" })
   round: number;
 
-  @Column("varchar", { name: "result", nullable: true, length: 255 })
-  result: string | null;
+  @Column("int", { name: "result", nullable: true })
+  result: number | null;
 }

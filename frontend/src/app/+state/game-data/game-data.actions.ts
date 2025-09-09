@@ -61,6 +61,7 @@ export const makeAction = createAction(
   '[GameData] makeAction',
   props<{result: string}>()
 );
+export const makeActionWithoutData = createAction('[GameData] makeActionWithoutData');
 export const joinGame = createAction(
   '[GameData] joinGame',
 );

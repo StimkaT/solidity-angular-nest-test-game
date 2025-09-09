@@ -6,6 +6,7 @@ import {Store} from '@ngrx/store';
 import {ResultsContainerComponent} from '../containers/results-container/results-container.component';
 import {MatDialog} from '@angular/material/dialog';
 import {resetActiveGameElements, setRpsRoundsData} from '../+state/rps-game/rps-game.actions';
+import {setDiceRoundsData} from '../+state/dice-game/dice-game.actions';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -38,8 +39,11 @@ export class WebsocketService {
       this.socket!.on('connect', () => {
         this.socket!.on('game_data', (data) => {
           this.store.dispatch(setGameData({ data }));
-
-          this.store.dispatch(setRpsRoundsData({ data }));
+          if (data.gameData.gameInfo.type === 'rock-paper-scissors') {
+            this.store.dispatch(setRpsRoundsData({ data }));
+          } else if (data.gameData.gameInfo.type === 'dice') {
+            this.store.dispatch(setDiceRoundsData({ data }));
+          }
           if (data.sendNote === 'new_round') {
             this.store.dispatch(resetActiveGameElements());
           } else if (data.sendNote === 'finish_game_data') {
@@ -63,7 +67,7 @@ export class WebsocketService {
   }
 
   openFinishedModal(): void {
-    const dialogRef = this.dialog.open(ResultsContainerComponent, {
+    this.dialog.open(ResultsContainerComponent, {
       width: '30%',
       height: '30%',
       hasBackdrop: true,
@@ -87,6 +91,16 @@ export class WebsocketService {
       this.socket.emit('make_action', {
         gameId: this.gameId,
         data,
+        wallet,
+        round
+      });
+    }
+  }
+
+  makeActionWithoutData( wallet: string, round: number) {
+    if (this.socket) {
+      this.socket.emit('make_action', {
+        gameId: this.gameId,
         wallet,
         round
       });

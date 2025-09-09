@@ -12,7 +12,7 @@ import {StatisticButtonComponent} from '../../components/statistic-button/statis
 import {WinnerComponent} from '../../components/winner/winner.component';
 import {Store} from '@ngrx/store';
 import {selectActiveGameData, selectNameWinner} from '../../+state/game-data/game-data.selectors';
-import {getResultDiceGame} from '../../+state/dice-game/dice-game.actions';
+import {makeActionWithoutData} from '../../+state/game-data/game-data.actions';
 
 @Component({
   selector: 'app-game-dice',
@@ -42,7 +42,7 @@ export class GameDiceComponent {
   selectNameWinner$ = this.store.select(selectNameWinner);
 
   roll() {
-    this.store.dispatch(getResultDiceGame())
+    this.store.dispatch(makeActionWithoutData());
     this.isRotate = true;
 
     this.dice1Value = Math.floor((Math.random() * 6) + 1);

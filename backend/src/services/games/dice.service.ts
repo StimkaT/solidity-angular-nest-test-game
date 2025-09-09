@@ -1,6 +1,5 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {GameRockPaperScissors} from '../../entities/entities/GameRockPaperScissors';
 import {IsNull, Repository} from 'typeorm';
 import {Games} from '../../entities/entities/Games';
 import {GamePlayers} from '../../entities/entities/GamePlayers';
@@ -14,8 +13,6 @@ import {GameDice} from '../../entities/entities/GameDice';
 @Injectable()
 export class DiceService {
     constructor(
-        @InjectRepository(GameRockPaperScissors)
-        private rpsRepository: Repository<GameRockPaperScissors>,
         @InjectRepository(GameDice)
         private gameDiceRepository: Repository<GameDice>,
         @InjectRepository(Games)
@@ -37,37 +34,39 @@ export class DiceService {
                 const isConnect = await this.gameCommonService.playerIsConnected(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
-            //         await this.setChoicePlayer(data.payload);
-            //         const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-            //         await this.sendRpsData('game_data', 'make_action', gameData, data.payload.gameId);
-            //         await new Promise(resolve => setTimeout(resolve, 5000));
-            //         const lastRound = await this.getLastRoundGame(gameId);
-            //         const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
-            //         if (checkEveryoneBet) {
-            //             await this.determiningWinners(gameId, lastRound);
-            //         }
+                    const counts = [3, 5];
+                    await this.setCountPlayer(data.payload, counts);
+                    const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+                    //         await this.sendRpsData('game_data', 'make_action', gameData, data.payload.gameId);
+                    //         await new Promise(resolve => setTimeout(resolve, 5000));
+                    //         const lastRound = await this.getLastRoundGame(gameId);
+                    //         const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
+                    //         if (checkEveryoneBet) {
+                    //             await this.determiningWinners(gameId, lastRound);
+                    //         }
                 }
             }
         })
     }
-    // // сохраняем выбор игрока
-    // async setChoicePlayer(data: { gameId: number, choice: string, wallet: string, round: number}) {
-    //     const playerResult = await this.rpsRepository.findOne({
-    //         where: {
-    //             gameId: data.gameId,
-    //             round: data.round,
-    //             wallets: data.wallet
-    //         },
-    //     });
-    //
-    //     if (!playerResult || playerResult.result !== null) {
-    //         return;
-    //     }
-    //
-    //     playerResult.result = data.choice;
-    //     await this.rpsRepository.save(playerResult);
-    // }
-    //
+    // устанавливаем сумму выпавших значений
+    async setCountPlayer(data: { gameId: number, wallet: string, round: number}, counts: number[]) {
+        const sumCounts = counts[0] + counts[1];
+        const playerResult = await this.gameDiceRepository.findOne({
+            where: {
+                gameId: data.gameId,
+                round: data.round,
+                wallet: data.wallet
+            },
+        });
+
+        if (!playerResult || playerResult.result !== null) {
+            return;
+        }
+
+        playerResult.result = sumCounts;
+        await this.gameDiceRepository.save(playerResult);
+    }
+
     async sendRpsData(note: string, sendNote: string, gameData: any, gameId: number) {
         let roundsData = 'await this.getRoundsInfo(gameId)';
         const activeRound = await this.getCurrentRound(gameId);
@@ -77,7 +76,6 @@ export class DiceService {
 
     async createRoundDice(gameId: number, losersWallets: string[] = [], finalWinners: string[] = []) {
         const status = await this.gameCommonService.getGameStatus(gameId);
-        //
         if (status === 'Game') {
             const activeRound = await this.getCurrentRound(gameId);
             const nextRound = activeRound + 1;
@@ -100,7 +98,7 @@ export class DiceService {
                         gameId,
                         wallet,
                         round: nextRound,
-                        result: '0'
+                        result: 0
                     });
                     await this.gameDiceRepository.save(rpsRecord);
                 }
@@ -128,7 +126,6 @@ export class DiceService {
                     await this.gameDiceRepository.save(rpsRecord);
                 }
             }
-        //
             const gameData = await this.gameCommonService.getGameData(gameId);
             await this.sendRpsData('game_data', 'new_round', gameData, gameId);
         }
@@ -193,7 +190,7 @@ export class DiceService {
     //         else if (a === '3' && b === '2') losingResponse = '3';
     //         else if (a === '1' && b === '3') losingResponse = '1';
     //         else if (a === '3' && b === '1') losingResponse = '1';
-    //         else losingResponse = '0';
+    //         else losingResponse = 0;
     //
     //         const losingWallets: string[] = [];
     //
@@ -410,12 +407,12 @@ export class DiceService {
     //
     // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший
     // то переноси этот результат и в новый раунд - тк. Этот игрок уже исключен и не может ставить
-    async lastRoundResult(wallet: string, round: number, gameId: number): Promise<string | null> {
+    async lastRoundResult(wallet: string, round: number, gameId: number) {
         const roundResult = await this.gameDiceRepository.findOne({
             where: {wallet: wallet, round, gameId},
         });
 
-        return roundResult?.result === '0' ? '0' : null;
+        return roundResult?.result === 0 ? 0 : null;
     }
     //
     // async getLastRoundGame(gameId: number) {

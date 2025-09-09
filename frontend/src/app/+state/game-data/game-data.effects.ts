@@ -2,10 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
-  closeWebSocketConnection,
+  // closeWebSocketConnection,
   createGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
   joinGame, leaveGame,
-  loadGameListSuccess, makeAction, sendMoney, setGameData,
+  loadGameListSuccess, makeAction, makeActionWithoutData, sendMoney, setGameData,
   setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
@@ -65,7 +65,7 @@ export class GameDataEffects {
             wallet: player.wallet
           };
           this.gameDataService.createGame(payload).subscribe({
-            next: (response) => {
+            next: () => {
               this.store.dispatch(getActiveGames({ game: typeGame }));
             },
             error: (error) => {
@@ -133,18 +133,18 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
-  closeWebSocketConnection$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(closeWebSocketConnection),
-        withLatestFrom(
-          this.store.select(getPlayer),
-        ),
-        tap(([{gameId}, player]) => {
-          // this.wsService.disconnect();
-        })
-      ),
-    { dispatch: false }
-  );
+  // closeWebSocketConnection$ = createEffect(() =>
+  //     this.actions$.pipe(
+  //       ofType(closeWebSocketConnection),
+  //       withLatestFrom(
+  //         this.store.select(getPlayer),
+  //       ),
+  //       tap(([{gameId}, player]) => {
+  //         // this.wsService.disconnect();
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
 
   joinGame$ = createEffect(() =>
       this.actions$.pipe(
@@ -237,6 +237,20 @@ export class GameDataEffects {
         ),
         tap(([action, player, activeRound]) => {
           this.wsService.makeAction(action.result, player.wallet, activeRound!);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  makeActionWithoutData$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(makeActionWithoutData),
+        withLatestFrom(
+          this.store.select(getPlayer),
+          this.store.select(getActiveRound),
+        ),
+        tap(([{}, player, activeRound]) => {
+          this.wsService.makeActionWithoutData(player.wallet, activeRound!);
         })
       ),
     { dispatch: false }
