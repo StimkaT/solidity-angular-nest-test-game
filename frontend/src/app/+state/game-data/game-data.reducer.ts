@@ -227,7 +227,6 @@ export const gameDataReducer = createReducer(
     const existingTimerIndex = state.timer.findIndex(t => t.gameId === gameId);
 
     if (existingTimerIndex !== -1) {
-      // Обновляем существующий таймер
       return {
         ...state,
         timer: state.timer.map(timer =>
@@ -237,7 +236,6 @@ export const gameDataReducer = createReducer(
         )
       };
     } else {
-      // Добавляем новый таймер
       return {
         ...state,
         timer: [...state.timer, { gameId, second, title }]

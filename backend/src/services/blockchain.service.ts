@@ -123,7 +123,7 @@ export class BlockchainService {
                 value: contractBet,
             });
 
-            const receipt = await tx.wait();
+            await tx.wait();
 
             const contract = new ethers.Contract(
                 contractAddress,
@@ -152,7 +152,6 @@ export class BlockchainService {
     }
 
     async finish(data: { contractAddress: string; playerResults: any[] }) {
-        console.log('finishBlock', data)
         try {
             const { contractAddress, playerResults } = data;
 
@@ -178,18 +177,12 @@ export class BlockchainService {
 
     async getContractBalance(contractAddress: string): Promise<bigint> {
         try {
-            // Загружаем ABI контракта
             const storageArtifact = require(this.storageArtifactPath);
             const abi = storageArtifact.abi;
 
-            // Создаем экземпляр контракта
             const contract = new ethers.Contract(contractAddress, abi, this.provider);
 
-            // Вызываем view-функцию
-            const balance = await contract.getContractBalance();
-
-            return balance;
-
+            return await contract.getContractBalance();
         } catch (error) {
             throw new Error(`Get balance error: ${error.message}`);
         }

@@ -34,7 +34,11 @@ export class GameService {
   ) {
     this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
       if(data.event === 'connect_game') {
+        const getStorageAddress = (await this.getGameById(data.payload.gameId))?.contractAddress;
         const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+        if (getStorageAddress) {
+          await this.contractListener(data.payload.gameId, getStorageAddress);
+        }
         await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
@@ -324,7 +328,7 @@ export class GameService {
       await this.rockPaperScissorsService.sendRpsData('game_data', 'player_is_bet', gameData, gameId);
     });
 
-    await contract.on("BettingFinished", async () => {
+    await contract.once("BettingFinished", async () => {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
@@ -332,7 +336,7 @@ export class GameService {
       await this.rockPaperScissorsService.sendRpsData('game_data', 'betting_finished', gameData, gameId);
     });
 
-    await contract.on("GameFinalized", async () => {
+    await contract.once("GameFinalized", async () => {
       this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
       const gameData = await this.gameCommonService.getGameData(gameId);
