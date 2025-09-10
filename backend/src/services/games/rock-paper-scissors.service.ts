@@ -2,25 +2,19 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {GameRockPaperScissors} from '../../entities/entities/GameRockPaperScissors';
 import {IsNull, Repository} from 'typeorm';
-import {Games} from '../../entities/entities/Games';
 import {GamePlayers} from '../../entities/entities/GamePlayers';
 import {GameGateway} from '../../game/game-websocket';
 import {IRoundResult} from '../../types/rpsGame';
 import {BlockchainService} from '../blockchain.service';
 import {GameCommonService} from '../game-common.service';
-import {Users} from '../../entities/entities/Users';
 
 @Injectable()
 export class RockPaperScissorsService {
     constructor(
         @InjectRepository(GameRockPaperScissors)
         private rpsRepository: Repository<GameRockPaperScissors>,
-        @InjectRepository(Games)
-        private gameRepository: Repository<Games>,
         @InjectRepository(GamePlayers)
         private gamePlayersRepository: Repository<GamePlayers>,
-        @InjectRepository(Users)
-        private usersRepository: Repository<Users>,
         private blockchainService: BlockchainService,
         private gameCommonService: GameCommonService,
         private readonly gameGateway: GameGateway
@@ -148,9 +142,9 @@ export class RockPaperScissorsService {
         }
 
         // получение списка для winnerWallets [кошелек:результат, ...];
-        const resultsMap = await this.walletsResultList(gameId, activeRound, winnerWallets);
+        const resultsObject = await this.walletsResultList(gameId, activeRound, winnerWallets);
         // определение кол-во вариаций результатов
-        const resultVariations = this.countResultVariations(resultsMap);
+        const resultVariations = this.countResultVariations(resultsObject);
 
         let finalWinners = [...winnerWallets];
 
@@ -196,7 +190,7 @@ export class RockPaperScissorsService {
 
             const losingWallets: string[] = [];
 
-            for (const [wallet, result] of Object.entries(resultsMap)) {
+            for (const [wallet, result] of Object.entries(resultsObject)) {
                 if (result === losingResponse) {
                     losingWallets.push(wallet);
                 }
@@ -261,11 +255,11 @@ export class RockPaperScissorsService {
         const result: { [key: string]: any } = {};
 
         for (const wallet of wallets) {
-            let rpsResult = await this.rpsRepository.findOne({
+            let resultGame = await this.rpsRepository.findOne({
                 where: { gameId, wallets: wallet, round: activeRound },
             });
 
-            result[wallet] = rpsResult?.result;
+            result[wallet] = resultGame?.result;
         }
 
         return result;
@@ -338,71 +332,7 @@ export class RockPaperScissorsService {
             where: { gameId },
             order: { round: 'ASC' }
         });
-
-        const game = await this.gameCommonService.getGameDataById(gameId);
-        if (!game) {
-            return [];
-        }
-
-        const playersCount = await this.getPlayersCount(gameId);
-        const result: IRoundResult[] = [];
-
-        const roundsMap = new Map<number, any[]>();
-
-        for (const round of rounds) {
-            if (round.round === null) {
-                continue;
-            }
-
-            if (!roundsMap.has(round.round)) {
-                roundsMap.set(round.round, []);
-            }
-            roundsMap.get(round.round)!.push(round);
-        }
-
-        for (const [roundNumber, roundBets] of roundsMap.entries()) {
-            const betsWithChoices = roundBets.filter(bet => bet.result != null);
-            const allPlayersMadeBets = betsWithChoices.length >= playersCount;
-
-            const players = await Promise.all(
-                roundBets.map(async (bet) => {
-                    const user = await this.getUserData(bet.wallets);
-                    const playerData: any = {
-                        wallet: bet.wallets,
-                        name: user?.login || '',
-                        isPlaying: bet.result !== 0,
-                        hasActed: bet.result != null,
-                        result: ''
-                    };
-
-                    if (allPlayersMadeBets && bet.result != null) {
-                        playerData.result = bet.result;
-                    }
-
-                    return playerData;
-                })
-            );
-
-            result.push({ roundNumber, players });
-        }
-
-        return result.sort((a, b) => a.roundNumber - b.roundNumber);
-    }
-
-    async getUserData(wallet: string) {
-        return await this.usersRepository.findOne({
-            where: { wallet },
-        });
-    }
-
-    //кол-во человек в игре
-    private async getPlayersCount(gameId: number): Promise<number> {
-        if (this.gamePlayersRepository) {
-            return await this.gamePlayersRepository.count({
-                where: { gameId }
-            });
-        }
-        return 0;
+        return this.gameCommonService.getRoundsInfo(gameId, rounds)
     }
 
     async getGamePlayersData(gameId: number): Promise<GamePlayers[]> {
@@ -438,6 +368,5 @@ export class RockPaperScissorsService {
 
         return lastRound ? lastRound.round : 0;
     }
-
 }
 

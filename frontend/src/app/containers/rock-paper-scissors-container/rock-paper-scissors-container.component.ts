@@ -14,6 +14,7 @@ import {StatisticButtonComponent} from '../../components/statistic-button/statis
 import {
   PlayerListInGameContainerComponent
 } from '../player-list-in-game-container/player-list-in-game-container.component';
+import { selectRpsDataRound } from '../../+state/rps-game/rps-game.selectors';
 
 @Component({
   selector: 'app-rock-paper-scissors-container',
@@ -38,6 +39,8 @@ export class RockPaperScissorsContainerComponent {
   private store = inject(Store)
   selectActiveGameData$ = this.store.select(selectActiveGameData);
   selectNameWinner$ = this.store.select(selectNameWinner);
+  selectRpsDataRound$ = this.store.select(selectRpsDataRound);
+
 
   events(event: any) {
     if(event.event === 'RockPaperScissorsComponent:someEvents') {

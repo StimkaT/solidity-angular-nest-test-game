@@ -41,7 +41,11 @@ export class GameService {
         if (getStorageAddress) {
           await this.contractListener(data.payload.gameId, getStorageAddress);
         }
-        await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
+        if (gameData.gameInfo.type === 'rock-paper-scissors') {
+          await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
+        } else if (gameData.gameInfo.type === 'dice') {
+          await this.diceService.sendDiceData('game_data', 'first_send', gameData, data.payload.gameId);
+        }
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
       } else if (data.event === 'join_game') {

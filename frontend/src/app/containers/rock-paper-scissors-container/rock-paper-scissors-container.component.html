@@ -6,7 +6,9 @@
   <div class="game-container">
     <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
   </div>
-  <app-player-list-in-game-container></app-player-list-in-game-container>
+  <app-player-list-in-game-container
+    [dataRound]="selectRpsDataRound$ | async"
+  ></app-player-list-in-game-container>
 }
 @if ((selectActiveGameData$ | async)?.status === 'Finished') {
   <app-rock-paper-scissors
