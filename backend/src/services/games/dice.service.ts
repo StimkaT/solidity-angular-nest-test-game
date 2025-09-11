@@ -12,18 +12,21 @@ export class DiceService {
         @InjectRepository(GameDice)
         private gameDiceRepository: Repository<GameDice>,
         private gameCommonService: GameCommonService,
-        private readonly gameGateway: GameGateway
+        private readonly gameGateway: GameGateway,
     ) {
         this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
             const gameId = data.payload.gameId;
             const wallet = data.payload.wallet;
             const gameDataById = await this.gameCommonService.getGameDataById(gameId);
-            if (data.event === 'make_action' && gameDataById.type === 'dice') {
+            const gameType = gameDataById.type
+            // const logicAddress = await this.gameCommonService.getGameLogic(gameType!);
+            if (data.event === 'make_action' && gameType === 'dice') {
                 const isConnect = await this.gameCommonService.playerIsConnected(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
-                    const counts = [5, 7];
-                    await this.setCountPlayer(data.payload, counts);
+                    const generateCounts = this.getRandomNumbers(1, 6, 2);
+                    console.log('generateCounts:::::', generateCounts)
+                    await this.setCountPlayer(data.payload, generateCounts);
                     const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
                     await this.sendDiceData('game_data', 'make_action', gameData, data.payload.gameId);
                     await new Promise(resolve => setTimeout(resolve, 5000));
@@ -221,21 +224,36 @@ export class DiceService {
     }
 
     async checkEveryoneBet(gameId: number, activeRound: number) {
-        const rpsRecords = await this.gameDiceRepository.find({
+        const gameRecords = await this.gameDiceRepository.find({
             where: { gameId, round: activeRound },
         });
 
-        if (rpsRecords.length === 0) {
+        if (gameRecords.length === 0) {
             return false;
         }
-
-        for (const record of rpsRecords) {
+        for (const record of gameRecords) {
             if (record.result === null || record.result === undefined || isNaN(Number(record.result))) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    getRandomNumbers(a: number, b: number, count: number): number[] {
+        if (a > b) {
+            throw new Error('Invalid range: a must be <= b');
+        }
+        if (count <= 0) {
+            throw new Error('Count must be > 0');
+        }
+
+        const numbers: number[] = [];
+        for (let i = 0; i < count; i++) {
+            const random = Math.floor(Math.random() * (b - a + 1)) + a;
+            numbers.push(random);
+        }
+        return numbers;
     }
 
 }

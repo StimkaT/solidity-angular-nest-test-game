@@ -10,6 +10,7 @@ import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
 import {Users} from '../entities/entities/Users';
 import {IRoundResult} from '../types/rpsGame';
+import {GameTypes} from '../entities/entities/GameTypes';
 
 @Injectable()
 export class GameCommonService {
@@ -22,6 +23,8 @@ export class GameCommonService {
         private gameDataRepository: Repository<GameData>,
         @InjectRepository(Users)
         private usersRepository: Repository<Users>,
+        @InjectRepository(GameTypes)
+        private gameTypesRepository: Repository<GameTypes>,
         private blockchainService: BlockchainService,
 
     ) {}
@@ -278,4 +281,16 @@ export class GameCommonService {
         });
     }
 
+    async getGameLogic(type: string): Promise<string> {
+        const gameType = await this.gameTypesRepository.findOne({
+            where: { name: type },
+            select: ['logicAddress'],
+        });
+
+        if (!gameType) {
+            throw new Error(`Game logic not found for type: ${type}`);
+        }
+
+        return gameType.logicAddress;
+    }
 }

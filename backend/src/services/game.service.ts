@@ -333,26 +333,34 @@ export class GameService {
     const contract = this.blockchainService.getContract(storageAddress);
 
     await contract.on("LogBet", async () => {
-      const gameData = await this.gameCommonService.getGameData(gameId);
-      await this.rockPaperScissorsService.sendRpsData('game_data', 'player_is_bet', gameData, gameId);
+      await this.sendGameData('player_is_bet', gameId);
     });
 
     await contract.once("BettingFinished", async () => {
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
-      const gameData = await this.gameCommonService.getGameData(gameId);
-      await this.rockPaperScissorsService.sendRpsData('game_data', 'betting_finished', gameData, gameId);
+      await this.sendGameData('betting_finished', gameId);
     });
 
     await contract.once("GameFinalized", async () => {
       this.stopTimer(gameId);
       await this.updateDataBaseFromBlockchain(gameId);
-      const gameData = await this.gameCommonService.getGameData(gameId);
-      await this.rockPaperScissorsService.sendRpsData('game_data', 'finish_game_data', gameData, gameId);
+      await this.sendGameData('finish_game_data', gameId);
     });
 
     return contract
+  }
+
+  private async sendGameData(note: string, gameId: number) {
+    const gameData = await this.gameCommonService.getGameData(gameId);
+
+    if (gameData.gameInfo.type === 'rock-paper-scissors') {
+      await this.rockPaperScissorsService.sendRpsData('game_data', note, gameData, gameId);
+    } else if (gameData.gameInfo.type === 'dice') {
+      console.log('game_data', note, gameData, gameId);
+      await this.diceService.sendDiceData('game_data', note, gameData, gameId);
+    }
   }
 
   async updateDataBaseFromBlockchain(gameId: number) {
