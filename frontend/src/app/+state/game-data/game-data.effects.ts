@@ -134,19 +134,6 @@ export class GameDataEffects {
     { dispatch: false }
   );
 
-  // closeWebSocketConnection$ = createEffect(() =>
-  //     this.actions$.pipe(
-  //       ofType(closeWebSocketConnection),
-  //       withLatestFrom(
-  //         this.store.select(getPlayer),
-  //       ),
-  //       tap(([{gameId}, player]) => {
-  //         // this.wsService.disconnect();
-  //       })
-  //     ),
-  //   { dispatch: false }
-  // );
-
   joinGame$ = createEffect(() =>
       this.actions$.pipe(
         ofType(joinGame),
@@ -251,7 +238,6 @@ export class GameDataEffects {
           this.store.select(getActiveRoundDice),
         ),
         tap(([{}, player, activeRound]) => {
-          console.log('activeRound,',activeRound)
           this.wsService.makeActionWithoutData(player.wallet, activeRound!);
         })
       ),

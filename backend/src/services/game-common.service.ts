@@ -45,7 +45,6 @@ export class GameCommonService {
                 const blockchainPlayer = playerData.players.find((playerBlock: any) => playerBlock.wallet === player.wallet);
                 const playerWin = await this.getGamePlayerWin(player.wallet, gameDataById.id);
                 const getUserData = await this.getUserData(player.wallet);
-
                 return {
                     wallet: player.wallet,
                     name: getUserData?.login || '',
@@ -232,9 +231,9 @@ export class GameCommonService {
 
             const players = await Promise.all(
                 roundBets.map(async (bet) => {
-                    const user = await this.getUserData(bet.wallets);
+                    const user = await this.getUserData(bet.wallet);
                     const playerData: any = {
-                        wallet: bet.wallets,
+                        wallet: bet.wallet,
                         name: user?.login || '',
                         isPlaying: bet.result !== 0,
                         hasActed: bet.result != null,
@@ -244,6 +243,49 @@ export class GameCommonService {
                     if (allPlayersMadeBets && bet.result != null) {
                         playerData.result = bet.result;
                     }
+
+                    return playerData;
+                })
+            );
+
+            result.push({ roundNumber, players });
+        }
+
+        return result.sort((a, b) => a.roundNumber - b.roundNumber);
+    }
+
+    async getRoundsInfoAlwaysWithResult(gameId: number, rounds: any): Promise<IRoundResult[]> {
+        const game = await this.getGameDataById(gameId);
+        if (!game) {
+            return [];
+        }
+
+        const result: IRoundResult[] = [];
+
+        const roundsMap = new Map<number, any[]>();
+
+        for (const round of rounds) {
+            if (round.round === null) {
+                continue;
+            }
+
+            if (!roundsMap.has(round.round)) {
+                roundsMap.set(round.round, []);
+            }
+            roundsMap.get(round.round)!.push(round);
+        }
+
+        for (const [roundNumber, roundBets] of roundsMap.entries()) {
+            const players = await Promise.all(
+                roundBets.map(async (bet) => {
+                    const user = await this.getUserData(bet.wallet);
+                    const playerData: any = {
+                        wallet: bet.wallet,
+                        name: user?.login || '',
+                        isPlaying: bet.result !== 0,
+                        hasActed: bet.result != null,
+                        result: bet.result != null ? bet.result : ''
+                    };
 
                     return playerData;
                 })

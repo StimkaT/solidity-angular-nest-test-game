@@ -46,7 +46,6 @@ export class GameDiceComponent {
   selectDiceDataRound$ = this.store.select(selectDiceDataRound);
   roundsViewData$ = this.store.select(selectDiceRoundsViewData);
 
-
   roll() {
     this.store.dispatch(makeActionWithoutData());
     this.isRotate = true;

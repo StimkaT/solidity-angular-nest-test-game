@@ -24,7 +24,13 @@
             </mat-icon>
           }
         } @else if (player.typeResult === 'text') {
-          <span> {{ player.result }} </span>
+          @if (!player.result) {
+            <mat-icon>
+              question_mark
+            </mat-icon>
+          } @else {
+            <span> {{ player.result }} </span>
+          }
         }
       </div>
     }

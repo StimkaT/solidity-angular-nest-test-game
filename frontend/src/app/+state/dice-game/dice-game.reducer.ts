@@ -68,6 +68,7 @@ export const diceGameReducer = createReducer(
         ...round,
         players: (round.players ?? []).map((player: IPlayerRoundData) => ({
           ...player,
+          typeResult: 'text',
           result: player.result,
         })),
       })),

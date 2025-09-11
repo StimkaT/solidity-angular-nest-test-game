@@ -358,7 +358,6 @@ export class GameService {
     if (gameData.gameInfo.type === 'rock-paper-scissors') {
       await this.rockPaperScissorsService.sendRpsData('game_data', note, gameData, gameId);
     } else if (gameData.gameInfo.type === 'dice') {
-      console.log('game_data', note, gameData, gameId);
       await this.diceService.sendDiceData('game_data', note, gameData, gameId);
     }
   }

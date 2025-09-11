@@ -17,8 +17,8 @@ export class GameRockPaperScissors {
   @Column("int", { name: "game_id", unsigned: true })
   gameId: number;
 
-  @Column("varchar", { name: "wallets", length: 255 })
-  wallets: string;
+  @Column("varchar", { name: "wallet", length: 255 })
+  wallet: string;
 
   @Column("int", { name: "round", default: () => "'1'" })
   round: number;

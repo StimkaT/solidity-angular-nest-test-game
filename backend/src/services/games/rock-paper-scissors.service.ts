@@ -48,7 +48,7 @@ export class RockPaperScissorsService {
             where: {
                 gameId: data.gameId,
                 round: data.round,
-                wallets: data.wallet
+                wallet: data.wallet
             },
         });
 
@@ -79,7 +79,7 @@ export class RockPaperScissorsService {
                 for (const wallet of wallets) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
-                        wallets: wallet,
+                        wallet,
                         round: nextRound,
                         result: null
                     });
@@ -90,7 +90,7 @@ export class RockPaperScissorsService {
                 for (const wallet of losersWallets) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
-                        wallets: wallet,
+                        wallet,
                         round: nextRound,
                         result: '0'
                     });
@@ -100,7 +100,7 @@ export class RockPaperScissorsService {
                 for (const wallet of finalWinners) {
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
-                        wallets: wallet,
+                        wallet,
                         round: nextRound,
                         result: null
                     });
@@ -114,7 +114,7 @@ export class RockPaperScissorsService {
 
                     const rpsRecord = this.rpsRepository.create({
                         gameId,
-                        wallets: wallet,
+                        wallet,
                         round: nextRound,
                         result: resultValue
                     });
@@ -170,7 +170,7 @@ export class RockPaperScissorsService {
                     },
                 });
 
-                teams[teamName] = teamPlayers.map(player => player.wallets);
+                teams[teamName] = teamPlayers.map(player => player.wallet);
                 teamResults[`${teamName}Result`] = resultValue;
             }
 
@@ -256,7 +256,7 @@ export class RockPaperScissorsService {
 
         for (const wallet of wallets) {
             let resultGame = await this.rpsRepository.findOne({
-                where: { gameId, wallets: wallet, round: activeRound },
+                where: { gameId, wallet, round: activeRound },
             });
 
             result[wallet] = resultGame?.result;
@@ -291,7 +291,7 @@ export class RockPaperScissorsService {
     //определение кошельков которые проиграли
     async checkLoserWallets(gameId: number, activeRound: number, wallet: string) {
         let rpsRecord = await this.rpsRepository.findOne({
-            where: {gameId, wallets: wallet, round: activeRound},
+            where: {gameId, wallet, round: activeRound},
         });
 
         const result = Number(rpsRecord?.result);
@@ -353,7 +353,7 @@ export class RockPaperScissorsService {
     // то переноси этот результат и в новый раунд - тк. Этот игрок уже исключен и не может ставить
     async lastRoundResult(wallet: string, round: number, gameId: number): Promise<string | null> {
         const roundResult = await this.rpsRepository.findOne({
-            where: {wallets: wallet, round, gameId},
+            where: {wallet, round, gameId},
         });
 
         return roundResult?.result === '0' ? '0' : null;

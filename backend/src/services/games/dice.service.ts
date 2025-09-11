@@ -25,7 +25,6 @@ export class DiceService {
                 const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
                     const generateCounts = this.getRandomNumbers(1, 6, 2);
-                    console.log('generateCounts:::::', generateCounts)
                     await this.setCountPlayer(data.payload, generateCounts);
                     const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
                     await this.sendDiceData('game_data', 'make_action', gameData, data.payload.gameId);
@@ -59,8 +58,8 @@ export class DiceService {
     }
 
     async sendDiceData(note: string, sendNote: string, gameData: any, gameId: number) {
-        let roundsData = await this.getRoundsInfo(gameId);
         const activeRound = await this.getCurrentRound(gameId);
+        let roundsData = await this.getRoundsInfo(gameId);
         const rpsGameData = {sendNote, gameData, activeRound, roundsData}
         this.gameGateway.send(note, rpsGameData, gameId)
     }
@@ -200,7 +199,7 @@ export class DiceService {
             where: { gameId },
             order: { round: 'ASC' }
         });
-        return this.gameCommonService.getRoundsInfo(gameId, rounds)
+        return this.gameCommonService.getRoundsInfoAlwaysWithResult(gameId, rounds)
     }
 
     // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший
