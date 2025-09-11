@@ -1,6 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { selectRoundsViewData } from '../../+state/rps-game/rps-game.selectors';
+import {Component, Input} from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -12,7 +10,5 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './rounds-statistics.component.scss',
 })
 export class RoundsStatisticsComponent {
-  private store = inject(Store);
-
-  roundsViewData$ = this.store.select(selectRoundsViewData);
+  @Input() roundsViewData: any;
 }

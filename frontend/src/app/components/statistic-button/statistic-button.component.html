@@ -3,5 +3,7 @@
   <mat-icon>{{ menuTrigger.menuOpen ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
 </button>
 <mat-menu #menu="matMenu" class="custom-menu">
-  <app-rounds-statistics></app-rounds-statistics>
+  <app-rounds-statistics
+    [roundsViewData]="roundsViewData"
+  ></app-rounds-statistics>
 </mat-menu>

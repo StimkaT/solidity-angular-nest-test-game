@@ -1,49 +1,47 @@
 <div class="table-container">
-  @if (roundsViewData$ | async; as data) {
-    @if (data.hasData) {
-      <table>
-        <thead>
-        <tr>
-          <th class="first"></th>
-          <th [attr.colspan]="data.roundsData.length">Rounds</th>
-        </tr>
-        <tr>
-          <th class="first"></th>
-          @for (round of data.roundsData; track round.roundNumber) {
-            <th>{{ round.roundNumber }}</th>
-          }
-        </tr>
-        </thead>
-        <tbody>
-          @for (player of data.playerList; track player) {
-            <tr>
-              <td class="player-name" [title]="player">
-                {{ player }}
-              </td>
+  @if (roundsViewData.hasData) {
+    <table>
+      <thead>
+      <tr>
+        <th class="first"></th>
+        <th [attr.colspan]="roundsViewData.roundsData.length">Rounds</th>
+      </tr>
+      <tr>
+        <th class="first"></th>
+        @for (round of roundsViewData.roundsData; track round.roundNumber) {
+          <th>{{ round.roundNumber }}</th>
+        }
+      </tr>
+      </thead>
+      <tbody>
+        @for (player of roundsViewData.playerList; track player) {
+          <tr>
+            <td class="player-name" [title]="player">
+              {{ player }}
+            </td>
 
-              @for (round of data.roundsData; track round.roundNumber) {
-                <td>
-                  @if (round.playerDataMap.has(player)) {
-                    @if (round.playerDataMap.get(player)!.result) {
-                      @if (round.playerDataMap.get(player)!.typeResult === 'icon') {
-                        <mat-icon>{{ round.playerDataMap.get(player)!.result }}</mat-icon>
-                      } @else {
-                        {{ round.playerDataMap.get(player)!.result }}
-                      }
+            @for (round of roundsViewData.roundsData; track round.roundNumber) {
+              <td>
+                @if (round.playerDataMap.has(player)) {
+                  @if (round.playerDataMap.get(player)!.result) {
+                    @if (round.playerDataMap.get(player)!.typeResult === 'icon') {
+                      <mat-icon>{{ round.playerDataMap.get(player)!.result }}</mat-icon>
                     } @else {
-                      -
+                      {{ round.playerDataMap.get(player)!.result }}
                     }
                   } @else {
                     -
                   }
-                </td>
-              }
-            </tr>
-          }
-        </tbody>
-      </table>
-    } @else {
-      <p class="no-data">No rounds data available</p>
-    }
+                } @else {
+                  -
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="no-data">No rounds data available</p>
   }
 </div>

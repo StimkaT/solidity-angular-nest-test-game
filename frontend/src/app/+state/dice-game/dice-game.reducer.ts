@@ -27,6 +27,16 @@ export interface DiceGameState {
   gamesRounds: IActiveGameDice;
 }
 
+export interface IEnhancedRoundResult extends IRoundResult {
+  playerDataMap: Map<string, IPlayerRoundData>;
+}
+
+export interface IRoundsViewData {
+  roundsData: IEnhancedRoundResult[];
+  playerList: string[];
+  hasData: boolean;
+}
+
 export interface SettingsPartialState {
   readonly [DICE_GAME_FEATURE_KEY]: DiceGameState;
 }

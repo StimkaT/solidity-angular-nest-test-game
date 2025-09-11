@@ -2,7 +2,9 @@
   <app-players-status-table-container></app-players-status-table-container>
 }
 @if ((selectActiveGameData$ | async)?.status === 'Game') {
-  <app-statistic-button></app-statistic-button>
+  <app-statistic-button
+    [roundsViewData]="roundsViewData$ | async"
+  ></app-statistic-button>
   <div class="game-container">
     <app-rock-paper-scissors-game></app-rock-paper-scissors-game>
   </div>
@@ -17,7 +19,9 @@
   <app-winner
     [name]="(selectNameWinner$ | async) || ''"
   ></app-winner>
-  <app-rounds-statistics></app-rounds-statistics>
+  <app-rounds-statistics
+    [roundsViewData]="roundsViewData$ | async"
+  ></app-rounds-statistics>
 }
 
 

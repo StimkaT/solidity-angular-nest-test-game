@@ -14,7 +14,7 @@ import {Store} from '@ngrx/store';
 import {selectActiveGameData, selectNameWinner} from '../../+state/game-data/game-data.selectors';
 import {makeActionWithoutData} from '../../+state/game-data/game-data.actions';
 import {RockPaperScissorsComponent} from '../../components/rock-paper-scissors/rock-paper-scissors.component';
-import {selectDiceDataRound} from '../../+state/dice-game/dice-game.selectors';
+import {selectDiceDataRound, selectDiceRoundsViewData} from '../../+state/dice-game/dice-game.selectors';
 
 @Component({
   selector: 'app-game-dice',
@@ -44,6 +44,8 @@ export class GameDiceComponent {
   selectActiveGameData$ = this.store.select(selectActiveGameData);
   selectNameWinner$ = this.store.select(selectNameWinner);
   selectDiceDataRound$ = this.store.select(selectDiceDataRound);
+  roundsViewData$ = this.store.select(selectDiceRoundsViewData);
+
 
   roll() {
     this.store.dispatch(makeActionWithoutData());

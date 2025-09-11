@@ -1,5 +1,5 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {DICE_GAME_FEATURE_KEY, DiceGameState} from './dice-game.reducer';
+import {DICE_GAME_FEATURE_KEY, DiceGameState, IRoundsViewData} from './dice-game.reducer';
 
 export const selectDiceGameState = createFeatureSelector<DiceGameState>(DICE_GAME_FEATURE_KEY);
 
@@ -12,4 +12,37 @@ export const selectDiceDataRound = createSelector(
 export const getActiveRoundDice = createSelector(
   selectDiceGameState,
   (state: DiceGameState) => state.gamesRounds.activeRound
+);
+
+export const selectDiceGameDataRounds = createSelector(
+  selectDiceGameState,
+  (state: DiceGameState) => state.gamesRounds
+);
+
+export const selectDiceRoundsViewData = createSelector(
+  selectDiceGameDataRounds,
+  (rounds): IRoundsViewData => {
+    if (!rounds?.roundsData?.length) {
+      return { roundsData: [], playerList: [], hasData: false };
+    }
+
+    const enhancedRoundsData = rounds.roundsData.map(round => ({
+      ...round,
+      playerDataMap: new Map(round.players.map(p => [p.name, p]))
+    }));
+
+    const playerList = Array.from(
+      new Set(
+        enhancedRoundsData.flatMap(round =>
+          round.players.map(p => p.name)
+        )
+      )
+    );
+
+    return {
+      roundsData: enhancedRoundsData,
+      playerList,
+      hasData: true
+    };
+  }
 );
