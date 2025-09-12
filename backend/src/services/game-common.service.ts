@@ -10,7 +10,6 @@ import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
 import {Users} from '../entities/entities/Users';
 import {IRoundResult} from '../types/rpsGame';
-import {GameTypes} from '../entities/entities/GameTypes';
 
 @Injectable()
 export class GameCommonService {
@@ -23,8 +22,6 @@ export class GameCommonService {
         private gameDataRepository: Repository<GameData>,
         @InjectRepository(Users)
         private usersRepository: Repository<Users>,
-        @InjectRepository(GameTypes)
-        private gameTypesRepository: Repository<GameTypes>,
         private blockchainService: BlockchainService,
 
     ) {}
@@ -150,14 +147,6 @@ export class GameCommonService {
 
         return playerConnection.length > 0;
     }
-
-    // // получаем все данные об игре
-    // async getGameDataById(gameId: number): Promise<Games | null> {
-    //     return await this.gameRepository.findOne({
-    //         where: {id: gameId},
-    //         relations: ['gameRockPaperScissors', 'gamePlayers', 'gameData'],
-    //     });
-    // }
 
     //получаем статус
     async getGameStatus(gameId: number): Promise<string> {
@@ -297,6 +286,29 @@ export class GameCommonService {
         return result.sort((a, b) => a.roundNumber - b.roundNumber);
     }
 
+    async getLastRoundResults(gameId: number, rounds: any[]): Promise<{wallet: string, result: number | null}[]> {
+        const game = await this.getGameDataById(gameId);
+        if (!game) {
+            return [];
+        }
+
+        const results: {wallet: string, result: number | null}[] = [];
+
+        for (const round of rounds) {
+            // Исключаем записи с result = 0, но оставляем result = null
+            if (round.result === 0) {
+                continue;
+            }
+
+            results.push({
+                wallet: round.wallet,
+                result: round.result
+            });
+        }
+
+        return results;
+    }
+
     async finishGame(gameId: number, wallet: string) {
         const game = await this.getGameDataById(gameId);
 
@@ -321,18 +333,5 @@ export class GameCommonService {
             contractAddress: game.contractAddress,
             playerResults: playerResults
         });
-    }
-
-    async getGameLogic(type: string): Promise<string> {
-        const gameType = await this.gameTypesRepository.findOne({
-            where: { name: type },
-            select: ['logicAddress'],
-        });
-
-        if (!gameType) {
-            throw new Error(`Game logic not found for type: ${type}`);
-        }
-
-        return gameType.logicAddress;
     }
 }

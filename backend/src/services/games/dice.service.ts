@@ -17,15 +17,17 @@ export class DiceService {
         this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
             const gameId = data.payload.gameId;
             const wallet = data.payload.wallet;
+            const round = data.payload.round;
             const gameDataById = await this.gameCommonService.getGameDataById(gameId);
             const gameType = gameDataById.type
-            // const logicAddress = await this.gameCommonService.getGameLogic(gameType!);
             if (data.event === 'make_action' && gameType === 'dice') {
                 const isConnect = await this.gameCommonService.playerIsConnected(gameId, wallet);
                 const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
                 if (isConnect && gameIsStartedButNotFinished) {
                     const generateCounts = this.getRandomNumbers(1, 6, 2);
+                    // const orderOfThrows =
                     await this.setCountPlayer(data.payload, generateCounts);
+                    await this.setOrderOfThrows(gameId, round, generateCounts);
                     const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
                     await this.sendDiceData('game_data', 'make_action', gameData, data.payload.gameId);
                     await new Promise(resolve => setTimeout(resolve, 5000));
@@ -38,6 +40,56 @@ export class DiceService {
             }
         })
     }
+
+    async setOrderOfThrows(
+        gameId: number,
+        round: number,
+        generateCounts: number[],
+    ): Promise<{ activeWallet: string; diceCounts: number[]; status: boolean }> {
+        try {
+            const walletsResult = await this.getRoundInfo(gameId, round);
+            console.log('walletsResult', walletsResult);
+
+            const walletList = walletsResult.map(item => item.wallet);
+
+            const allNull = walletsResult.every(item => item.result === null);
+            const allNotNull = walletsResult.every(item => item.result !== null);
+
+            let activeWallet: string;
+            let diceCounts: number[];
+            let status: boolean;
+
+            if (allNull) {
+                status = true;
+                activeWallet = walletList[0];
+                diceCounts = [0, 0];
+            } else if (allNotNull) {
+                status = false;
+                activeWallet = '';
+                diceCounts = [0, 0];
+            } else {
+                const nextPlayerIndex = walletsResult.findIndex(item => item.result === null);
+
+                if (nextPlayerIndex !== -1) {
+                    status = true;
+                    activeWallet = walletList[nextPlayerIndex];
+                    diceCounts = generateCounts;
+                } else {
+                    status = false;
+                    activeWallet = '';
+                    diceCounts = [0, 0];
+                }
+            }
+
+            console.log('ИТОГ:', { activeWallet, diceCounts, status });
+            return { activeWallet, diceCounts, status };
+
+        } catch (error) {
+            console.error('Ошибка в setOrderOfThrows:', error);
+            throw error;
+        }
+    }
+
     // устанавливаем сумму выпавших значений
     async setCountPlayer(data: { gameId: number, wallet: string, round: number}, counts: number[]) {
         const sumCounts = counts[0] + counts[1];
@@ -116,6 +168,7 @@ export class DiceService {
                     await this.gameDiceRepository.save(rpsRecord);
                 }
             }
+            await this.setOrderOfThrows(gameId, nextRound, [0, 0]);
             const gameData = await this.gameCommonService.getGameData(gameId);
             await this.sendDiceData('game_data', 'new_round', gameData, gameId);
         }
@@ -200,6 +253,14 @@ export class DiceService {
             order: { round: 'ASC' }
         });
         return this.gameCommonService.getRoundsInfoAlwaysWithResult(gameId, rounds)
+    }
+
+    async getRoundInfo(gameId: number, round: number) {
+        const rounds = await this.gameDiceRepository.find({
+            where: { gameId, round },
+            order: { round: 'ASC' }
+        });
+        return this.gameCommonService.getLastRoundResults(gameId, rounds)
     }
 
     // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший

@@ -3,7 +3,6 @@ import {RoundsStatisticsComponent} from '../rounds-statistics/rounds-statistics.
 import {MatButtonModule} from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
-import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-statistic-button',
@@ -12,7 +11,6 @@ import {AsyncPipe} from '@angular/common';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    AsyncPipe,
   ],
   standalone: true,
   templateUrl: './statistic-button.component.html',
