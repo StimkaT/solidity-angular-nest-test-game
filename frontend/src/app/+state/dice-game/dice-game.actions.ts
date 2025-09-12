@@ -1,23 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import {IActiveGameRps} from '../rps-game/rps-game.reducer';
+import {IActiveGameDice} from './dice-game.reducer';
 
 export const getResultDiceGame = createAction('[DiceGame] getResultDiceGame');
 
 export const setDiceRoundsData = createAction(
   '[RpsGame] setDiceRoundsData',
-  props<{ data: IActiveGameRps }>()
+  props<{ data: IActiveGameDice }>()
 );
-
-// export const setDiceRoundsData = createAction(
-//   '[DiceGame] setDiceRoundsData',
-//   props<{ data: IActiveGameRps }>()
-// );
-//
-// export const setActiveDiceGameElements = createAction(
-//   '[DiceGame] setActiveDiceGameElements',
-//   props<{ data: string }>()
-// );
-//
-// export const resetActiveDiceGameElements = createAction('[DiceGame] resetActiveDiceGameElements');
-//
-

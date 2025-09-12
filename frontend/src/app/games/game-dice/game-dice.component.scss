@@ -20,9 +20,8 @@
 
   }
 
-  button {
+  .button-roll {
     flex: 0 0 auto;
-
     width: 200px;
     position: relative;
     padding: 15px 50px;
@@ -34,13 +33,26 @@
     box-shadow: 1px 1px #50514F;
     outline: none;
     transition: .1s;
-  }
 
-  button:hover, button:active {
-    outline: none;
-    background: #50514F;
-    cursor: pointer;
-    transform: translateY(2px);
+    &:hover, &:active {
+      outline: none;
+      background: #50514F;
+      cursor: pointer;
+      transform: translateY(2px);
+    }
+
+    &:disabled {
+      background-color: #6c757d; // Серый цвет
+      box-shadow: none;
+      transform: none;
+      cursor: not-allowed;
+
+      &:hover, &:active {
+        background-color: #6c757d; // Остается серым при hover
+        transform: none; // Отключаем анимацию
+        cursor: not-allowed;
+      }
+    }
   }
 
 }

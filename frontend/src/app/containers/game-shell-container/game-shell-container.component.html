@@ -16,7 +16,12 @@
       (emitter)="events($event)"
     />
   } @else if ((selectActiveGameData$ | async)?.type ==='dice') {
-    <app-game-dice (emitter)="events($event)"></app-game-dice>
+    <app-game-dice
+      [orderOfThrows]="(getOrderOfThrows$ | async)!"
+      [yourPlay]="(isYourPlay$ | async)!"
+      (emitter)="events($event)"
+    >
+    </app-game-dice>
   }
 
 </app-game-layout>

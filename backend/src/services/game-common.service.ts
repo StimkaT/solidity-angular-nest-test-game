@@ -10,6 +10,8 @@ import {GamePlayerDto} from "../dto/GamePlayer.dto";
 import {BlockchainService} from "./blockchain.service";
 import {Users} from '../entities/entities/Users';
 import {IRoundResult} from '../types/rpsGame';
+import {GameDice} from '../entities/entities/GameDice';
+import {GameRockPaperScissors} from '../entities/entities/GameRockPaperScissors';
 
 @Injectable()
 export class GameCommonService {
@@ -22,6 +24,10 @@ export class GameCommonService {
         private gameDataRepository: Repository<GameData>,
         @InjectRepository(Users)
         private usersRepository: Repository<Users>,
+        @InjectRepository(GameDice)
+        private gameDiceRepository: Repository<GameDice>,
+        @InjectRepository(GameRockPaperScissors)
+        private rpsRepository: Repository<GameRockPaperScissors>,
         private blockchainService: BlockchainService,
 
     ) {}
@@ -172,7 +178,6 @@ export class GameCommonService {
             where: {gameId: gameId},
         });
     }
-
 
     async gamePlayerList(gameId: number): Promise<string[]> {
         const gamePlayers = await this.getGamePlayersData(gameId);
@@ -333,5 +338,73 @@ export class GameCommonService {
             contractAddress: game.contractAddress,
             playerResults: playerResults
         });
+    }
+
+
+
+    async getRoundInfo(gameId: number, round: number) {
+        const gameDataById: any = await this.getGameDataById(gameId);
+        let rounds: any;
+        if (gameDataById.type === 'dice') {
+            rounds = await this.gameDiceRepository.find({
+                where: { gameId, round },
+                order: { round: 'ASC' }
+            });
+        } else if (gameDataById.type === 'rock-paper-scissors') {
+            rounds = await this.rpsRepository.find({
+                where: { gameId },
+                order: { round: 'ASC' }
+            });
+        }
+        return this.getLastRoundResults(gameId, rounds)
+    }
+
+    async setOrderOfThrows(
+        gameId: number,
+        round: number,
+        generateCounts: number[],
+    ): Promise<{ activeWallet: string; diceCounts: number[]; status: boolean }> {
+        try {
+            const walletsResult = await this.getRoundInfo(gameId, round);
+            console.log('walletsResult', walletsResult);
+
+            const walletList = walletsResult.map(item => item.wallet);
+
+            const allNull = walletsResult.every(item => item.result === null);
+            const allNotNull = walletsResult.every(item => item.result !== null);
+
+            let activeWallet: string;
+            let diceCounts: number[];
+            let status: boolean;
+
+            if (allNull) {
+                status = true;
+                activeWallet = walletList[0];
+                diceCounts = generateCounts || [0, 0];
+            } else if (allNotNull) {
+                status = false;
+                activeWallet = '';
+                diceCounts = generateCounts;
+            } else {
+                const nextPlayerIndex = walletsResult.findIndex(item => item.result === null);
+
+                if (nextPlayerIndex !== -1) {
+                    status = true;
+                    activeWallet = walletList[nextPlayerIndex];
+                    diceCounts = generateCounts;
+                } else {
+                    status = false;
+                    activeWallet = '';
+                    diceCounts = [0, 0];
+                }
+            }
+
+            console.log('ИТОГ:', { activeWallet, diceCounts, status });
+            return { activeWallet, diceCounts, status };
+
+        } catch (error) {
+            console.error('Ошибка в setOrderOfThrows:', error);
+            throw error;
+        }
     }
 }

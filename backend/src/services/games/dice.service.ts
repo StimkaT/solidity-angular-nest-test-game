@@ -14,80 +14,61 @@ export class DiceService {
         private gameCommonService: GameCommonService,
         private readonly gameGateway: GameGateway,
     ) {
-        this.gameGateway._websocketEvents.subscribe(async (data: {event: string, payload: any}) => {
-            const gameId = data.payload.gameId;
-            const wallet = data.payload.wallet;
-            const round = data.payload.round;
-            const gameDataById = await this.gameCommonService.getGameDataById(gameId);
-            const gameType = gameDataById.type
-            if (data.event === 'make_action' && gameType === 'dice') {
-                const isConnect = await this.gameCommonService.playerIsConnected(gameId, wallet);
-                const gameIsStartedButNotFinished = await this.gameCommonService.gameIsStartedButNotFinished(gameId);
-                if (isConnect && gameIsStartedButNotFinished) {
-                    const generateCounts = this.getRandomNumbers(1, 6, 2);
-                    // const orderOfThrows =
-                    await this.setCountPlayer(data.payload, generateCounts);
-                    await this.setOrderOfThrows(gameId, round, generateCounts);
-                    const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-                    await this.sendDiceData('game_data', 'make_action', gameData, data.payload.gameId);
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                    const lastRound = await this.getLastRoundGame(gameId);
-                    const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
-                    if (checkEveryoneBet) {
-                        await this.determiningWinners(gameId, lastRound);
-                    }
-                }
+        this.gameGateway._websocketEvents.subscribe((data) => {
+            if (data.event === 'make_action') {
+                this.handleMakeAction(data).catch(err => {
+                    console.error('Error in handleMakeAction:', err);
+                });
             }
-        })
+        });
     }
 
-    async setOrderOfThrows(
+    private async handleMakeAction(data: { event: string; payload: any }) {
+        const { gameId, wallet, round } = data.payload;
+        const gameDataById = await this.gameCommonService.getGameDataById(gameId);
+
+        if (gameDataById.type !== 'dice') return;
+
+        const [isConnect, gameIsStartedButNotFinished] = await Promise.all([
+            this.gameCommonService.playerIsConnected(gameId, wallet),
+            this.gameCommonService.gameIsStartedButNotFinished(gameId),
+        ]);
+
+        if (!(isConnect && gameIsStartedButNotFinished)) return;
+
+        const generateCounts = this.getRandomNumbers(1, 6, 2);
+        const gameData = await this.gameCommonService.getGameData(gameId);
+
+        await this.processDiceAction(gameId, round, gameData, data.payload, generateCounts);
+    }
+
+    private async processDiceAction(
         gameId: number,
         round: number,
+        gameData: any,
+        payload: any,
         generateCounts: number[],
-    ): Promise<{ activeWallet: string; diceCounts: number[]; status: boolean }> {
-        try {
-            const walletsResult = await this.getRoundInfo(gameId, round);
-            console.log('walletsResult', walletsResult);
+    ) {
+        const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
+        await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrows);
 
-            const walletList = walletsResult.map(item => item.wallet);
+        await this.delay(3000);
+        await this.setCountPlayer(payload, generateCounts);
 
-            const allNull = walletsResult.every(item => item.result === null);
-            const allNotNull = walletsResult.every(item => item.result !== null);
+        const orderOfThrowsAfter = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
+        await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrowsAfter);
 
-            let activeWallet: string;
-            let diceCounts: number[];
-            let status: boolean;
+        await this.delay(5000);
+        const lastRound = await this.getLastRoundGame(gameId);
+        const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
 
-            if (allNull) {
-                status = true;
-                activeWallet = walletList[0];
-                diceCounts = [0, 0];
-            } else if (allNotNull) {
-                status = false;
-                activeWallet = '';
-                diceCounts = [0, 0];
-            } else {
-                const nextPlayerIndex = walletsResult.findIndex(item => item.result === null);
-
-                if (nextPlayerIndex !== -1) {
-                    status = true;
-                    activeWallet = walletList[nextPlayerIndex];
-                    diceCounts = generateCounts;
-                } else {
-                    status = false;
-                    activeWallet = '';
-                    diceCounts = [0, 0];
-                }
-            }
-
-            console.log('ИТОГ:', { activeWallet, diceCounts, status });
-            return { activeWallet, diceCounts, status };
-
-        } catch (error) {
-            console.error('Ошибка в setOrderOfThrows:', error);
-            throw error;
+        if (checkEveryoneBet) {
+            await this.determiningWinners(gameId, lastRound);
         }
+    }
+
+    private delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     // устанавливаем сумму выпавших значений
@@ -109,10 +90,14 @@ export class DiceService {
         await this.gameDiceRepository.save(playerResult);
     }
 
-    async sendDiceData(note: string, sendNote: string, gameData: any, gameId: number) {
+    async sendDiceData(note: string, sendNote: string, gameData: any, gameId: number, orderOfThrows: any) {
         const activeRound = await this.getCurrentRound(gameId);
         let roundsData = await this.getRoundsInfo(gameId);
-        const rpsGameData = {sendNote, gameData, activeRound, roundsData}
+        if (!orderOfThrows) {
+            const round = await this.getCurrentRound(gameId);
+            orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, [0,0]);
+        }
+        const rpsGameData = {sendNote, gameData, activeRound, roundsData, orderOfThrows}
         this.gameGateway.send(note, rpsGameData, gameId)
     }
 
@@ -168,9 +153,9 @@ export class DiceService {
                     await this.gameDiceRepository.save(rpsRecord);
                 }
             }
-            await this.setOrderOfThrows(gameId, nextRound, [0, 0]);
+            const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, nextRound, [0, 0]);
             const gameData = await this.gameCommonService.getGameData(gameId);
-            await this.sendDiceData('game_data', 'new_round', gameData, gameId);
+            await this.sendDiceData('game_data', 'new_round', gameData, gameId, orderOfThrows);
         }
     }
 
@@ -253,14 +238,6 @@ export class DiceService {
             order: { round: 'ASC' }
         });
         return this.gameCommonService.getRoundsInfoAlwaysWithResult(gameId, rounds)
-    }
-
-    async getRoundInfo(gameId: number, round: number) {
-        const rounds = await this.gameDiceRepository.find({
-            where: { gameId, round },
-            order: { round: 'ASC' }
-        });
-        return this.gameCommonService.getLastRoundResults(gameId, rounds)
     }
 
     // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший

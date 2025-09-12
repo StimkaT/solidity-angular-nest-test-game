@@ -44,18 +44,27 @@ export class GameService {
         if (gameData.gameInfo.type === 'rock-paper-scissors') {
           await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
         } else if (gameData.gameInfo.type === 'dice') {
-          await this.diceService.sendDiceData('game_data', 'first_send', gameData, data.payload.gameId);
+          await this.diceService.sendDiceData('game_data', 'first_send', gameData, data.payload.gameId, null);
         }
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
       } else if (data.event === 'join_game') {
         await this.addWalletToGame(data.payload.gameId, data.payload.wallet);
         const gameDataBeforeDeploy = await this.gameCommonService.getGameData(data.payload.gameId);
-        await this.rockPaperScissorsService.sendRpsData('game_data', 'before_deploy', gameDataBeforeDeploy, data.payload.gameId);
+        if (gameDataBeforeDeploy.gameInfo.type === 'rock-paper-scissors') {
+          await this.rockPaperScissorsService.sendRpsData('game_data', 'before_deploy', gameDataBeforeDeploy, data.payload.gameId);
 
-        await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
-        const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
-        await this.rockPaperScissorsService.sendRpsData('game_data', 'after_deploy', gameData, data.payload.gameId);
+          await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
+          const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+          await this.rockPaperScissorsService.sendRpsData('game_data', 'after_deploy', gameData, data.payload.gameId);
+        } else if (gameDataBeforeDeploy.gameInfo.type === 'dice') {
+          await this.diceService.sendDiceData('game_data', 'before_deploy', gameDataBeforeDeploy, data.payload.gameId, null);
+
+          await this.checkEverythingIsReady(gameDataBeforeDeploy, data.payload.gameId);
+          const gameData = await this.gameCommonService.getGameData(data.payload.gameId);
+          await this.diceService.sendDiceData('game_data', 'after_deploy', gameData, data.payload.gameId, null);
+        }
+
       } else if (data.event === 'send_money') {
         await this.sendMoney(data.payload.gameId, data.payload.wallet);
       } else if (data.event === 'leave_game') {
@@ -354,11 +363,10 @@ export class GameService {
 
   private async sendGameData(note: string, gameId: number) {
     const gameData = await this.gameCommonService.getGameData(gameId);
-
     if (gameData.gameInfo.type === 'rock-paper-scissors') {
       await this.rockPaperScissorsService.sendRpsData('game_data', note, gameData, gameId);
     } else if (gameData.gameInfo.type === 'dice') {
-      await this.diceService.sendDiceData('game_data', note, gameData, gameId);
+      await this.diceService.sendDiceData('game_data', note, gameData, gameId, null);
     }
   }
 

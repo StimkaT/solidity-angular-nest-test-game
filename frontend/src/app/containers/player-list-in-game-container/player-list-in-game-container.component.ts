@@ -12,4 +12,5 @@ import {PlayersListInGameComponent} from '../../components/players-list-in-game/
 })
 export class PlayerListInGameContainerComponent {
   @Input() dataRound: any;
+  @Input() activePlayer: any;
 }

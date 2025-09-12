@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {DiceComponent} from './components/dice/dice.component';
 import {AsyncPipe} from '@angular/common';
 import {
@@ -14,7 +14,10 @@ import {Store} from '@ngrx/store';
 import {selectActiveGameData, selectNameWinner} from '../../+state/game-data/game-data.selectors';
 import {makeActionWithoutData} from '../../+state/game-data/game-data.actions';
 import {RockPaperScissorsComponent} from '../../components/rock-paper-scissors/rock-paper-scissors.component';
-import {selectDiceDataRound, selectDiceRoundsViewData} from '../../+state/dice-game/dice-game.selectors';
+import {
+  selectDiceDataRound,
+  selectDiceRoundsViewData
+} from '../../+state/dice-game/dice-game.selectors';
 
 @Component({
   selector: 'app-game-dice',
@@ -32,32 +35,35 @@ import {selectDiceDataRound, selectDiceRoundsViewData} from '../../+state/dice-g
   templateUrl: './game-dice.component.html',
   styleUrl: './game-dice.component.scss'
 })
-export class GameDiceComponent {
+export class GameDiceComponent implements OnChanges {
   private store = inject(Store)
 
+  @Input() orderOfThrows: any;
+  @Input() yourPlay: boolean = false;
   @Output() emitter = new EventEmitter();
 
   isRotate = false;
   dice1Value = 0;
   dice2Value = 0;
+  localYourPlay: boolean = false;
 
   selectActiveGameData$ = this.store.select(selectActiveGameData);
   selectNameWinner$ = this.store.select(selectNameWinner);
   selectDiceDataRound$ = this.store.select(selectDiceDataRound);
   roundsViewData$ = this.store.select(selectDiceRoundsViewData);
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['orderOfThrows'] && this.orderOfThrows) {
+      this.dice1Value = this.orderOfThrows.diceCounts[0] || 0;
+      this.dice2Value = this.orderOfThrows.diceCounts[1] || 0;
+    }
+    if (changes['yourPlay']) {
+      this.localYourPlay = this.yourPlay;
+    }
+  }
+
   roll() {
     this.store.dispatch(makeActionWithoutData());
-    this.isRotate = true;
-
-    this.dice1Value = Math.floor((Math.random() * 6) + 1);
-    this.dice2Value = Math.floor((Math.random() * 6) + 1);
-
-    if (this.dice1Value && this.dice2Value) {
-      setTimeout(() => {
-        this.isRotate = false;
-      }, 3000);
-    }
-
+    this.localYourPlay = false;
   }
 }

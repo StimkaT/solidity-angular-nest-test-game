@@ -17,10 +17,17 @@ export interface IRoundResult {
   players: IPlayerRoundData[];
 }
 
+export interface IOrderOfThrows {
+  activeWallet: string;
+  diceCounts: number[];
+  status: boolean;
+}
+
 export interface IActiveGameDice extends IActiveGameList {
   type: 'dice';
   activeRound: number | null;
   roundsData: IRoundResult[];
+  orderOfThrows: IOrderOfThrows;
 }
 
 export interface DiceGameState {
@@ -55,6 +62,11 @@ export const initialState: DiceGameState = {
     players: [],
     activeRound: null,
     roundsData: [],
+    orderOfThrows: {
+      activeWallet: '',
+      diceCounts: [0, 0],
+      status: false,
+    }
   },
 };
 
@@ -72,6 +84,7 @@ export const diceGameReducer = createReducer(
           result: player.result,
         })),
       })),
+      orderOfThrows: data.orderOfThrows
     };
 
     return {

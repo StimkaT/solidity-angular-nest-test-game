@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: mysql:3306
--- Время создания: Сен 10 2025 г., 08:08
+-- Время создания: Сен 12 2025 г., 13:50
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -45,22 +45,22 @@ CREATE TABLE `games` (
 --
 
 INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_at`, `created_at`, `updated_at`) VALUES
-                                                                                                                     (75, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:00:58', '2025-09-08 11:10:44'),
+                                                                                                                     (75, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:00:58', '2025-09-11 08:31:01'),
                                                                                                                      (76, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:01:01', '2025-09-02 10:25:01'),
                                                                                                                      (77, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:01:24', '2025-09-04 07:48:14'),
-                                                                                                                     (78, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:09:16', '2025-09-10 08:04:30'),
+                                                                                                                     (78, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:09:16', '2025-09-11 09:52:14'),
                                                                                                                      (79, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-14 14:18:31', '2025-08-21 06:39:57'),
                                                                                                                      (94, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:26:20', '2025-09-04 07:48:14'),
-                                                                                                                     (95, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:28:03', '2025-08-27 09:31:26'),
-                                                                                                                     (96, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:28:11', '2025-09-10 08:04:30'),
-                                                                                                                     (97, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:30:07', '2025-09-06 09:41:31'),
+                                                                                                                     (95, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:28:03', '2025-09-11 09:52:14'),
+                                                                                                                     (96, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:28:11', '2025-09-12 13:12:26'),
+                                                                                                                     (97, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:30:07', '2025-09-11 09:52:14'),
                                                                                                                      (98, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:30:51', '2025-08-27 09:31:48'),
                                                                                                                      (99, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 06:31:43', '2025-08-27 09:31:26'),
                                                                                                                      (100, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-07-31 07:06:48', '2025-08-27 09:31:26'),
                                                                                                                      (101, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-14 06:14:04', '2025-09-06 09:41:31'),
                                                                                                                      (102, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 08:47:15', '2025-09-06 09:41:31'),
                                                                                                                      (103, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 09:36:54', '2025-09-06 09:41:31'),
-                                                                                                                     (104, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 09:39:50', '2025-09-10 08:04:30'),
+                                                                                                                     (104, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 09:39:50', '2025-09-12 13:12:26'),
                                                                                                                      (105, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 13:36:35', '2025-08-27 09:31:48'),
                                                                                                                      (106, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 13:39:21', '2025-09-06 09:41:31'),
                                                                                                                      (107, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 13:40:02', '2025-09-06 09:41:31'),
@@ -68,7 +68,7 @@ INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_
                                                                                                                      (109, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-15 14:09:51', '2025-09-10 08:04:30'),
                                                                                                                      (110, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-18 07:00:04', '2025-09-10 08:04:30'),
                                                                                                                      (111, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-19 12:12:53', '2025-09-06 09:41:31'),
-                                                                                                                     (112, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-19 12:13:40', '2025-09-10 08:04:30'),
+                                                                                                                     (112, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-19 12:13:40', '2025-09-12 13:12:26'),
                                                                                                                      (113, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-25 06:18:36', '2025-09-04 07:48:14'),
                                                                                                                      (114, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-25 08:25:08', '2025-08-25 08:25:08'),
                                                                                                                      (115, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-08-25 08:25:36', '2025-09-10 08:04:30'),
@@ -83,26 +83,33 @@ INSERT INTO `games` (`id`, `type`, `contractAddress`, `ownerAddress`, `finished_
                                                                                                                      (124, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:02:28', '2025-09-08 11:10:44'),
                                                                                                                      (125, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:03:02', '2025-09-09 06:31:05'),
                                                                                                                      (126, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:03:10', '2025-09-09 06:31:05'),
-                                                                                                                     (127, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:03:26', '2025-09-10 08:04:30'),
+                                                                                                                     (127, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:03:26', '2025-09-11 14:09:47'),
                                                                                                                      (128, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:04:08', '2025-09-09 06:31:05'),
                                                                                                                      (129, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:05:25', '2025-09-09 06:31:05'),
                                                                                                                      (130, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:05:41', '2025-09-09 06:31:05'),
                                                                                                                      (131, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:11:24', '2025-09-09 06:31:05'),
-                                                                                                                     (132, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:12:07', '2025-09-10 08:04:30'),
-                                                                                                                     (133, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:15:22', '2025-09-09 06:31:05'),
+                                                                                                                     (132, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:12:07', '2025-09-12 13:12:26'),
+                                                                                                                     (133, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-02 11:15:22', '2025-09-11 12:22:16'),
                                                                                                                      (134, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-03 13:25:52', '2025-09-06 09:41:31'),
                                                                                                                      (135, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-04 06:49:17', '2025-09-06 09:41:31'),
                                                                                                                      (136, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-04 08:02:08', '2025-09-06 09:41:31'),
                                                                                                                      (137, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-04 08:48:36', '2025-09-06 09:41:31'),
                                                                                                                      (138, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-04 08:50:10', '2025-09-06 09:41:31'),
                                                                                                                      (139, 'rock-paper-scissors', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-04 09:05:50', '2025-09-09 06:31:05'),
-                                                                                                                     (140, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:05:23', '2025-09-09 14:05:23'),
-                                                                                                                     (141, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:05:34', '2025-09-10 08:04:30'),
-                                                                                                                     (142, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:54:43', '2025-09-10 08:04:30'),
-                                                                                                                     (143, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 21:48:34', '2025-09-10 08:04:30'),
-                                                                                                                     (144, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 22:16:50', '2025-09-10 08:04:30'),
-                                                                                                                     (145, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-10 07:37:50', '2025-09-10 08:04:30'),
-                                                                                                                     (146, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-10 07:42:47', '2025-09-10 08:04:30');
+                                                                                                                     (140, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:05:23', '2025-09-11 14:09:47'),
+                                                                                                                     (141, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:05:34', '2025-09-12 13:12:26'),
+                                                                                                                     (142, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 14:54:43', '2025-09-12 13:12:26'),
+                                                                                                                     (143, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-09 21:48:34', '2025-09-12 13:12:26'),
+                                                                                                                     (144, 'dice', '0x54B0A167A01DC71C7F152CA0a5539DB2561060DA', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:46:52', '2025-09-09 22:16:50', '2025-09-12 13:46:52'),
+                                                                                                                     (145, 'dice', '0x1d92327248fAF24d1573587C9f0514202c657672', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:46:20', '2025-09-10 07:37:50', '2025-09-12 13:46:20'),
+                                                                                                                     (146, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-10 07:42:47', '2025-09-12 13:12:26'),
+                                                                                                                     (147, 'dice', '0x4f5d532dBb7a649f01b03c0793cBCF2d6c7a67Ba', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:39:26', '2025-09-11 07:20:44', '2025-09-12 13:39:26'),
+                                                                                                                     (148, 'dice', '0x91f84af62A262F8EF69EBdb33588b7DF04f63484', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:34:45', '2025-09-11 08:30:24', '2025-09-12 13:34:45'),
+                                                                                                                     (149, 'dice', NULL, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', NULL, '2025-09-11 12:42:29', '2025-09-12 13:12:26'),
+                                                                                                                     (150, 'dice', '0x5919101f5097EAba36DB3A11572237ec281B4a6C', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:27:35', '2025-09-11 13:40:55', '2025-09-12 13:27:35'),
+                                                                                                                     (151, 'dice', '0xCE1B72Ea715635813db4ad0445902BC31E3b4247', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:12:53', '2025-09-11 14:08:30', '2025-09-12 13:12:53'),
+                                                                                                                     (152, 'dice', '0xb821d5C04B9BEFa1855a1638c11cB53d70B72411', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:28:52', '2025-09-12 12:32:38', '2025-09-12 13:28:52'),
+                                                                                                                     (153, 'dice', '0x3e8Bfcbd9E4FBCDA66e21801B08719BB4BA9Cc08', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '2025-09-12 13:45:46', '2025-09-12 12:38:11', '2025-09-12 13:45:46');
 
 -- --------------------------------------------------------
 
@@ -178,9 +185,16 @@ INSERT INTO `game_data` (`id`, `game_id`, `bet`, `players_number`, `player_numbe
                                                                                             (97, 141, 100, 1, 0),
                                                                                             (98, 142, 100, 1, 0),
                                                                                             (99, 143, 100, 1, 0),
-                                                                                            (100, 144, 100, 1, 0),
-                                                                                            (101, 145, 100, 1, 0),
-                                                                                            (102, 146, 100, 2, 0);
+                                                                                            (100, 144, 100, 1, 1),
+                                                                                            (101, 145, 100, 1, 1),
+                                                                                            (102, 146, 100, 2, 0),
+                                                                                            (103, 147, 100, 1, 1),
+                                                                                            (104, 148, 100, 1, 1),
+                                                                                            (105, 149, 100, 2, 0),
+                                                                                            (106, 150, 100, 1, 1),
+                                                                                            (107, 151, 100, 1, 1),
+                                                                                            (108, 152, 100, 2, 2),
+                                                                                            (109, 153, 100, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -197,6 +211,22 @@ CREATE TABLE `game_dice` (
                              `result` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `game_dice`
+--
+
+INSERT INTO `game_dice` (`id`, `game_id`, `wallet`, `round`, `result`) VALUES
+                                                                           (1, 151, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 10),
+                                                                           (2, 150, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 6),
+                                                                           (3, 152, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 9),
+                                                                           (4, 152, '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', 1, 8),
+                                                                           (5, 148, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 9),
+                                                                           (6, 147, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 6),
+                                                                           (7, 153, '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', 1, 0),
+                                                                           (8, 153, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 6),
+                                                                           (9, 145, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 5),
+                                                                           (10, 144, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -212,6 +242,22 @@ CREATE TABLE `game_players` (
                                 `win` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Дамп данных таблицы `game_players`
+--
+
+INSERT INTO `game_players` (`id`, `game_id`, `wallet`, `user_id`, `win`) VALUES
+                                                                             (1, 151, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98),
+                                                                             (2, 150, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98),
+                                                                             (3, 152, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 196),
+                                                                             (4, 152, '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', 13, 0),
+                                                                             (5, 153, '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', 13, 0),
+                                                                             (6, 148, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98),
+                                                                             (7, 147, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98),
+                                                                             (8, 153, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 196),
+                                                                             (9, 145, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98),
+                                                                             (10, 144, '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 14, 98);
+
 -- --------------------------------------------------------
 
 --
@@ -222,7 +268,7 @@ DROP TABLE IF EXISTS `game_rock_paper_scissors`;
 CREATE TABLE `game_rock_paper_scissors` (
                                             `id` int NOT NULL,
                                             `game_id` int UNSIGNED NOT NULL,
-                                            `wallets` varchar(255) NOT NULL,
+                                            `wallet` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                                             `round` int NOT NULL DEFAULT '1',
                                             `result` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -246,7 +292,7 @@ CREATE TABLE `game_types` (
 
 INSERT INTO `game_types` (`id`, `name`, `logic_address`) VALUES
                                                              (1, 'rock-paper-scissors', ''),
-                                                             (2, 'dice', '');
+                                                             (2, 'dice', '0x12Da690E645f52e389FbE57646b232cD02B882cc');
 
 -- --------------------------------------------------------
 
@@ -271,6 +317,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
                          `id` int NOT NULL,
                          `login` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'player',
                          `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                          `wallet` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                          `encrypted_private_key` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -282,11 +329,15 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `login`, `password`, `wallet`, `encrypted_private_key`, `created_at`, `updated_at`) VALUES
-                                                                                                                   (13, 'kolya1234', '$2b$10$Ebxq3YvKw.UbDLFwmQvfmuDCp6GRcl7Leo8xff/AZZqcZrurZ4a.O', '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', '0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0', '2025-06-23 07:43:43.373318', '2025-08-24 11:51:49.027273'),
-                                                                                                                   (14, 'kolya12', '$2b$10$wGOERwcYmKGsyATcO4cYI.pbYhZw7UWQrqLvf/3biPrnJlbUegVXu', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e', '2025-06-23 07:45:17.429703', '2025-08-19 07:41:54.149594'),
-                                                                                                                   (16, 'alex', '$2b$10$k6npZPaRRzoMW7yVAimSoegs4V43m3hVCFes79L9/YNnxeLmQ3/SK', '0x60a8c06c73bCA5Efad8433c36a5891Bb228cccFf', '0x9b5911e062839631243ce76c6d783c59412c9d620b52a51b961d45b108d2d800', '2025-07-08 07:39:55.655821', '2025-07-08 07:39:55.655821'),
-                                                                                                                   (17, 'TEST_PLAYER', '$2b$10$DK35kWEoRVgEBEVdcSzVsuSpR2X99UrhXoEynNeKBUumiGR2rREgS', '0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc', '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba', '2025-09-03 13:27:33.718107', '2025-09-03 13:28:13.497009');
+INSERT INTO `users` (`id`, `login`, `status`, `password`, `wallet`, `encrypted_private_key`, `created_at`, `updated_at`) VALUES
+                                                                                                                             (13, 'kolya1234', 'player', '$2b$10$Ebxq3YvKw.UbDLFwmQvfmuDCp6GRcl7Leo8xff/AZZqcZrurZ4a.O', '0xdD2FD4581271e230360230F9337D5c0430Bf44C0', '0xde9be858da4a475276426320d5e9262ecfc3ba460bfac56360bfa6c4c28b4ee0', '2025-06-23 07:43:43.373318', '2025-08-24 11:51:49.027273'),
+                                                                                                                             (14, 'kolya12', 'player', '$2b$10$wGOERwcYmKGsyATcO4cYI.pbYhZw7UWQrqLvf/3biPrnJlbUegVXu', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', '0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e', '2025-06-23 07:45:17.429703', '2025-08-19 07:41:54.149594'),
+                                                                                                                             (16, 'alex', 'player', '$2b$10$k6npZPaRRzoMW7yVAimSoegs4V43m3hVCFes79L9/YNnxeLmQ3/SK', '0x60a8c06c73bCA5Efad8433c36a5891Bb228cccFf', '0x9b5911e062839631243ce76c6d783c59412c9d620b52a51b961d45b108d2d800', '2025-07-08 07:39:55.655821', '2025-07-08 07:39:55.655821'),
+                                                                                                                             (17, 'TEST_PLAYER', 'player', '$2b$10$DK35kWEoRVgEBEVdcSzVsuSpR2X99UrhXoEynNeKBUumiGR2rREgS', '0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc', '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba', '2025-09-03 13:27:33.718107', '2025-09-03 13:28:13.497009'),
+                                                                                                                             (18, 'Bot_1', 'bot', '$2b$10$EOXxdRPI6BkjwuBgTATcXujw3J1pnU8Fssj4tCos6yc8G7zLl6E0i', '0xd1334b9e3EF8f1aD13E4d3E81dD8F2C0D9DA5eFd', '0x587fee8549a81d24d0a88daa47ba1b9089517e559e6910fd8646d9f1ad24f0e3', '2025-09-12 13:47:33.584856', '2025-09-12 13:49:13.186276'),
+                                                                                                                             (19, 'Bot_2', 'bot', '$2b$10$PQ/q63OzjxL1DVM81eXdwOzqgcYtd2RepZzjRmdWsvyy0Ksl6VF76', '0x2C09acB7ee583553DD45A6Aa0746589555D70375', '0x0358879db3b850eb299aa495d8bd02d545c7989030bddaaaa399f1477743f4b5', '2025-09-12 13:47:40.683848', '2025-09-12 13:49:19.212241'),
+                                                                                                                             (20, 'Bot_3', 'bot', '$2b$10$lb06bvgjfEArh6ez7nKodu7yTCAHn.BfwG1VoM/kPYg3y2AmXHVuC', '0xC5647D4B4106187cAEaBAD3B6369259fcB1f85A6', '0x040bbfd81932b1a0bc33fc9eec5d317379bfd8c7db2d0d91fdf7d1942fbfe96a', '2025-09-12 13:47:47.812411', '2025-09-12 13:49:26.669960'),
+                                                                                                                             (21, 'Bot_4', 'bot', '$2b$10$ors/dmWT6s40aXAySBOJfu4MB5WGUUvu5sWt3dxAb0vm0wODJDLeC', '0xb23f96fDbBDC394E5535D4118e709a2f25184E52', '0x977c44e3cc205d5a81ada2b5c5f7c065167cedf6bf62889d8490d1f382c0c290', '2025-09-12 13:47:56.108777', '2025-09-12 13:49:05.579455');
 
 --
 -- Индексы сохранённых таблиц
@@ -359,25 +410,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `games`
 --
 ALTER TABLE `games`
-    MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+    MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
 
 --
 -- AUTO_INCREMENT для таблицы `game_data`
 --
 ALTER TABLE `game_data`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT для таблицы `game_dice`
 --
 ALTER TABLE `game_dice`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `game_players`
 --
 ALTER TABLE `game_players`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `game_rock_paper_scissors`
@@ -401,7 +452,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

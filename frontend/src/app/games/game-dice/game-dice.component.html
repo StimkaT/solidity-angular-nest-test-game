@@ -10,11 +10,19 @@
       <div class="dice-wrapper"><app-dice [diceValue]="dice1Value" [isRotate]="isRotate"/></div>
       <div class="dice-wrapper"><app-dice [diceValue]="dice2Value" [isRotate]="isRotate"/></div>
     </div>
-    <div class="container">
-      <button (click)="roll()">Roll Dice</button>
+    <div
+      class="container"
+    >
+      <button
+        class="button-roll"
+        [disabled]="!localYourPlay"
+        (click)="localYourPlay && roll()">
+        Roll Dice
+      </button>
     </div>
   </div>
   <app-player-list-in-game-container
+    [activePlayer]="orderOfThrows"
     [dataRound]="selectDiceDataRound$ | async"
   ></app-player-list-in-game-container>
 }

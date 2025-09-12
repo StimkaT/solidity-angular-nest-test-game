@@ -16,6 +16,9 @@ export class Users {
   @Column("varchar", { name: "login", unique: true, length: 100 })
   login: string;
 
+  @Column("varchar", { name: "status", length: 255, default: () => "'player'" })
+  status: string;
+
   @Column("varchar", { name: "password", length: 255 })
   password: string;
 

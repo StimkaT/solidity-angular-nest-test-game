@@ -24,12 +24,16 @@
             </mat-icon>
           }
         } @else if (player.typeResult === 'text') {
-          @if (!player.result) {
+          @if (player.result === 0) {
+            <mat-icon>
+              clear
+            </mat-icon>
+          } @else if (!player.result) {
             <mat-icon>
               question_mark
             </mat-icon>
           } @else {
-            <span> {{ player.result }} </span>
+            <span class="text-result"> {{ player.result }} </span>
           }
         }
       </div>
@@ -38,8 +42,12 @@
 
   <div class="players-profile">
     @for (player of gameFlow.players; track player.wallet) {
-      <div class="profile-box">
-        <div class="profile-photo">
+      <div
+        class="profile-box "
+      >
+        <div class="profile-photo"
+             [class.choice-made]="player.wallet === activePlayer.activeWallet"
+        >
           <mat-icon>
             person_outline
           </mat-icon>
