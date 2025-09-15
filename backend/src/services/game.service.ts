@@ -162,31 +162,52 @@ export class GameService {
   }
 
   async getGamesByTypeWithPlayerFlag(type: string, playerWallet: string) {
-    return await this.gameRepository
-        .createQueryBuilder('game')
-        .leftJoinAndSelect('game.gameData', 'gameData')
-        .leftJoinAndSelect(
-            'game.gamePlayers',
-            'gamePlayer',
-            'gamePlayer.wallet = :wallet',
-            { wallet: playerWallet },
-        )
-        .where('game.type = :type', { type })
-        .select([
-          'game.id',
-          'game.type',
-          'game.contractAddress',
-          'game.ownerAddress',
-          'game.finishedAt',
-          'game.createdAt',
-          'game.updatedAt',
-          'gameData.bet',
-          'gameData.playersNumber',
-          'gameData.playerNumberSet',
-          'CASE WHEN gamePlayer.id IS NOT NULL THEN true ELSE false END as isPlayerJoined',
-        ])
-        .getRawMany();
+    const games = await this.gameRepository.find({
+      where: { type },
+      relations: ['gameData', 'gamePlayers'],
+      select: {
+        id: true,
+        type: true,
+        contractAddress: true,
+        ownerAddress: true,
+        finishedAt: true,
+        createdAt: true,
+        updatedAt: true,
+        gameData: {
+          bet: true,
+          playersNumber: true,
+          playerNumberSet: true,
+          bots: true,
+        },
+      },
+    });
+
+    if (!games.length) {
+      return [];
+    }
+
+    return games.map((game) => {
+      const isPlayerJoined = game.gamePlayers?.some(
+          (p) => p.wallet === playerWallet,
+      ) ?? false;
+
+      return {
+        id: game.id,
+        type: game.type,
+        contractAddress: game.contractAddress,
+        ownerAddress: game.ownerAddress,
+        finishedAt: game.finishedAt,
+        createdAt: game.createdAt,
+        updatedAt: game.updatedAt,
+        bet: game.gameData?.bet,
+        playersNumber: game.gameData?.playersNumber,
+        playerNumberSet: game.gameData?.playerNumberSet,
+        bots: game.gameData?.bots,
+        isPlayerJoined,
+      };
+    });
   }
+
 
   async areAllPlayersJoined(gameId: number): Promise<boolean> {
 

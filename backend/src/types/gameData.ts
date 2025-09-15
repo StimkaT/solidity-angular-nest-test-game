@@ -28,5 +28,6 @@ export interface ICreateGameData {
     userId: number;
     type: string;
     playersNumber: number;
+    bots: number;
     bet: number;
 }

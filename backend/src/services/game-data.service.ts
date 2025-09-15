@@ -14,6 +14,7 @@ export class GameDataService {
     gameId: number;
     bet: number;
     playersNumber: number;
+    bots: number;
     playerNumberSet?: number;
   }) {
     const newGameData = this.gameDataRepository.create({
@@ -21,6 +22,7 @@ export class GameDataService {
       bet: params.bet,
       playersNumber: params.playersNumber,
       playerNumberSet: params.playerNumberSet ?? 1,
+      bots: params.bots ?? 0
     });
 
     const savedData = await this.gameDataRepository.save(newGameData);

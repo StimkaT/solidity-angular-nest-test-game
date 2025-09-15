@@ -12,6 +12,7 @@ export class GameController {
 
   @Post('createGame')
   async createGame(@Body() data: ICreateGameData) {
+    console.log('data::::', data)
     try {
       const game = await this.gameService.createGame(data);
       if (!game?.id) {
@@ -21,6 +22,7 @@ export class GameController {
       const gameDataParams = {
         gameId: game.id,
         bet: data.bet,
+        bots: data.bots,
         playersNumber: data.playersNumber,
       };
 
@@ -51,7 +53,6 @@ export class GameController {
         data.type,
         data.player,
       );
-
       return {
         success: true,
         games,

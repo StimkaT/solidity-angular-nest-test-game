@@ -64,6 +64,7 @@ export interface IDataGameList {
   bet: number;
   playersNumber: number;
   playerNumberSet: number;
+  bots: number;
 }
 
 export interface IPlayers {
@@ -142,6 +143,7 @@ export const initialState: GameDataState = {
       bet: 0,
       playersNumber: 0,
       playerNumberSet: 0,
+      bots: 0,
     }
   ],
   activeGameData: {
@@ -186,17 +188,17 @@ export const gameDataReducer = createReducer(
   on(GameDataActions.loadGameListSuccess, (state, { data }) => ({
     ...state,
     activeGameList: data.map((item: any) => ({
-      id: item.game_id,
-      type: item.game_type,
-      contractAddress: item.game_contractAddress,
-      ownerAddress: item.game_ownerAddress,
-      finishedAt: item.game_finished_at,
-      createdAt: item.game_created_at,
-      updatedAt: item.game_updated_at,
-      bet: item.gameData_bet || 0,
-      playersNumber: item.gameData_players_number || 0,
-      playerNumberSet: item.gameData_player_number_set || 0,
-
+      id: item.id,
+      type: item.type,
+      contractAddress: item.contractAddress,
+      ownerAddress: item.ownerAddress,
+      finishedAt: item.finished_at,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+      bet: item.bet || 0,
+      playersNumber: item.playersNumber || 0,
+      playerNumberSet: item.playerNumberSet || 0,
+      bots: item.bots || 0,
     }))
   })),
   on(GameDataActions.setGameData, (state, { data }) => {

@@ -58,10 +58,11 @@ export class GameDataEffects {
         withLatestFrom(
           this.store.select(getPlayer),
         ),
-        tap(([{typeGame, playersNumber, bet}, player]) => {
+        tap(([{typeGame, playersNumber, bots, bet}, player]) => {
           const payload = {
             type: typeGame,
             playersNumber,
+            bots,
             bet,
             wallet: player.wallet
           };
@@ -92,7 +93,6 @@ export class GameDataEffects {
           }
           this.gameDataService.getGameList(payload).subscribe({
             next: (response) => {
-
               this.store.dispatch(loadGameListSuccess({ data: response.games }));
             },
             error: (error) => {

@@ -29,6 +29,7 @@ export const getGameList = createSelector(
 );
 export const selectActiveGames = createSelector(
   selectGameDataState,
+  // console.log()
   (state: GameDataState) => [...state.activeGameList].reverse()
 );
 export const selectActiveGamesWaitPlayers = createSelector(

@@ -51,7 +51,7 @@ export const getDataGameAndSetWebSocket = createAction(
 );
 export const createGame = createAction(
   '[GameData] createGame',
-  props<{typeGame: string, playersNumber: number, bet: number}>()
+  props<{typeGame: string, playersNumber: number, bots: number, bet: number}>()
 );
 export const loadGameListSuccess = createAction(
   '[GameData] loadGameListSuccess',

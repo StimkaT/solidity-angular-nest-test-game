@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class CreateGameFormComponent {
   @Output() emitter = new EventEmitter();
   playersNumber = 2;
+  bots = 0;
   bet = 100;
 
   events(event: string) {
@@ -21,6 +22,7 @@ export class CreateGameFormComponent {
         event: 'CreateGameFormComponent:create',
         data: {
           players: this.playersNumber,
+          bots: this.bots,
           bet: this.bet,
         },
       };

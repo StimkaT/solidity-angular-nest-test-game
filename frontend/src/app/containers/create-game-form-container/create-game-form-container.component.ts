@@ -36,6 +36,7 @@ export class CreateGameFormContainerComponent implements OnInit {
       this.store.dispatch(createGame({
         typeGame: this.gameType,
         playersNumber: event.data.players,
+        bots: event.data.bots,
         bet: event.data.bet,
       }));
       this.close();

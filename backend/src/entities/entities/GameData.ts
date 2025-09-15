@@ -28,6 +28,9 @@ export class GameData {
   @Column("int", { name: "player_number_set" })
   playerNumberSet: number;
 
+  @Column("int", { name: "bots", default: () => "'0'" })
+  bots: number;
+
   @OneToOne(() => Games, (games) => games.gameData, {
     onDelete: "CASCADE",
     onUpdate: "NO ACTION",
