@@ -62,7 +62,7 @@ export class GameDataEffects {
           const payload = {
             type: typeGame,
             playersNumber,
-            bots,
+            bots: +bots,
             bet,
             wallet: player.wallet
           };

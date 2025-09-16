@@ -7,6 +7,7 @@ import {GameGateway} from '../../game/game-websocket';
 import {IRoundResult} from '../../types/rpsGame';
 import {BlockchainService} from '../blockchain.service';
 import {GameCommonService} from '../game-common.service';
+import {Users} from '../../entities/entities/Users';
 
 @Injectable()
 export class RockPaperScissorsService {
@@ -15,6 +16,8 @@ export class RockPaperScissorsService {
         private rpsRepository: Repository<GameRockPaperScissors>,
         @InjectRepository(GamePlayers)
         private gamePlayersRepository: Repository<GamePlayers>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
         private blockchainService: BlockchainService,
         private gameCommonService: GameCommonService,
         private readonly gameGateway: GameGateway
@@ -122,9 +125,44 @@ export class RockPaperScissorsService {
                 }
             }
 
+            if (wallets.length > 0) {
+                const botsAll = await this.usersRepository.find({
+                    where: { status: 'bot' },
+                });
+
+                const walletsBots = botsAll.map(bot => bot.wallet);
+
+                const botsSet = new Set(walletsBots);
+
+                const filteredWallets = wallets.filter(wallet => !losersWallets.includes(wallet));
+
+                const allWalletsAreBots = filteredWallets.every(wallet =>
+                    botsSet.has(wallet)
+                );
+
+                for (const wallet of filteredWallets) {
+                    if (botsSet.has(wallet)) {
+                        const valueBot = this.getRandomForBot();
+                        const data = { gameId, data: valueBot, wallet, round: nextRound };
+                        await this.setChoicePlayer(data);
+
+                        if (allWalletsAreBots) {
+                            const lastRound = await this.getLastRoundGame(gameId);
+                            const checkEveryoneBet = await this.checkEveryoneBet(gameId, lastRound);
+                            if (checkEveryoneBet) {
+                                await this.determiningWinners(gameId, lastRound);
+                            }
+                        }
+                    }
+                }
+            }
             const gameData = await this.gameCommonService.getGameData(gameId);
             await this.sendRpsData('game_data', 'new_round', gameData, gameId);
         }
+    }
+
+    getRandomForBot() {
+        return Math.floor(Math.random() * 3) + 1;
     }
 
     // определение победителей

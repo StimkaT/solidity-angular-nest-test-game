@@ -38,8 +38,4 @@ export class GameDataService {
       },
     };
   }
-
-  async getGameDataByGameId(gameId: number) {
-    return this.gameDataRepository.findOne({ where: { gameId } });
-  }
 }

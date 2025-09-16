@@ -1,5 +1,6 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {IRoundsViewData, RPS_GAME_FEATURE_KEY, RpsGameState} from './rps-game.reducer';
+import {getPlayer} from '../auth/auth.selectors';
 
 export const selectRPSGameState = createFeatureSelector<RpsGameState>(RPS_GAME_FEATURE_KEY);
 export const getActiveRoundRpc = createSelector(
@@ -47,5 +48,15 @@ export const selectRpsRoundsViewData = createSelector(
       playerList,
       hasData: true
     };
+  }
+);
+
+export const youLost = createSelector(
+  selectRpsDataRound,
+  getPlayer,
+  (dataRound, player) => {
+    return !dataRound.players.some(
+      (playerRound: any) => playerRound.wallet === player.wallet && playerRound.isPlaying
+    );
   }
 );

@@ -13,7 +13,7 @@
               clear
             </mat-icon>
           }
-          @if (player.result === '') {
+          @if (player.result === '' && player.isPlaying) {
             <mat-icon>
               question_mark
             </mat-icon>
@@ -46,7 +46,7 @@
         class="profile-box "
       >
         <div class="profile-photo"
-             [class.choice-made]="player.wallet === activePlayer.activeWallet"
+             [class.choice-made]="player.wallet === activePlayer?.activeWallet"
         >
           <mat-icon>
             person_outline

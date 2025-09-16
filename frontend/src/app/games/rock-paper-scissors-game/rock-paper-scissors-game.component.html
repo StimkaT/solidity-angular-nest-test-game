@@ -2,18 +2,20 @@
   @if ((selectActiveGameData$ | async)?.status === 'Game') {
     <div class="game-container">
       @for (element of (getGameElements$ | async); track element.name) {
-        <div
+        <button
           class="profile-box"
           [class.is-selected]="element.check === true"
-          [class.is-not-selected]="element.check === false"
+          [class.is-not-selected]="element.check === false || (youLost$ | async)"
           [class.no-clicks]="element.check !== null"
-          (click)="event(element.eventText)"
+          [class.disabled]="youLost$ | async"
+          [disabled]="youLost$ | async"
+          (click)="(event(element.eventText))"
         >
           <mat-icon>
             {{ element.icon }}
           </mat-icon>
           <span class="name"> {{ element.name }} </span>
-        </div>
+        </button>
       }
     </div>
   }

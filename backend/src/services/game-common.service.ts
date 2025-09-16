@@ -172,7 +172,6 @@ export class GameCommonService {
         return status === 'Game';
     }
 
-
     async getGamePlayersData(gameId: number): Promise<GamePlayers[]> {
         return await this.gamePlayersRepository.find({
             where: {gameId: gameId},
@@ -229,8 +228,8 @@ export class GameCommonService {
                     const playerData: any = {
                         wallet: bet.wallet,
                         name: user?.login || '',
-                        isPlaying: bet.result !== 0,
-                        hasActed: bet.result != null,
+                        isPlaying: bet.result !== '0',
+                        hasActed: bet.result !== null,
                         result: ''
                     };
 
@@ -366,7 +365,7 @@ export class GameCommonService {
     ): Promise<{ activeWallet: string; diceCounts: number[]; status: boolean }> {
         try {
             const walletsResult = await this.getRoundInfo(gameId, round);
-            console.log('walletsResult', walletsResult);
+            // console.log('walletsResult', walletsResult);
 
             const walletList = walletsResult.map(item => item.wallet);
 
@@ -399,7 +398,7 @@ export class GameCommonService {
                 }
             }
 
-            console.log('ИТОГ:', { activeWallet, diceCounts, status });
+            // console.log('ИТОГ:', { activeWallet, diceCounts, status });
             return { activeWallet, diceCounts, status };
 
         } catch (error) {

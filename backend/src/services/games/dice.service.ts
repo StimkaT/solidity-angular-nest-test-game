@@ -5,12 +5,16 @@ import {GameGateway} from '../../game/game-websocket';
 import {IRoundResult} from '../../types/rpsGame';
 import {GameCommonService} from '../game-common.service';
 import {GameDice} from '../../entities/entities/GameDice';
+import {Users} from '../../entities/entities/Users';
 
 @Injectable()
 export class DiceService {
+    private sendSequenceByGame = new Map<number, number>();
     constructor(
         @InjectRepository(GameDice)
         private gameDiceRepository: Repository<GameDice>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
         private gameCommonService: GameCommonService,
         private readonly gameGateway: GameGateway,
     ) {
@@ -23,8 +27,44 @@ export class DiceService {
         });
     }
 
+    private async isBotWallet(wallet: string): Promise<boolean> {
+        const bot = await this.usersRepository.findOne({ where: { status: 'bot', wallet } });
+        return !!bot;
+    }
+
+    async playBotsIfActive(gameId: number, round: number) {
+        for (let i = 0; i < 20; i++) {
+            const generateCounts = this.getRandomNumbers(1, 6, 2);
+            const order = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
+
+            if (!order.status || !order.activeWallet) {
+                break;
+            }
+
+            const isBot = await this.isBotWallet(order.activeWallet);
+            if (!isBot) {
+                break;
+            }
+
+            await this.setCountPlayer({ gameId, wallet: order.activeWallet, round }, generateCounts);
+            const gameDataNow = await this.gameCommonService.getGameData(gameId);
+            const orderAfter = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
+            await this.sendDiceData('game_data', 'make_action', gameDataNow, gameId, orderAfter);
+
+            await this.delay(5000);
+
+            // Проверим, завершён ли раунд после хода бота
+            const lastRound = await this.getLastRoundGame(gameId);
+            const everyoneBet = await this.checkEveryoneBet(gameId, lastRound);
+            if (everyoneBet) {
+                await this.determiningWinners(gameId, lastRound);
+                break;
+            }
+        }
+    }
+
     private async handleMakeAction(data: { event: string; payload: any }) {
-        const { gameId, wallet, round } = data.payload;
+        const { gameId, wallet } = data.payload;
         const gameDataById = await this.gameCommonService.getGameDataById(gameId);
 
         if (gameDataById.type !== 'dice') return;
@@ -39,16 +79,16 @@ export class DiceService {
         const generateCounts = this.getRandomNumbers(1, 6, 2);
         const gameData = await this.gameCommonService.getGameData(gameId);
 
-        await this.processDiceAction(gameId, round, gameData, data.payload, generateCounts);
+        await this.processDiceAction(gameData, data.payload, generateCounts);
     }
 
     private async processDiceAction(
-        gameId: number,
-        round: number,
         gameData: any,
         payload: any,
         generateCounts: number[],
     ) {
+        const { gameId, round } = payload;
+
         const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
         await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrows);
 
@@ -57,6 +97,9 @@ export class DiceService {
 
         const orderOfThrowsAfter = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
         await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrowsAfter);
+
+        // Автозапуск ботов, если следующий ход за ботом
+        await this.playBotsIfActive(gameId, round);
 
         await this.delay(5000);
         const lastRound = await this.getLastRoundGame(gameId);
@@ -97,6 +140,8 @@ export class DiceService {
             const round = await this.getCurrentRound(gameId);
             orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, [0,0]);
         }
+        const seq = (this.sendSequenceByGame.get(gameId) || 0) + 1;
+        this.sendSequenceByGame.set(gameId, seq);
         const rpsGameData = {sendNote, gameData, activeRound, roundsData, orderOfThrows}
         this.gameGateway.send(note, rpsGameData, gameId)
     }
@@ -153,9 +198,12 @@ export class DiceService {
                     await this.gameDiceRepository.save(rpsRecord);
                 }
             }
+
             const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, nextRound, [0, 0]);
             const gameData = await this.gameCommonService.getGameData(gameId);
             await this.sendDiceData('game_data', 'new_round', gameData, gameId, orderOfThrows);
+            // Автозапуск ботов на новом раунде, если активный — бот
+            await this.playBotsIfActive(gameId, nextRound);
         }
     }
 

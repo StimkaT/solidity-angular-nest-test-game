@@ -7,7 +7,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {selectActiveGameData} from '../../+state/game-data/game-data.selectors';
 import {setActiveGameElements} from '../../+state/rps-game/rps-game.actions';
-import {getGameElements} from '../../+state/rps-game/rps-game.selectors';
+import {getGameElements, youLost} from '../../+state/rps-game/rps-game.selectors';
 
 @Component({
   selector: 'app-rock-paper-scissors-game',
@@ -26,6 +26,7 @@ export class RockPaperScissorsGameComponent {
 
   selectActiveGameData$ = this.store.select(selectActiveGameData);
   getGameElements$ = this.store.select(getGameElements);
+  youLost$ = this.store.select(youLost);
 
   event(data: string) {
     this.store.dispatch(makeAction({ result: data }));
