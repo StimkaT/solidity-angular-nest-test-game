@@ -15,6 +15,7 @@ import {RockPaperScissorsService} from './games/rock-paper-scissors.service';
 import {GameCommonService} from './game-common.service';
 import {BlockchainService} from './blockchain.service';
 import {DiceService} from './games/dice.service';
+import {ethers} from 'ethers';
 
 @Injectable()
 export class GameService {
@@ -271,6 +272,8 @@ export class GameService {
   }
 
   async checkEverythingIsReady(bet: any, gameId: number) {
+    const betInWei = ethers.parseEther(bet);
+
     const allReady = await this.areAllPlayersJoined(gameId);
     let logicAddress = await this.getGameLogicAddress(gameId);
     if (allReady) {
@@ -278,7 +281,7 @@ export class GameService {
       const players: IPlayerBlockchain[] = gamePlayers.map(player => ({
         name: player.user?.login || 'Player',
         wallet: player.wallet,
-        bet,
+        bet: betInWei.toString(),
         isPaid: false,
         isPaidOut: false,
         result: 0,
@@ -440,13 +443,14 @@ export class GameService {
       );
       if (playerData.players && Array.isArray(playerData.players)) {
         for (const player of playerData.players) {
+          const winInEth = ethers.formatEther(player.result.toString());
           await this.gamePlayersRepository.update(
               {
                 gameId,
                 wallet: player.wallet
               },
               {
-                win: Number(player.result),
+                win: Number(winInEth),
               }
           );
         }
@@ -462,7 +466,7 @@ export class GameService {
       wallet: wallet,
       gameId: gameId,
       contractAddress: game?.contractAddress || '',
-      contractBet: game?.gameData.bet || 0,
+      contractBet: game?.gameData.bet.toString() || '0',
       privateKey: userData?.encryptedPrivateKey || '',
     }
     await this.blockchainService.playerPayment(dataToPay);

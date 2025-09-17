@@ -120,7 +120,7 @@ export class BlockchainService {
 
             const tx = await playerWallet.sendTransaction({
                 to: contractAddress,
-                value: contractBet,
+                value: ethers.parseEther(contractBet),
             });
 
             await tx.wait();

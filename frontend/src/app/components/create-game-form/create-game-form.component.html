@@ -3,31 +3,88 @@
     <form class="example-form">
       <div>Players</div>
       <mat-form-field class="example-full-width">
-        <input matInput [(ngModel)]="playersNumber" name="players">
+        <input matInput
+               [(ngModel)]="playersNumber"
+               name="players"
+               type="number"
+               min="1"
+               max="10"
+               required
+               #playersInput="ngModel"
+               (input)="validatePlayers()">
+        @if (playersInput.invalid && playersInput.touched) {
+          <mat-error>
+            @if (playersInput.errors?.['required']) {
+              <span>Number of players is required</span>
+            }
+            @if (playersInput.errors?.['min']) {
+              <span>Minimum 1 player</span>
+            }
+            @if (playersInput.errors?.['max']) {
+              <span>Maximum 10 players</span>
+            }
+          </mat-error>
+        }
       </mat-form-field>
     </form>
 
     <form class="example-form">
       <div>Bots</div>
       <mat-form-field class="example-full-width">
-        <input matInput [(ngModel)]="bots" name="bots">
+        <input matInput
+               [(ngModel)]="bots"
+               name="bots"
+               type="number"
+               min="0"
+               max="9"
+               #botsInput="ngModel"
+               (input)="validateBots()">
+        @if (botsInput.invalid && botsInput.touched) {
+          <mat-error>
+            @if (botsInput.errors?.['min']) {
+              <span>Minimum 0 bots</span>
+            }
+            @if (botsInput.errors?.['max']) {
+              <span>Maximum 4 bots</span>
+            }
+          </mat-error>
+        }
       </mat-form-field>
     </form>
 
     <form class="example-form">
       <div>Bet, $</div>
       <mat-form-field class="example-full-width">
-        <input matInput [(ngModel)]="bet" name="bet">
+        <input matInput
+               [(ngModel)]="bet"
+               name="bet"
+               type="text"
+               pattern="^[0-9]{1,10}$"
+               required
+               #betInput="ngModel"
+               (input)="validateBet()">
+        @if (betInput.invalid && betInput.touched) {
+          <mat-error>
+            @if (betInput.errors?.['required']) {
+              <span>Bet amount is required</span>
+            }
+            @if (betInput.errors?.['pattern']) {
+              <span>Only digits, maximum 10 characters</span>
+            }
+          </mat-error>
+        }
       </mat-form-field>
     </form>
   </div>
 
   <div class="buttons-container">
     <div class="spacer"></div>
-    <button class="default-button"  (click)="events('cancel')">
+    <button class="default-button" (click)="events('cancel')">
       Cancel
     </button>
-    <button class="primary-button" (click)="events('create')">
+    <button class="primary-button"
+            (click)="events('create')"
+            [disabled]="!isFormValid()">
       Create
     </button>
   </div>
