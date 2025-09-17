@@ -413,14 +413,10 @@ export class GameService {
 
 
   private async sendGameData(note: string, gameId: number) {
-    // Дедупликация быстрых повторов одного и того же note (особенно player_is_bet)
     const now = Date.now();
     const last = this.lastSendByGame.get(gameId);
     const debounceMs = note === 'player_is_bet' ? 300 : 0;
     if (last && last.note === note && debounceMs > 0 && (now - last.ts) < debounceMs) {
-      // пропускаем дубль
-      // eslint-disable-next-line no-console
-      console.log('[SEND DEDUP] skip duplicate', { gameId, note, delta: now - last.ts });
       return;
     }
     this.lastSendByGame.set(gameId, { note, ts: now });

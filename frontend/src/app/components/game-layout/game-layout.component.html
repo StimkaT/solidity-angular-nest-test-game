@@ -12,17 +12,19 @@
       }
     </div>
 
-    <div class="middle-group">
-      @if (round && (gameData.finishedAt === '-')) {
-        <span> ROUND: {{round}} | TIME TO END GAME: &nbsp;</span>
-      }
-      @if (timer > 0) {
-        <app-timer
-          [timerData]="timer"
-        >
-        </app-timer>
-      }
-    </div>
+    @if (!(gameData.status === 'Finished')) {
+      <div class="middle-group">
+        @if (round && (gameData.finishedAt === '-')) {
+          <span> ROUND: {{round}} | TIME TO END GAME: &nbsp;</span>
+        }
+        @if (timer > 0) {
+          <app-timer
+            [timerData]="timer"
+          >
+          </app-timer>
+        }
+      </div>
+    }
 
     <div class="right-group">
       @if (gameData.status === 'Waiting payment' && !playerIsBet) {
