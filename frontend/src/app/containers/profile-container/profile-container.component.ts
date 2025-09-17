@@ -19,9 +19,10 @@ import {environment} from '../../../environments/environment';
 })
 export class ProfileContainerComponent implements  OnInit, OnDestroy {
   @Output() emitter = new EventEmitter();
-  balance: any;
   private store = inject(Store);
   private destroy$ = new EventEmitter<void>();
+
+  balance: any;
 
   getUserData$ = this.store.select(getPlayer).pipe(takeUntil(this.destroy$));
 
@@ -41,6 +42,12 @@ export class ProfileContainerComponent implements  OnInit, OnDestroy {
     } catch (error) {
       console.error('Error fetching balance:', error);
       this.balance = 'Error';
+    }
+  }
+
+  events(event: any) {
+    if (event.event === 'ProfileComponent:GetBalance') {
+      void this.getBalance(event.data.wallet);
     }
   }
 
