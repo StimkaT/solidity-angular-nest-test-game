@@ -5,7 +5,7 @@
   [gameData]="selectActiveGameData$ | async"
   [isConnected]="!!(selectIsConnectedGame$ | async)"
   [timer]="getTimer$ | async"
-  [round]="((selectRpsDataRound$ | async)?.roundNumber) || null"
+  [round]="(getRoundNumber() | async)?.roundNumber || null"
   [playerIsBet]="(selectIsBetGame$ | async) || false"
   (emitter)="events($event)"
 >

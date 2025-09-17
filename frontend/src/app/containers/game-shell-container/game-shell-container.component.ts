@@ -23,7 +23,7 @@ import {
 import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
 import {GameDiceComponent} from '../../games/game-dice/game-dice.component';
 import {selectRpsDataRound} from '../../+state/rps-game/rps-game.selectors';
-import {getOrderOfThrows, isYourPlay} from '../../+state/dice-game/dice-game.selectors';
+import {getOrderOfThrows, isYourPlay, selectDiceDataRound} from '../../+state/dice-game/dice-game.selectors';
 
 @Component({
   selector: 'app-game-layout-container',
@@ -50,9 +50,24 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   selectIsConnectedGame$ = this.store.select(selectIsConnectedGame);
   getTimer$ = this.store.select(getTimer);
   selectRpsDataRound$ = this.store.select(selectRpsDataRound);
+  selectDiceDataRound$ = this.store.select(selectDiceDataRound);
   selectIsBetGame$ = this.store.select(selectIsBetGame);
   getOrderOfThrows$ = this.store.select(getOrderOfThrows);
   isYourPlay$ = this.store.select(isYourPlay);
+
+  getRoundNumber() {
+    // const gameData = this.selectActiveGameData$.getValue();
+    // if (!gameData) return null;
+
+    if (this.gameData.type === 'rock-paper-scissors') {
+      return this.selectRpsDataRound$;
+    } else if (this.gameData.type === 'dice') {
+      // Здесь используйте другой селектор для dice
+      return this.selectDiceDataRound$;
+    }
+
+    return null;
+  }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
