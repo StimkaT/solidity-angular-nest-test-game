@@ -1,22 +1,22 @@
 .players-in-game {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
   width: 100%;
   margin: 16px 0;
+  gap: 16px;
 
-  .players-result {
+  .player-block {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
+    min-width: 120px;
 
     .result-color-box {
       display: flex;
-      flex-direction: row;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
       width: 100px;
       height: 100px;
@@ -33,7 +33,6 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         letter-spacing: 1px;
       }
-
     }
 
     .choice-made {
@@ -58,24 +57,16 @@
     .show-loser-choice {
       background-color: #7f1d1d;
     }
-  }
-
-  .players-profile {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
 
     .profile-box {
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
+      margin-top: 8px;
 
       .profile-photo {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
         width: 100px;
@@ -105,6 +96,7 @@
         color: white;
         text-align: center;
         letter-spacing: 1px;
+        margin-top: 4px;
       }
     }
   }
