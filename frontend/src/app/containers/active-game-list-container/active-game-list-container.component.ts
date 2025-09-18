@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {getActiveGames, joinGame, leaveGame} from '../../+state/game-data/game-data.actions';
 import {
+  createGameIsLoaded,
+  createGameIsLoading,
   selectActiveGames, selectActiveGamesFinished,
   selectActiveGamesInProgress,
   selectActiveGamesWaitPlayers
@@ -13,13 +15,15 @@ import {ActiveGameListComponent} from '../../components/active-game-list/active-
 import {AsyncPipe} from '@angular/common';
 import {getPlayer} from '../../+state/auth/auth.selectors';
 import {MatTabsModule} from '@angular/material/tabs';
+import {LoaderComponent} from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-active-game-list-container',
   imports: [
     ActiveGameListComponent,
     AsyncPipe,
-    MatTabsModule
+    MatTabsModule,
+    LoaderComponent
   ],
   standalone: true,
   templateUrl: './active-game-list-container.component.html',
@@ -38,6 +42,8 @@ export class ActiveGameListContainerComponent implements OnInit {
   selectActiveGamesInProgress$ = this.store.select(selectActiveGamesInProgress);
   selectActiveGamesFinished$ = this.store.select(selectActiveGamesFinished);
   getPlayer$ = this.store.select(getPlayer);
+  createGameIsLoading$ = this.store.select(createGameIsLoading);
+  createGameIsLoaded$ = this.store.select(createGameIsLoaded);
 
   constructor() {
     this.gameType = this.route.snapshot.paramMap.get('game-type') || '';
@@ -69,7 +75,7 @@ export class ActiveGameListContainerComponent implements OnInit {
   }
 
   openCreateGameModal(): void {
-    const dialogRef = this.dialog.open(CreateGameFormContainerComponent, {
+    this.dialog.open(CreateGameFormContainerComponent, {
       width: '60%',
       height: '40%',
       hasBackdrop: true,

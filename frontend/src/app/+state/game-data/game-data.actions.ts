@@ -57,6 +57,7 @@ export const loadGameListSuccess = createAction(
   '[GameData] loadGameListSuccess',
   props<{data: any}>()
 );
+export const createGameSuccess = createAction('[GameData] createGameSuccess');
 export const makeAction = createAction(
   '[GameData] makeAction',
   props<{result: string}>()
@@ -68,7 +69,14 @@ export const joinGame = createAction(
 export const sendMoney = createAction(
   '[GameData] sendMoney',
 );
-
+export const sendMoneySuccess = createAction(
+  '[GameData] sendMoneySuccess',
+  props<{ response: any }>()
+);
+export const sendMoneyFailure = createAction(
+  '[GameData] sendMoneyFailure',
+  props<{ error: any }>()
+);
 export const setGameData = createAction(
   '[GameData] setGameData',
   props<{data: any}>()

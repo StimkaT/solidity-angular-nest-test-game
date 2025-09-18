@@ -117,3 +117,21 @@ export const selectIsBetGame = createSelector(
     );
   }
 );
+
+export const createGameIsLoading = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.createGameAPI.isLoading
+);
+export const createGameIsLoaded = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.createGameAPI.isLoaded
+);
+
+export const paymentGameIsLoading = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.paymentGameAPI.isLoading
+);
+export const paymentGameIsLoaded = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.paymentGameAPI.isLoaded
+);

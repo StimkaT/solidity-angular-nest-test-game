@@ -3,10 +3,23 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {tap, withLatestFrom} from 'rxjs';
 import {
   // closeWebSocketConnection,
-  createGame, gameError, getActiveGames, getDataGameAndSetWebSocket, getGameTypes, getGameTypesSuccess,
-  joinGame, leaveGame,
-  loadGameListSuccess, makeAction, makeActionWithoutData, sendMoney, setGameData,
-  setSelectedPlayerList, setSelectedPlayerListData, setWebSocketConnection
+  createGame,
+  createGameSuccess,
+  gameError,
+  getActiveGames,
+  getDataGameAndSetWebSocket,
+  getGameTypes,
+  getGameTypesSuccess,
+  joinGame,
+  leaveGame,
+  loadGameListSuccess,
+  makeAction,
+  makeActionWithoutData,
+  sendMoney, sendMoneySuccess,
+  setGameData,
+  setSelectedPlayerList,
+  setSelectedPlayerListData,
+  setWebSocketConnection
 } from './game-data.actions';
 import {GameDataService} from '../../services/game-data.service';
 import {Store} from '@ngrx/store';
@@ -70,8 +83,9 @@ export class GameDataEffects {
           };
           this.gameDataService.createGame(payload).subscribe({
             next: (response) => {
-              this.router.navigate([`/game/${response.gameData.gameId}`]);
+              void this.router.navigate([`/game/${response.gameData.gameId}`]);
               this.store.dispatch(getActiveGames({ game: typeGame }));
+              this.store.dispatch(createGameSuccess());
             },
             error: (error) => {
               console.error('Error creating game:', error);
@@ -174,6 +188,32 @@ export class GameDataEffects {
           const gameId = gameData.id;
 
           this.wsService.sendMoney(wallet, gameId);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  isSendMoney$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(setGameData),
+        withLatestFrom(
+          this.store.select(getPlayer),
+          this.store.select(selectActiveGameData),
+        ),
+        tap(([action, player, gameData]) => {
+          const wallet = player.wallet;
+          const gameId = gameData.id;
+
+          if (action.data.sendNote === 'player_is_bet') {
+            const walletIs = action.data.gameData.players
+              .filter((player: any) =>
+                player.wallet === wallet && player.bet === true
+              )
+              .map((player: any) => player.wallet);
+            if (walletIs.length > 0) {
+              this.store.dispatch(sendMoneySuccess({response: {wallet, gameId}}))
+            }
+          }
         })
       ),
     { dispatch: false }

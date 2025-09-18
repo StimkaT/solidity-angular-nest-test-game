@@ -1,14 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions'
-export const AUTH_FEATURE_KEY = 'auth';
+import {API} from '../../models/api';
 
-export interface API {
-  startTime: number | null;
-  loadingTime: number | null;
-  isLoading: boolean;
-  isLoaded: boolean;
-  error?: any;
-}
+export const AUTH_FEATURE_KEY = 'auth';
 
 export interface IAuthApi extends API {
   response: any;

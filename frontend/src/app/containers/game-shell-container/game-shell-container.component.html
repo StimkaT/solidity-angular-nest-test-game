@@ -9,20 +9,23 @@
   [playerIsBet]="(selectIsBetGame$ | async) || false"
   (emitter)="events($event)"
 >
-  @if ((selectActiveGameData$ | async)?.type ==='rock-paper-scissors')
-  {
-    <app-rock-paper-scissors-container
-      [gameData]="(selectActiveGameData$ | async)!"
-      (emitter)="events($event)"
-    />
-  } @else if ((selectActiveGameData$ | async)?.type ==='dice') {
-    <app-game-dice
-      [orderOfThrows]="(getOrderOfThrows$ | async)!"
-      [yourPlay]="(isYourPlay$ | async)!"
-      (emitter)="events($event)"
-    >
-    </app-game-dice>
+  @if ((paymentGameIsLoading$ | async) && !(paymentGameIsLoaded$ | async)) {
+    <app-loader></app-loader>
+  } @else {
+    @if ((selectActiveGameData$ | async)?.type ==='rock-paper-scissors')
+    {
+      <app-rock-paper-scissors-container
+        [gameData]="(selectActiveGameData$ | async)!"
+        (emitter)="events($event)"
+      />
+    } @else if ((selectActiveGameData$ | async)?.type ==='dice') {
+      <app-game-dice
+        [orderOfThrows]="(getOrderOfThrows$ | async)!"
+        [yourPlay]="(isYourPlay$ | async)!"
+        (emitter)="events($event)"
+      >
+      </app-game-dice>
+    }
   }
-
 </app-game-layout>
 

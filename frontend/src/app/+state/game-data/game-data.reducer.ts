@@ -1,8 +1,16 @@
 import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
 import {walletListStabs} from './stabs';
+import {API} from '../../models/api';
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
+
+export interface ICreateGameAPI extends API {
+  response: any;
+}
+export interface IPaymentGameAPI extends API {
+  response: any;
+}
 
 export interface IPlayer {
   name: string; // имя
@@ -90,6 +98,8 @@ export interface GameDataState {
   activeGameList: IDataGameList[];
   activeGameData: IActiveGameList;
   timer: ITimer[];
+  createGameAPI: ICreateGameAPI;
+  paymentGameAPI: IPaymentGameAPI;
 }
 
 export interface SettingsPartialState {
@@ -159,6 +169,20 @@ export const initialState: GameDataState = {
     players: []
   },
   timer: [],
+  createGameAPI: {
+    startTime: null,
+    loadingTime: null,
+    isLoading: false,
+    isLoaded: false,
+    response: null,
+  },
+  paymentGameAPI: {
+    startTime: null,
+    loadingTime: null,
+    isLoading: false,
+    isLoaded: false,
+    response: null,
+  },
 };
 
 export const gameDataReducer = createReducer(
@@ -244,4 +268,43 @@ export const gameDataReducer = createReducer(
       };
     }
   }),
+
+  on(GameDataActions.createGame, (state) => ({
+    ...state,
+    createGameAPI: {
+      ...state.createGameAPI,
+      isLoading: true,
+      isLoaded: false,
+      startTime: Date.now(),
+    }
+  })),
+  on(GameDataActions.createGameSuccess, (state) => ({
+    ...state,
+    createGameAPI: {
+      ...state.createGameAPI,
+      isLoading: false,
+      isLoaded: true,
+      loadingTime: Date.now() - state.createGameAPI.startTime!,
+    }
+  })),
+
+  on(GameDataActions.sendMoney, (state) => ({
+    ...state,
+    paymentGameAPI: {
+      ...state.paymentGameAPI,
+      isLoading: true,
+      isLoaded: false,
+      startTime: Date.now(),
+    }
+  })),
+  on(GameDataActions.sendMoneySuccess, (state, {response}) => ({
+    ...state,
+    paymentGameAPI: {
+      ...state.paymentGameAPI,
+      isLoading: false,
+      isLoaded: true,
+      loadingTime: Date.now() - state.paymentGameAPI.startTime!,
+      response
+    }
+  })),
 );

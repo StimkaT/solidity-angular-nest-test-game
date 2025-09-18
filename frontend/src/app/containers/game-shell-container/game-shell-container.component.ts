@@ -12,7 +12,7 @@ import {
   leaveGame, sendMoney
 } from '../../+state/game-data/game-data.actions';
 import {
-  getTimer,
+  getTimer, paymentGameIsLoaded, paymentGameIsLoading,
   selectActiveGameData,
   selectIsBetGame,
   selectIsConnectedGame
@@ -24,6 +24,7 @@ import {IActiveGameList} from '../../+state/game-data/game-data.reducer';
 import {GameDiceComponent} from '../../games/game-dice/game-dice.component';
 import {selectRpsDataRound} from '../../+state/rps-game/rps-game.selectors';
 import {getOrderOfThrows, isYourPlay, selectDiceDataRound} from '../../+state/dice-game/dice-game.selectors';
+import {LoaderComponent} from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-game-layout-container',
@@ -31,7 +32,8 @@ import {getOrderOfThrows, isYourPlay, selectDiceDataRound} from '../../+state/di
     GameLayoutComponent,
     AsyncPipe,
     RockPaperScissorsContainerComponent,
-    GameDiceComponent
+    GameDiceComponent,
+    LoaderComponent
   ],
   standalone: true,
   templateUrl: './game-shell-container.component.html',
@@ -54,6 +56,8 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   selectIsBetGame$ = this.store.select(selectIsBetGame);
   getOrderOfThrows$ = this.store.select(getOrderOfThrows);
   isYourPlay$ = this.store.select(isYourPlay);
+  paymentGameIsLoading$ = this.store.select(paymentGameIsLoading);
+  paymentGameIsLoaded$ = this.store.select(paymentGameIsLoaded);
 
   getRoundNumber() {
     // const gameData = this.selectActiveGameData$.getValue();

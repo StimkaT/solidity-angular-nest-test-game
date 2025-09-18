@@ -1,8 +1,7 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
-import {Store} from '@ngrx/store';
 import {TimerComponent} from '../timer/timer.component';
 
 @Component({
@@ -19,7 +18,6 @@ import {TimerComponent} from '../timer/timer.component';
   styleUrl: './game-layout.component.scss'
 })
 export class GameLayoutComponent {
-  // @Input() title: string = '';
   @Input() link: string = '';
   @Input() activeGamesList: any;
   @Input() player: any;
