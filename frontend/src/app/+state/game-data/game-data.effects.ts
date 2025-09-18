@@ -17,6 +17,7 @@ import {WebsocketService} from '../../services/websocket.service';
 import {IGameData} from './game-data.reducer';
 import {getActiveRoundRpc} from '../rps-game/rps-game.selectors';
 import {getActiveRoundDice} from '../dice-game/dice-game.selectors';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class GameDataEffects {
@@ -24,6 +25,7 @@ export class GameDataEffects {
   private gameDataService = inject(GameDataService);
   private store = inject(Store);
   private wsService = inject(WebsocketService);
+  private router = inject(Router);
 
   setSelectedPlayerList$ = createEffect(() =>
       this.actions$.pipe(
@@ -67,7 +69,8 @@ export class GameDataEffects {
             wallet: player.wallet
           };
           this.gameDataService.createGame(payload).subscribe({
-            next: () => {
+            next: (response) => {
+              this.router.navigate([`/game/${response.gameData.gameId}`]);
               this.store.dispatch(getActiveGames({ game: typeGame }));
             },
             error: (error) => {
