@@ -60,16 +60,11 @@ export class GameShellContainerComponent implements OnInit, OnDestroy {
   paymentGameIsLoaded$ = this.store.select(paymentGameIsLoaded);
 
   getRoundNumber() {
-    // const gameData = this.selectActiveGameData$.getValue();
-    // if (!gameData) return null;
-
     if (this.gameData.type === 'rock-paper-scissors') {
       return this.selectRpsDataRound$;
     } else if (this.gameData.type === 'dice') {
-      // Здесь используйте другой селектор для dice
       return this.selectDiceDataRound$;
     }
-
     return null;
   }
 

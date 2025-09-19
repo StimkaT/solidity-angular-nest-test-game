@@ -35,25 +35,37 @@ export class DiceService {
     async playBotsIfActive(gameId: number, round: number) {
         for (let i = 0; i < 20; i++) {
             const generateCounts = this.getRandomNumbers(1, 6, 2);
-            const order = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
+            const activePlayer = await this.gameCommonService.setOrderOfThrows(gameId, round);
 
-            if (!order.status || !order.activeWallet) {
+            if (!activePlayer) {
+
+                const gameDataNow = await this.gameCommonService.getGameData(gameId);
+                const dataSend = {activeWallet: activePlayer, diceCounts: null};
+                await this.sendDiceData('game_data', 'make_action', gameDataNow, gameId, dataSend);
+
                 break;
             }
 
-            const isBot = await this.isBotWallet(order.activeWallet);
+            const isBot = await this.isBotWallet(activePlayer);
             if (!isBot) {
                 break;
+            } else {
+                const gameDataNow = await this.gameCommonService.getGameData(gameId);
+                const dataSend = {activeWallet: activePlayer, diceCounts: generateCounts};
+                await this.sendDiceData('game_data', 'make_action', gameDataNow, gameId, dataSend);
             }
 
-            await this.setCountPlayer({ gameId, wallet: order.activeWallet, round }, generateCounts);
+            await this.delay(3000);
+
+            await this.setCountPlayer({ gameId, wallet: activePlayer, round }, generateCounts);
             const gameDataNow = await this.gameCommonService.getGameData(gameId);
-            const orderAfter = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
-            await this.sendDiceData('game_data', 'make_action', gameDataNow, gameId, orderAfter);
+            const activePlayerNext = await this.gameCommonService.setOrderOfThrows(gameId, round);
+            const dataSend = {activeWallet: activePlayerNext, diceCounts: generateCounts};
 
-            await this.delay(5000);
+            await this.sendDiceData('game_data', 'make_action', gameDataNow, gameId, dataSend);
 
-            // Проверим, завершён ли раунд после хода бота
+            await this.delay(2000);
+
             const lastRound = await this.getLastRoundGame(gameId);
             const everyoneBet = await this.checkEveryoneBet(gameId, lastRound);
             if (everyoneBet) {
@@ -89,14 +101,16 @@ export class DiceService {
     ) {
         const { gameId, round } = payload;
 
-        const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
-        await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrows);
+        const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round);
+        const dataSend = {activeWallet: orderOfThrows, diceCounts: generateCounts};
+        await this.sendDiceData('game_data', 'make_action', gameData, gameId, dataSend);
 
         await this.delay(3000);
         await this.setCountPlayer(payload, generateCounts);
 
-        const orderOfThrowsAfter = await this.gameCommonService.setOrderOfThrows(gameId, round, generateCounts);
-        await this.sendDiceData('game_data', 'make_action', gameData, gameId, orderOfThrowsAfter);
+        const orderOfThrowsAfter = await this.gameCommonService.setOrderOfThrows(gameId, round);
+        const dataSendAfter = {activeWallet: orderOfThrowsAfter, diceCounts: generateCounts};
+        await this.sendDiceData('game_data', 'make_action', gameData, gameId, dataSendAfter);
 
         // Автозапуск ботов, если следующий ход за ботом
         await this.playBotsIfActive(gameId, round);
@@ -137,12 +151,21 @@ export class DiceService {
         const activeRound = await this.getCurrentRound(gameId);
         let roundsData = await this.getRoundsInfo(gameId);
         if (!orderOfThrows) {
-            const round = await this.getCurrentRound(gameId);
-            orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, round, [0,0]);
+            orderOfThrows = {};
         }
+        if (orderOfThrows && !orderOfThrows.activeWallet) {
+            const round = await this.getCurrentRound(gameId);
+            orderOfThrows.activeWallet = await this.gameCommonService.setOrderOfThrows(gameId, round);
+        }
+
         const seq = (this.sendSequenceByGame.get(gameId) || 0) + 1;
         this.sendSequenceByGame.set(gameId, seq);
-        const rpsGameData = {sendNote, gameData, activeRound, roundsData, orderOfThrows}
+        const processedOrderOfThrows = {
+            activeWallet: orderOfThrows.activeWallet,
+            diceCounts: orderOfThrows.diceCounts
+        };
+
+        const rpsGameData = {sendNote, gameData, activeRound, roundsData, orderOfThrows: processedOrderOfThrows}
         this.gameGateway.send(note, rpsGameData, gameId)
     }
 
@@ -199,9 +222,10 @@ export class DiceService {
                 }
             }
 
-            const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, nextRound, [0, 0]);
+            const orderOfThrows = await this.gameCommonService.setOrderOfThrows(gameId, nextRound);
             const gameData = await this.gameCommonService.getGameData(gameId);
-            await this.sendDiceData('game_data', 'new_round', gameData, gameId, orderOfThrows);
+            const dataSend = {activeWallet: orderOfThrows, diceCounts: null};
+            await this.sendDiceData('game_data', 'new_round', gameData, gameId, dataSend);
             // Автозапуск ботов на новом раунде, если активный — бот
             await this.playBotsIfActive(gameId, nextRound);
         }

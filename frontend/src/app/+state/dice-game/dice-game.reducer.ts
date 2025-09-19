@@ -19,8 +19,7 @@ export interface IRoundResult {
 
 export interface IOrderOfThrows {
   activeWallet: string;
-  diceCounts: number[];
-  status: boolean;
+  diceCounts: number[] | null;
 }
 
 export interface IActiveGameDice extends IActiveGameList {
@@ -65,7 +64,6 @@ export const initialState: DiceGameState = {
     orderOfThrows: {
       activeWallet: '',
       diceCounts: [0, 0],
-      status: false,
     }
   },
 };

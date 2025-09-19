@@ -48,7 +48,7 @@ export class GameService {
         if (gameData.gameInfo.type === 'rock-paper-scissors') {
           await this.rockPaperScissorsService.sendRpsData('game_data', 'first_send', gameData, data.payload.gameId);
         } else if (gameData.gameInfo.type === 'dice') {
-          await this.diceService.sendDiceData('game_data', 'first_send', gameData, data.payload.gameId, null);
+          await this.diceService.sendDiceData('game_data', 'first_send', gameData, data.payload.gameId, {});
         }
       } else if (data.event === 'handleConnection') {
         console.log('handleConnection')
@@ -358,8 +358,8 @@ export class GameService {
     const contract = this.blockchainService.getContract(storageAddress);
 
     await contract.on("LogBet", async () => {
-      await this.checkCanBotsPay(gameId)
       await this.sendGameData('player_is_bet', gameId);
+      await this.checkCanBotsPay(gameId)
     });
 
     await contract.once("BettingFinished", async () => {
@@ -428,7 +428,8 @@ export class GameService {
     if (gameData.gameInfo.type === 'rock-paper-scissors') {
       await this.rockPaperScissorsService.sendRpsData('game_data', note, gameData, gameId);
     } else if (gameData.gameInfo.type === 'dice') {
-      await this.diceService.sendDiceData('game_data', note, gameData, gameId, null);
+      await this.diceService.sendDiceData('game_data', note, gameData, gameId, {activeWallet: null, diceCount:null});
+      // await this.diceService.sendDiceData('game_data', note, gameData, gameId, null);
     }
   }
 

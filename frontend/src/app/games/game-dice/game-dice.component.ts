@@ -53,12 +53,12 @@ export class GameDiceComponent implements OnChanges {
   roundsViewData$ = this.store.select(selectDiceRoundsViewData);
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['yourPlay']) {
+      this.localYourPlay = this.yourPlay;
+    }
     if (changes['orderOfThrows'] && this.orderOfThrows) {
       this.dice1Value = this.orderOfThrows.diceCounts[0] || 0;
       this.dice2Value = this.orderOfThrows.diceCounts[1] || 0;
-    }
-    if (changes['yourPlay']) {
-      this.localYourPlay = this.yourPlay;
     }
   }
 

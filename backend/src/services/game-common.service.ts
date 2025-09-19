@@ -360,46 +360,27 @@ export class GameCommonService {
 
     async setOrderOfThrows(
         gameId: number,
-        round: number,
-        generateCounts: number[],
-    ): Promise<{ activeWallet: string; diceCounts: number[]; status: boolean }> {
+        round: number
+    ): Promise<string | null> {
         try {
             const walletsResult = await this.getRoundInfo(gameId, round);
-            // console.log('walletsResult', walletsResult);
-
             const walletList = walletsResult.map(item => item.wallet);
-
             const allNull = walletsResult.every(item => item.result === null);
             const allNotNull = walletsResult.every(item => item.result !== null);
-
-            let activeWallet: string;
-            let diceCounts: number[];
-            let status: boolean;
+            let activeWallet: string | null = null;
 
             if (allNull) {
-                status = true;
                 activeWallet = walletList[0];
-                diceCounts = generateCounts || [0, 0];
             } else if (allNotNull) {
-                status = false;
-                activeWallet = '';
-                diceCounts = generateCounts;
+                activeWallet = null;
             } else {
                 const nextPlayerIndex = walletsResult.findIndex(item => item.result === null);
-
                 if (nextPlayerIndex !== -1) {
-                    status = true;
                     activeWallet = walletList[nextPlayerIndex];
-                    diceCounts = generateCounts;
-                } else {
-                    status = false;
-                    activeWallet = '';
-                    diceCounts = [0, 0];
                 }
             }
 
-            // console.log('ИТОГ:', { activeWallet, diceCounts, status });
-            return { activeWallet, diceCounts, status };
+            return activeWallet;
 
         } catch (error) {
             console.error('Ошибка в setOrderOfThrows:', error);
