@@ -363,10 +363,10 @@ export class GameService {
     });
 
     await contract.once("BettingFinished", async () => {
+      await this.sendGameData('betting_finished', gameId);
       const playingTime = 30000 * 60;
       await this.startTimer('playing_time', playingTime, gameId);
       await this.createFirstRound(gameId);
-      await this.sendGameData('betting_finished', gameId);
     });
 
     await contract.once("GameFinalized", async () => {
