@@ -1,17 +1,1 @@
-<!-- Тестовые кнопки для демонстрации ошибок -->
-<div class="test-controls">
-  <h2>Тестирование компонента обработки ошибок</h2>
-  <div class="test-buttons">
-    <button (click)="testHttpError()" class="test-btn test-btn-http">HTTP Ошибка (404)</button>
-    <button (click)="testValidationError()" class="test-btn test-btn-validation">Ошибки валидации</button>
-    <button (click)="testNetworkError()" class="test-btn test-btn-network">Сетевая ошибка</button>
-    <button (click)="testAuthError()" class="test-btn test-btn-auth">Ошибка авторизации (401)</button>
-    <button (click)="testCustomError()" class="test-btn test-btn-custom">Кастомная ошибка</button>
-  </div>
-</div>
-
-<!-- Компонент отображения ошибок -->
-<app-error-display></app-error-display>
-
-<!-- Основное содержимое приложения -->
 <app-main-container></app-main-container>

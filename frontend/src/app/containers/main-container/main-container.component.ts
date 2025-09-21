@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {LoginFormContainerComponent} from '../login-form-container/login-form-container.component';
 import {RegistrationFormContainerComponent} from '../registration-form-container/registration-form-container.component';
 import {HeaderContainerComponent} from '../header-container/header-container.component';
+import {ErrorDisplayComponent} from '../../components/error-display/error-display.component';
 import {Store} from '@ngrx/store';
 import {getSidebarValue, getPlayer} from '../../+state/auth/auth.selectors';
 import {AsyncPipe} from '@angular/common';
@@ -15,6 +16,7 @@ import {RouterOutlet} from '@angular/router';
   imports: [
     SidebarComponent,
     HeaderContainerComponent,
+    ErrorDisplayComponent,
     AsyncPipe,
     RouterOutlet
   ],
@@ -36,7 +38,7 @@ export class MainContainerComponent implements OnInit {
   }
 
   openLoginModal(): void {
-    const dialogRef = this.dialog.open(LoginFormContainerComponent, {
+    this.dialog.open(LoginFormContainerComponent, {
       width: '80%',
       height: '70%',
       hasBackdrop: true,
@@ -44,7 +46,7 @@ export class MainContainerComponent implements OnInit {
   }
 
   openRegistrationModal(): void {
-    const dialogRef = this.dialog.open(RegistrationFormContainerComponent, {
+    this.dialog.open(RegistrationFormContainerComponent, {
       width: '80%',
       height: '70%',
       hasBackdrop: true,

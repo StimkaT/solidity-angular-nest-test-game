@@ -1,4 +1,7 @@
 <div class="main-container" [class.sidebar-open]="getSidebarValue$ | async">
+  <!-- Компонент отображения ошибок -->
+  <app-error-display></app-error-display>
+  
   <app-header-container (emitter)="events($event)"></app-header-container>
   <div class="content">
     <app-sidebar [user]="getUserData$ | async"></app-sidebar>

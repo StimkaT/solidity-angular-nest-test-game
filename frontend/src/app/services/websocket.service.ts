@@ -7,6 +7,8 @@ import {ResultsContainerComponent} from '../containers/results-container/results
 import {MatDialog} from '@angular/material/dialog';
 import {resetActiveGameElements, setRpsRoundsData} from '../+state/rps-game/rps-game.actions';
 import {setDiceRoundsData} from '../+state/dice-game/dice-game.actions';
+import {ErrorHandlerService} from './error-handler.service';
+import {ErrorType} from '../models/error.model';
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
@@ -16,6 +18,7 @@ export class WebsocketService {
 
   private store = inject(Store);
   private dialog = inject(MatDialog);
+  private errorHandlerService = inject(ErrorHandlerService);
 
   socketExists(): boolean {
     return !!this.socket && this.socket.connected;
@@ -24,6 +27,33 @@ export class WebsocketService {
   private connect() {
     this.socket = io(environment.hostUrl, {
       query: { wallet: this.wallet }
+    });
+
+    // Обработка ошибок подключения WebSocket
+    this.socket.on('connect_error', (error) => {
+      this.errorHandlerService.addError({
+        message: 'Ошибка подключения к серверу игры',
+        type: ErrorType.NETWORK,
+        details: {
+          error: error.message,
+          type: 'WebSocket Connect Error',
+          gameId: this.gameId
+        }
+      });
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      if (reason === 'io server disconnect') {
+        this.errorHandlerService.addError({
+          message: 'Сервер игры отключил соединение',
+          type: ErrorType.NETWORK,
+          details: {
+            reason,
+            type: 'WebSocket Disconnect',
+            gameId: this.gameId
+          }
+        });
+      }
     });
   }
 

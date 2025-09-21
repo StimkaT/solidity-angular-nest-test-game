@@ -55,6 +55,9 @@ export const youLost = createSelector(
   selectRpsDataRound,
   getPlayer,
   (dataRound, player) => {
+    if (!dataRound || !dataRound.players || !player) {
+      return false;
+    }
     return !dataRound.players.some(
       (playerRound: any) => playerRound.wallet === player.wallet && playerRound.isPlaying
     );

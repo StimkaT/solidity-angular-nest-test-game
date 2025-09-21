@@ -56,7 +56,7 @@ export class GameDiceComponent implements OnChanges {
     if (changes['yourPlay']) {
       this.localYourPlay = this.yourPlay;
     }
-    if (changes['orderOfThrows'] && this.orderOfThrows) {
+    if (changes['orderOfThrows'] && this.orderOfThrows && this.orderOfThrows.diceCounts && Array.isArray(this.orderOfThrows.diceCounts)) {
       this.dice1Value = this.orderOfThrows.diceCounts[0] || 0;
       this.dice2Value = this.orderOfThrows.diceCounts[1] || 0;
     }
