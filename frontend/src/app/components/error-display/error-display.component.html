@@ -1,0 +1,70 @@
+<!-- Глобальное уведомление об ошибках -->
+<div class="error-notification" *ngIf="isGlobalErrorVisible$ | async">
+  <div class="error-notification-content">
+    <div class="error-notification-icon">⚠️</div>
+    <div class="error-notification-text">
+      <span>Произошли ошибки</span>
+      <button class="error-notification-close" (click)="clearAllErrors()">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- Список ошибок -->
+<div class="error-container" *ngIf="errors$ | async as errors">
+  <div class="error-header" *ngIf="errors.length > 0">
+    <h3 class="error-title">
+      <span class="error-count">{{ errors.length }}</span>
+      {{ errors.length === 1 ? 'Ошибка' : 'Ошибки' }}
+    </h3>
+    <button class="error-clear-all" (click)="clearAllErrors()">
+      Очистить все
+    </button>
+  </div>
+
+  <div class="error-list">
+    <div 
+      *ngFor="let error of errors; trackBy: trackByErrorId" 
+      class="error-item"
+      [ngClass]="getErrorTypeClass(error.type)"
+    >
+      <div class="error-item-header">
+        <div class="error-item-icon">
+          {{ getErrorIcon(error.type) }}
+        </div>
+        <div class="error-item-info">
+          <div class="error-item-type">{{ getErrorTypeTitle(error.type) }}</div>
+          <div class="error-item-time">{{ formatErrorTime(error.timestamp) }}</div>
+        </div>
+        <button 
+          class="error-item-close" 
+          (click)="removeError(error.id)"
+          title="Закрыть ошибку"
+        >
+          ×
+        </button>
+      </div>
+      
+      <div class="error-item-message">
+        {{ error.message }}
+      </div>
+      
+      <div class="error-item-details" *ngIf="error.statusCode">
+        <span class="error-status-code">Код: {{ error.statusCode }}</span>
+      </div>
+      
+      <!-- Дополнительные детали (можно развернуть) -->
+      <div class="error-item-extra" *ngIf="error.details">
+        <details class="error-details">
+          <summary class="error-details-summary">Подробности</summary>
+          <pre class="error-details-content">{{ error.details | json }}</pre>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Пустое состояние -->
+<div class="error-empty" *ngIf="(errors$ | async)?.length === 0">
+  <div class="error-empty-icon">✅</div>
+  <div class="error-empty-text">Ошибок нет</div>
+</div>

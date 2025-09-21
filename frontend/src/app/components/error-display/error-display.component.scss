@@ -1,0 +1,406 @@
+// Переменные для цветов
+$error-primary: #dc3545;
+$error-secondary: #f8d7da;
+$error-border: #f5c6cb;
+$error-text: #721c24;
+
+$warning-primary: #ffc107;
+$warning-secondary: #fff3cd;
+$warning-border: #ffeaa7;
+$warning-text: #856404;
+
+$info-primary: #17a2b8;
+$info-secondary: #d1ecf1;
+$info-border: #bee5eb;
+$info-text: #0c5460;
+
+$success-primary: #28a745;
+$success-secondary: #d4edda;
+$success-border: #c3e6cb;
+$success-text: #155724;
+
+// Анимации
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Глобальное уведомление
+.error-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  animation: slideInFromRight 0.3s ease-out;
+  
+  .error-notification-content {
+    background: linear-gradient(135deg, $error-primary, darken($error-primary, 10%));
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 250px;
+    
+    .error-notification-icon {
+      font-size: 20px;
+    }
+    
+    .error-notification-text {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .error-notification-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+}
+
+// Основной контейнер ошибок
+.error-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Заголовок секции ошибок
+.error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e9ecef;
+  
+  .error-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #343a40;
+    
+    .error-count {
+      background: $error-primary;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-right: 8px;
+    }
+  }
+  
+  .error-clear-all {
+    background: $error-primary;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: darken($error-primary, 10%);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Список ошибок
+.error-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Элемент ошибки
+.error-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideInFromTop 0.3s ease-out;
+  transition: all 0.2s;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  // Заголовок элемента ошибки
+  .error-item-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 12px;
+    
+    .error-item-icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .error-item-info {
+      flex: 1;
+      
+      .error-item-type {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+      
+      .error-item-time {
+        font-size: 12px;
+        color: #6c757d;
+      }
+    }
+    
+    .error-item-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #6c757d;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+        color: $error-primary;
+      }
+    }
+  }
+  
+  // Сообщение об ошибке
+  .error-item-message {
+    padding: 0 16px 16px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #495057;
+  }
+  
+  // Детали ошибки
+  .error-item-details {
+    padding: 0 16px 16px 16px;
+    
+    .error-status-code {
+      background: #e9ecef;
+      color: #495057;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+    }
+  }
+  
+  // Дополнительные детали
+  .error-item-extra {
+    padding: 0 16px 16px 16px;
+    
+    .error-details {
+      .error-details-summary {
+        cursor: pointer;
+        font-size: 12px;
+        color: #6c757d;
+        padding: 8px 0;
+        border-top: 1px solid #e9ecef;
+        
+        &:hover {
+          color: $error-primary;
+        }
+      }
+      
+      .error-details-content {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 12px;
+        margin-top: 8px;
+        font-size: 11px;
+        font-family: 'Courier New', monospace;
+        color: #495057;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+    }
+  }
+}
+
+// Стили для разных типов ошибок
+.error-item {
+  &.error-http {
+    border-left: 4px solid $info-primary;
+    
+    .error-item-icon {
+      background: rgba($info-primary, 0.1);
+    }
+  }
+  
+  &.error-validation {
+    border-left: 4px solid $warning-primary;
+    
+    .error-item-icon {
+      background: rgba($warning-primary, 0.1);
+    }
+  }
+  
+  &.error-network {
+    border-left: 4px solid $error-primary;
+    
+    .error-item-icon {
+      background: rgba($error-primary, 0.1);
+    }
+  }
+  
+  &.error-auth {
+    border-left: 4px solid $info-primary;
+    
+    .error-item-icon {
+      background: rgba($info-primary, 0.1);
+    }
+  }
+  
+  &.error-authorization {
+    border-left: 4px solid $error-primary;
+    
+    .error-item-icon {
+      background: rgba($error-primary, 0.1);
+    }
+  }
+  
+  &.error-unknown {
+    border-left: 4px solid #6c757d;
+    
+    .error-item-icon {
+      background: rgba(#6c757d, 0.1);
+    }
+  }
+}
+
+// Пустое состояние
+.error-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+  
+  .error-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .error-empty-text {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .error-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    
+    .error-notification-content {
+      min-width: auto;
+    }
+  }
+  
+  .error-container {
+    padding: 16px;
+  }
+  
+  .error-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    
+    .error-title {
+      text-align: center;
+    }
+  }
+  
+  .error-item {
+    .error-item-header {
+      padding: 12px;
+      
+      .error-item-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+      }
+    }
+    
+    .error-item-message {
+      padding: 0 12px 12px 12px;
+    }
+    
+    .error-item-details {
+      padding: 0 12px 12px 12px;
+    }
+    
+    .error-item-extra {
+      padding: 0 12px 12px 12px;
+    }
+  }
+}
