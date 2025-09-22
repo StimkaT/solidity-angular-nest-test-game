@@ -66,7 +66,7 @@ export interface IDataGameList {
   type: string | null;
   contractAddress: string;
   ownerAddress: string;
-  finishedAt: Date | null;
+  finishedAt: any;
   createdAt: string | Date;
   updatedAt: string | Date;
   bet: number;
@@ -216,9 +216,9 @@ export const gameDataReducer = createReducer(
       type: item.type,
       contractAddress: item.contractAddress,
       ownerAddress: item.ownerAddress,
-      finishedAt: item.finished_at,
-      createdAt: item.created_at,
-      updatedAt: item.updated_at,
+      finishedAt: item.finishedAt,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
       bet: item.bet || 0,
       playersNumber: item.playersNumber || 0,
       playerNumberSet: item.playerNumberSet || 0,
