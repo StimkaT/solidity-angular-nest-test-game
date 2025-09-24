@@ -64,11 +64,13 @@ export interface DelegateCallGameStorageInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "abortGame"
+      | "deposit"
       | "finish"
       | "getAllPlayers"
       | "getContractBalance"
       | "getGameData"
       | "getPlayer"
+      | "isFinished"
       | "withdrawRemainingBalance"
   ): FunctionFragment;
 
@@ -77,6 +79,7 @@ export interface DelegateCallGameStorageInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "abortGame", values?: undefined): string;
+  encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "finish",
     values: [GameBase.PlayerResultStruct[]]
@@ -98,11 +101,16 @@ export interface DelegateCallGameStorageInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "isFinished",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdrawRemainingBalance",
     values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: "abortGame", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "finish", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getAllPlayers",
@@ -117,6 +125,7 @@ export interface DelegateCallGameStorageInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPlayer", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isFinished", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawRemainingBalance",
     data: BytesLike
@@ -208,10 +217,12 @@ export interface DelegateCallGameStorage extends BaseContract {
 
   abortGame: TypedContractMethod<[], [void], "nonpayable">;
 
+  deposit: TypedContractMethod<[], [void], "nonpayable">;
+
   finish: TypedContractMethod<
     [_playerResultList: GameBase.PlayerResultStruct[]],
     [void],
-    "payable"
+    "nonpayable"
   >;
 
   getAllPlayers: TypedContractMethod<
@@ -254,6 +265,8 @@ export interface DelegateCallGameStorage extends BaseContract {
     "view"
   >;
 
+  isFinished: TypedContractMethod<[], [boolean], "view">;
+
   withdrawRemainingBalance: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -264,11 +277,14 @@ export interface DelegateCallGameStorage extends BaseContract {
     nameOrSignature: "abortGame"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "deposit"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "finish"
   ): TypedContractMethod<
     [_playerResultList: GameBase.PlayerResultStruct[]],
     [void],
-    "payable"
+    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "getAllPlayers"
@@ -314,6 +330,9 @@ export interface DelegateCallGameStorage extends BaseContract {
     [GameBase.PlayerStructOutput],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "isFinished"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "withdrawRemainingBalance"
   ): TypedContractMethod<[], [void], "nonpayable">;

@@ -9,8 +9,8 @@ import {IGameDataBlockchain, IPlayerBlockchain} from "../types/blockchain";
 @Injectable()
 export class BlockchainService {
 
-    private provider = new ethers.JsonRpcProvider('http://localhost:8545');
-    private providerToEvents = new ethers.WebSocketProvider('ws://localhost:8545');
+    private provider = new ethers.JsonRpcProvider(process.env.INFURA_URL);
+    private providerToEvents = new ethers.WebSocketProvider('wss://sepolia.infura.io/ws/v3/6113828fd8e8448f9a9e3fa7962e2cc6');
     private contract: ethers.Contract | null = null;
     private wallet: ethers.Wallet;
     private readonly logicArtifactPath = path.resolve(
@@ -21,6 +21,15 @@ export class BlockchainService {
         __dirname,
         '../../../blockchain/artifacts/contracts/Game.sol/DelegateCallGameStorage.json',
     );
+
+    private lastGameData: { gameData: IGameDataBlockchain; players: IPlayerBlockchain[] } | null = null;
+    private lastCallTimestamp = 0;
+    private cooldownMs = 1000; // 1 секунда между вызовами
+
+    public totalCalls = 0;        // сколько раз функция вообще вызывалась
+    public totalRpcCalls = 0;
+
+
     constructor(
     ) {
         const privateKey = process.env.OWNER_WALLET;
@@ -28,6 +37,9 @@ export class BlockchainService {
     }
 
     async deployGameLogicAddress(logicAddress: any) {
+        // const balance = await this.wallet.getBalance();
+        // console.log("Wallet ETH balance:", ethers.formatEther(balance));
+
         if (!logicAddress) {
             const logicArtifact = JSON.parse(
                 fs.readFileSync(this.logicArtifactPath, 'utf8'),
@@ -62,21 +74,36 @@ export class BlockchainService {
             storageArtifact.bytecode,
             this.wallet,
         );
+        const tokenAddress = process.env.TOKEN_ADDRESS;
         const contract = await DelegateCallGameStorageFactory.deploy(
             players,
             logicAddress,
             time1,
             time2,
+            tokenAddress,
         );
+
         await contract.waitForDeployment();
 
         return await contract.getAddress();
     }
 
     async getGameData(contractAddress: string) {
+        this.logCounters();
+        this.totalCalls++; // увеличиваем каждый вызов функции
+
+        const now = Date.now();
+
+        // если прошло меньше cooldown и есть кеш — возвращаем кеш
+        if (now - this.lastCallTimestamp < this.cooldownMs && this.lastGameData) {
+            return this.lastGameData;
+        }
+
         this.contract = new ethers.Contract(contractAddress, DelegateCallGameStorage.abi, this.provider);
 
         try {
+            this.totalRpcCalls++; // реально идем к контракту
+
             const [
                 [bettingMaxTime, gameMaxTime, createdAt, startedAt, finishedAt, isBettingComplete, isGameAborted, isGameFinished],
                 [names, wallets, bets, isPaid, isPaidOut, results]
@@ -105,39 +132,74 @@ export class BlockchainService {
                 isGameFinished
             };
 
-            return { gameData, players };
+            const result = { gameData, players };
+
+            // обновляем кеш и время последнего вызова
+            this.lastGameData = result;
+            this.lastCallTimestamp = now;
+
+            return result;
         } catch (error) {
             console.error('Error fetching blockchain data:', error);
+
+            // возвращаем кеш, если есть
+            if (this.lastGameData) {
+                return this.lastGameData;
+            }
+
             throw error;
         }
     }
 
+    // функция для логирования счетчиков
+    logCounters() {
+        console.log(`Попытка: ${this.totalCalls}`);
+        console.log(`вызов: ${this.totalRpcCalls}`);
+    }
+
+    private paymentLocks: Record<string, Promise<void>> = {};
+
     async playerPayment(dataToPay: IDataToPay) {
+        const { contractAddress } = dataToPay;
+
+        // если уже есть выполняющийся платеж для этого контракта
+        while (this.paymentLocks[contractAddress]) {
+            await this.paymentLocks[contractAddress];
+        }
+
+        // создаем текущий lock
+        let resolveLock: () => void;
+        this.paymentLocks[contractAddress] = new Promise(res => resolveLock = res!);
+
         try {
-            const { wallet, contractAddress, contractBet, privateKey } = dataToPay;
+            // твоя логика approve + deposit
+            const { wallet, contractBet, privateKey } = dataToPay;
 
             const playerWallet = new ethers.Wallet(privateKey, this.provider);
 
-            const tx = await playerWallet.sendTransaction({
-                to: contractAddress,
-                value: ethers.parseEther(contractBet),
-            });
+            const tokenAbi = ["function approve(address spender, uint256 amount) external returns (bool)"];
+            const token = new ethers.Contract(process.env.TOKEN_ADDRESS!, tokenAbi, playerWallet);
+            const approveTx = await token.approve(contractAddress, ethers.parseUnits(contractBet, 18));
+            await approveTx.wait();
 
-            await tx.wait();
-
-            const contract = new ethers.Contract(
-                contractAddress,
-                DelegateCallGameStorage.abi,
-                this.providerToEvents
-            );
+            const contract = new ethers.Contract(contractAddress, DelegateCallGameStorage.abi, playerWallet);
+            const depositTx = await contract.deposit();
+            await depositTx.wait();
 
             const players = await contract.getAllPlayers();
             const playerIndex = players.wallets.indexOf(wallet);
             return players.isPaid[playerIndex];
+
         } catch (error) {
-            new Error(`Payment error: ${error.message}`);
+            throw new Error(`Payment error: ${error.message}`);
+        } finally {
+            // снимаем lock
+            resolveLock!();
+            delete this.paymentLocks[contractAddress];
         }
     }
+
+
 
     getContract(contractAddress: string) {
         const contract = new ethers.Contract(
@@ -151,17 +213,17 @@ export class BlockchainService {
         return contract
     }
 
+    private finishLocks: Record<string, Promise<void>> = {};
+
     async finish(data: { contractAddress: string; playerResults: any[] }) {
+        const { contractAddress, playerResults } = data;
+
+        const storageArtifact = require(this.storageArtifactPath);
+        const abi = storageArtifact.abi;
+        const contract = new ethers.Contract(contractAddress, abi, this.wallet);
+
         try {
-            const { contractAddress, playerResults } = data;
-
-            const storageArtifact = require(this.storageArtifactPath);
-            const abi = storageArtifact.abi;
-
-            const contract = new ethers.Contract(contractAddress, abi, this.wallet);
-
             const tx = await contract.finish(playerResults);
-
             const receipt = await tx.wait();
 
             return {
@@ -170,10 +232,29 @@ export class BlockchainService {
                 blockNumber: receipt.blockNumber
             };
 
-        } catch (error) {
-            throw new Error(`Finish game error: ${error.message}`);
+        } catch (error: any) {
+            if (
+                error.reason?.includes("Game already finished") ||
+                error.message?.includes("Game already finished")
+            ) {
+                return {
+                    success: true,
+                    transactionHash: null,
+                    blockNumber: null,
+                    message: "Game already finished"
+                };
+            }
+            return {
+                success: false,
+                transactionHash: null,
+                blockNumber: null,
+                message: error.message
+            };
         }
     }
+
+
+
 
     async getContractBalance(contractAddress: string): Promise<bigint> {
         try {

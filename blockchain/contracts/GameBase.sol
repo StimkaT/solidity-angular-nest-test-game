@@ -1,14 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0
-
-//import "hardhat/console.sol";
-
 pragma solidity >=0.8.2 <0.9.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 contract GameBase {
+    using SafeERC20 for IERC20;
+
+    IERC20 internal gameToken; // <- общая переменная для токена
+
     struct Player {
         string name;
         address wallet;
-        uint256 bet;
+        uint256 bet; // количество токенов (в smallest unit)
         bool isPaid;
         bool isPaidOut;
         uint256 result;
@@ -51,7 +55,7 @@ contract GameBase {
         _;
     }
 
-    modifier playerExist() {
+    modifier playerExistMsgSender() {
         require(playerExists[msg.sender], "Player does not exist");
         _;
     }
@@ -96,8 +100,9 @@ contract GameBase {
         _;
     }
 
-    modifier sufficientBalance(uint256 amount) {
-        require(address(this).balance >= amount, "Insufficient contract balance");
+    // проверка баланса токена контракта
+    modifier tokenSufficientBalance(uint256 amount) {
+        require(gameToken.balanceOf(address(this)) >= amount, "Insufficient token balance");
         _;
     }
 
@@ -135,10 +140,8 @@ contract GameBase {
         }
     }
 
-    function _updateBettingStatus() internal
-    validLogicAddress
-    {
-        bool  isAllPaid  = true;
+    function _updateBettingStatus() internal validLogicAddress {
+        bool isAllPaid = true;
         if (!isBettingComplete) {
             for (uint256 i = 0; i < playerList.length; i++) {
                 if (!playerList[i].isPaid) {
@@ -147,14 +150,15 @@ contract GameBase {
                 }
             }
 
-            if(isAllPaid) {
+            if (isAllPaid) {
                 isBettingComplete = true;
-                startedAt = block.timestamp; // Todo: change to when the game actually starts
+                startedAt = block.timestamp; // TODO: maybe set explicitly later
                 emit BettingFinished();
             }
         }
     }
 
+    // Вызывается владельцем логики для расчёта и выплат
     function _finish(PlayerResult[] memory _playerResultList) internal
     validLogicAddress
     onlyOwner
@@ -163,7 +167,7 @@ contract GameBase {
     gameNotAborted
     gameTimeNotExceeded
     {
-        uint256 balance = address(this).balance;
+        uint256 balance = gameToken.balanceOf(address(this));
 
         address[] memory wallets = new address[](_playerResultList.length);
         uint8[] memory percents = new uint8[](_playerResultList.length);
@@ -189,8 +193,8 @@ contract GameBase {
             address recipient = wallets[i];
             uint256 amount = payouts[i];
             if (amount > 0) {
-                (bool transferSuccess, ) = payable(recipient).call{value: amount}("");
-                require(transferSuccess, "Payment failed");
+                // безопасный вызов трансфера токенов
+                gameToken.safeTransfer(recipient, amount);
 
                 uint256 idx = playerMap[recipient];
                 playerList[idx].result = amount;
@@ -198,28 +202,26 @@ contract GameBase {
             }
         }
 
-        payable(owner).transfer(address(this).balance);
+        uint256 remaining = gameToken.balanceOf(address(this));
+        if (remaining > 0) {
+            gameToken.safeTransfer(owner, remaining);
+        }
         isGameFinished = true;
         finishedAt = block.timestamp;
         emit GameFinalized(block.timestamp);
     }
 
-    function _receive() internal
-    gameNotFinished
-    gameNotAborted
-    bettingNotCompleted
-    bettingTimeNotFinished
-    playerExist
-    {
+    // Игрок вызывает deposit() после approve(token, contract, bet)
+    function _deposit() internal playerExistMsgSender bettingNotCompleted bettingTimeNotFinished gameNotAborted gameNotFinished {
         uint256 idx = playerMap[msg.sender];
         Player storage player = playerList[idx];
-        require(!player.isPaid, "Player has already paid");
-        require(msg.value == player.bet, "Incorrect bet amount");
+        require(!player.isPaid, "Already paid");
+
+        // transferFrom (через SafeERC20)
+        gameToken.safeTransferFrom(msg.sender, address(this), player.bet);
 
         player.isPaid = true;
-
         _updateBettingStatus();
-
         emit LogBet(msg.sender, player.name, player.bet);
     }
 
@@ -278,31 +280,22 @@ contract GameBase {
     }
 
     function _getContractBalance() internal view returns (uint256) {
-        return address(this).balance;
+        return gameToken.balanceOf(address(this));
     }
 
-    function _withdrawRemainingBalance() internal
-    onlyOwner
-    {
-        uint256 balance = address(this).balance;
-
+    function _withdrawRemainingBalance() internal onlyOwner {
+        uint256 balance = gameToken.balanceOf(address(this));
         if (balance > 0) {
-            (bool success, ) = payable(owner).call{value: balance}("");
-            require(success, "Transfer failed");
+            gameToken.safeTransfer(owner, balance);
         }
     }
 
-    function _abortGame() internal
-    onlyOwner
-    gameNotFinished
-    gameNotAborted
-    {
+    function _abortGame() internal onlyOwner gameNotFinished gameNotAborted {
         isGameAborted = true;
 
         for (uint256 i = 0; i < playerList.length; i++) {
             if (playerList[i].isPaid && !playerList[i].isPaidOut) {
-                (bool success, ) = payable(playerList[i].wallet).call{value: playerList[i].bet}("");
-                require(success, "Refund failed");
+                gameToken.safeTransfer(playerList[i].wallet, playerList[i].bet);
                 playerList[i].isPaidOut = true;
             }
         }

@@ -4,16 +4,30 @@ pragma solidity >=0.8.2 <0.9.0;
 import "./GameBase.sol";
 
 contract DelegateCallGameStorage is GameBase {
-    constructor(Player[] memory _playerList, address logicAddr, uint256 _bettingMaxTime, uint256 _gameMaxTime) {
-        _init(_playerList, logicAddr,  _bettingMaxTime, _gameMaxTime);
+
+    bool public isFinished;
+
+    constructor(
+        Player[] memory _playerList,
+        address logicAddr,
+        uint256 _bettingMaxTime,
+        uint256 _gameMaxTime,
+        address _tokenAddress
+    ) {
+        _init(_playerList, logicAddr, _bettingMaxTime, _gameMaxTime);
+        require(_tokenAddress != address(0), "Token address zero");
+        gameToken = IERC20(_tokenAddress);
+        isFinished = false;
     }
 
-    receive() external payable {
-        _receive();
-    }
-
-    function finish(PlayerResult[] memory _playerResultList) public payable {
+    function finish(PlayerResult[] memory _playerResultList) public {
+        require(!isFinished, "Game already finished");
         _finish(_playerResultList);
+        isFinished = true;
+    }
+
+    function deposit() external {
+        _deposit();
     }
 
     function getPlayer(uint256 index) public view returns (Player memory) {
