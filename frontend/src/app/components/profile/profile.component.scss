@@ -11,6 +11,14 @@
   background-size: cover;
 }
 
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 120px;
+}
+
 .example-spacer {
   flex: 1 1 auto;
 }
