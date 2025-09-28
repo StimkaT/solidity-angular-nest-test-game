@@ -1,4 +1,16 @@
 services:
+  frontend:
+    build:
+      context: ../frontend    # ← подняться на уровень выше
+      dockerfile: Dockerfile
+    container_name: angular-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    volumes:
+      - ../frontend:/app      # ← правильный относительный путь
+      - /app/node_modules
+
   mysql:
     image: mysql:8.0
     container_name: mysql
