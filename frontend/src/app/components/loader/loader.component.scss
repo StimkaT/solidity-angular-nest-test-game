@@ -11,7 +11,23 @@
   transform: translate(-50%, -50%) rotate(0deg);
   border-radius: 50%;
   padding: 20px;
-  z-index: 1000
+  z-index: 1000;
+}
+
+.custom-title {
+  position: fixed;
+  font-size: 32px;
+  line-height: 1.2;
+  color: #03a51d;
+  top: calc(50% - 120px);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  z-index: 1000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .overlay-background {

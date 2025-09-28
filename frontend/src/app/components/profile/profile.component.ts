@@ -3,6 +3,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {IPlayer} from '../../+state/auth/auth.reducer';
 import {MatIconModule} from '@angular/material/icon';
+import {IBalanceData} from '../../+state/game-data/game-data.reducer';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +18,7 @@ import {MatIconModule} from '@angular/material/icon';
 })
 export class ProfileComponent {
   @Input() user: IPlayer | null = null;
-  @Input() balance: string = '';
+  @Input() balanceData!: IBalanceData;
 
   @Output() emitter = new EventEmitter()
 

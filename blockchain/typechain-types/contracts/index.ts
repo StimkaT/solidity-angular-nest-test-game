@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type * as gameSol from "./Game.sol";
 export type { gameSol };
+export type { ERC20 } from "./ERC20";
 export type { GameBase } from "./GameBase";
 export type { GameLogic } from "./GameLogic";
 export type { MyToken } from "./MyToken";

@@ -54,6 +54,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ReentrancyGuard__factory>;
     getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
       name: "DelegateCallGameStorage",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.DelegateCallGameStorage__factory>;
@@ -121,6 +125,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ReentrancyGuard>;
     getContractAt(
+      name: "ERC20",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
+    getContractAt(
       name: "DelegateCallGameStorage",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -182,6 +191,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
     deployContract(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ERC20>;
+    deployContract(
       name: "DelegateCallGameStorage",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.DelegateCallGameStorage>;
@@ -248,6 +261,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
+      name: "ERC20",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ERC20>;
     deployContract(
       name: "DelegateCallGameStorage",
       args: any[],

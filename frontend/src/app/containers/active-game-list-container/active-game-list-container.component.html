@@ -1,5 +1,7 @@
 @if ((createGameIsLoading$ | async) && !(createGameIsLoaded$ | async)) {
-  <app-loader></app-loader>
+  <app-loader
+    [title]="('Wait... the game contract is being deployed to the ' + ((getBalanceData$ | async)?.networkName) + ' network') || 'loading...'"
+  ></app-loader>
 } @else {
   <mat-tab-group class="custom-tab-group" animationDuration="0ms">
     <mat-tab label="Wait Players">

@@ -1,7 +1,13 @@
-@for (game of activeGameDataList; track game) {
+<div class="title-list-game">
+  List of games
+</div>
+<div class="list-game">
+  @for (game of activeGameDataList; track game) {
   <app-card-game
     [game]="game"
     (click)="navigateTo(game.linkGame)"
   ></app-card-game>
 }
+</div>
+
 

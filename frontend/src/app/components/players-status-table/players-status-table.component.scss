@@ -56,3 +56,20 @@ tbody tr:hover td {
   color: #ffffff;
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
 }
+
+mat-icon {
+  color: #03a51d;
+}
+
+.renew {
+  animation: speen 2s linear infinite;
+}
+
+@keyframes speen {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

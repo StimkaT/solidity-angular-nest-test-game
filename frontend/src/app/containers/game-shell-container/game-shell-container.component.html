@@ -10,7 +10,9 @@
   (emitter)="events($event)"
 >
   @if ((paymentGameIsLoading$ | async) && !(paymentGameIsLoaded$ | async)) {
-    <app-loader></app-loader>
+    <app-loader
+      [title]="'You are in line to pay...'"
+    ></app-loader>
   } @else {
     @if ((selectActiveGameData$ | async)?.type ==='rock-paper-scissors')
     {

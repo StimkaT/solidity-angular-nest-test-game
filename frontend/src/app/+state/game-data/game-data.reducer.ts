@@ -2,6 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
 import {walletListStabs} from './stabs';
 import {API} from '../../models/api';
+import {setBalancePlayer, setNameToken, setNetworkName} from './game-data.actions';
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
 
@@ -88,6 +89,12 @@ export interface IGameTypes {
   name: string;
 }
 
+export interface IBalanceData {
+  nameToken: string | null;
+  balance: string;
+  networkName: string;
+}
+
 export interface GameDataState {
   playerList: IPlayer[];
   selectedPlayerList: string[];
@@ -100,6 +107,7 @@ export interface GameDataState {
   timer: ITimer[];
   createGameAPI: ICreateGameAPI;
   paymentGameAPI: IPaymentGameAPI;
+  balanceData: IBalanceData;
 }
 
 export interface SettingsPartialState {
@@ -183,6 +191,11 @@ export const initialState: GameDataState = {
     isLoaded: false,
     response: null,
   },
+  balanceData: {
+    nameToken: '',
+    balance: '',
+    networkName: '',
+  }
 };
 
 export const gameDataReducer = createReducer(
@@ -207,6 +220,27 @@ export const gameDataReducer = createReducer(
     gameData: {
       ...state.gameData,
       playerList
+    }
+  })),
+  on(GameDataActions.setBalancePlayer, (state, { balance }) => ({
+    ...state,
+    balanceData: {
+      ...state.balanceData,
+      balance
+    }
+  })),
+  on(GameDataActions.setNameToken, (state, { name }) => ({
+    ...state,
+    balanceData: {
+      ...state.balanceData,
+      nameToken: name
+    }
+  })),
+  on(GameDataActions.setNetworkName, (state, { name }) => ({
+    ...state,
+    balanceData: {
+      ...state.balanceData,
+      networkName: name
     }
   })),
   on(GameDataActions.loadGameListSuccess, (state, { data }) => ({

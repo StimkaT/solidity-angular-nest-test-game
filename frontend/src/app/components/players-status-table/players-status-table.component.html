@@ -15,7 +15,13 @@
         <td>
           {{ item.bet }}
         </td>
-        <td>{{ item.ready }}</td>
+        <td>
+          @if (item.bet) {
+            <mat-icon>check</mat-icon>
+          } @else {
+            <mat-icon class='renew'>autorenew</mat-icon>
+          }
+        </td>
       </tr>
     }
   </tbody>

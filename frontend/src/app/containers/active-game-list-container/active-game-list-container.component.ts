@@ -5,7 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {getActiveGames, joinGame, leaveGame} from '../../+state/game-data/game-data.actions';
 import {
   createGameIsLoaded,
-  createGameIsLoading,
+  createGameIsLoading, getBalanceData,
   selectActiveGames, selectActiveGamesFinished,
   selectActiveGamesInProgress,
   selectActiveGamesWaitPlayers
@@ -44,6 +44,7 @@ export class ActiveGameListContainerComponent implements OnInit {
   getPlayer$ = this.store.select(getPlayer);
   createGameIsLoading$ = this.store.select(createGameIsLoading);
   createGameIsLoaded$ = this.store.select(createGameIsLoaded);
+  getBalanceData$ = this.store.select(getBalanceData);
 
   constructor() {
     this.gameType = this.route.snapshot.paramMap.get('game-type') || '';

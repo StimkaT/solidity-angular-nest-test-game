@@ -1,11 +1,25 @@
 :host {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: 1;
   align-items: center;
   justify-content: center;
 
-  app-card-game {
-    margin-right: 16px;
+  .title-list-game {
+    margin-bottom: 20px;
+    color: #03a51d;
+    font-weight: 700;
+    font-size: 32px;
+  }
+
+  .list-game {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    app-card-game {
+      margin-right: 16px;
+    }
   }
 }

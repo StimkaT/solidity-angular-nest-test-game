@@ -102,5 +102,17 @@ export const getGameTypesSuccess = createAction(
   '[GameData] getGameTypesSuccess',
   props<{data: any}>()
 );
+export const setNameToken = createAction(
+  '[GameData] setNameToken',
+  props<{name: string | null}>()
+);
+export const setBalancePlayer = createAction(
+  '[GameData] setBalancePlayer',
+  props<{balance: string}>()
+);
+export const setNetworkName = createAction(
+  '[GameData] setNetworkName',
+  props<{name: string}>()
+);
 
 

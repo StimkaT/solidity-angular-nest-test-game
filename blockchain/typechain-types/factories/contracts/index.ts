@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as gameSol from "./Game.sol";
+export { ERC20__factory } from "./ERC20__factory";
 export { GameBase__factory } from "./GameBase__factory";
 export { GameLogic__factory } from "./GameLogic__factory";
 export { MyToken__factory } from "./MyToken__factory";

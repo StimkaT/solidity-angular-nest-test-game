@@ -135,3 +135,7 @@ export const paymentGameIsLoaded = createSelector(
   selectGameDataState,
   (state: GameDataState) => state.paymentGameAPI.isLoaded
 );
+export const getBalanceData = createSelector(
+  selectGameDataState,
+  (state: GameDataState) => state.balanceData
+);
