@@ -3,7 +3,7 @@
     <div class="tool">
 
       <span class="login">
-        Results game
+        Results game: {{ (selectActiveGameData$ | async)?.id }}
       </span>
 
       <span class="example-spacer"></span>
@@ -18,9 +18,31 @@
 
     <div class="result-info">
       <span>
-        Your result: {{ result }}
+        Game type: {{ (selectActiveGameData$ | async)?.type }}
       </span>
+      @if (!!(selectActiveGameData$ | async)?.createdAt && !!(selectActiveGameData$ | async)?.finishedAt && result) {
+        <span>
+          Duration: {{
+            calculateDuration(
+              (selectActiveGameData$ | async)?.createdAt,
+              (selectActiveGameData$ | async)?.finishedAt
+            ) | durationFormat
+          }}
+        </span>
+      }
+      <span>
+        Winner: {{ (selectNameWinner$ | async) || '' }}
+      </span>
+      @if (result) {
+        <span>
+          Your result: {{ result }}
+        </span>
+      }
     </div>
-
+    @if (!result) {
+      <span class="wait-result">
+          Your winnings are being calculated - please wait...
+        </span>
+    }
   </div>
 </div>

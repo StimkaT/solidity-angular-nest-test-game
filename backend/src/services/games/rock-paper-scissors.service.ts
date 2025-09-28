@@ -243,6 +243,11 @@ export class RockPaperScissorsService {
             } else {
                 const notFinished = await this.gameCommonService.getGameStatus(gameId);
                 if (notFinished !== 'Finished') {
+
+
+                    const gameData = await this.gameCommonService.getGameData(gameId);
+                    await this.sendRpsData('game_data', 'new_round', gameData, gameId);
+
                     await this.finishGame(gameId, finalWinners[0])
                 }
             }
@@ -281,6 +286,10 @@ export class RockPaperScissorsService {
                 percent: 100
             }
         ];
+
+
+        const gameData = await this.gameCommonService.getGameData(gameId);
+        await this.sendRpsData('game_data', 'finish_game_data', gameData, gameId);
 
         return await this.blockchainService.finish({
             contractAddress: game.contractAddress,

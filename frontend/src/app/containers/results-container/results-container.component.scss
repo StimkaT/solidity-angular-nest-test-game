@@ -26,10 +26,10 @@
   height: 100%;
 
   .result-info {
+    padding-left: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
     flex: 1;
   }
 }
@@ -69,7 +69,7 @@
 .close-icon {
   width: 16px;
   height: 16px;
-  fill: #ffffff; /* или ваш secondary цвет */
+  fill: #ffffff;
   pointer-events: none;
 }
 
@@ -100,4 +100,12 @@ img {
   width: 100%;
   height: 100%;
   background-color: rgb(35, 38, 38);
+}
+
+.wait-result {
+  text-align: center;
+  color: #357a14;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 20px;
 }

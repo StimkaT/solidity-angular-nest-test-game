@@ -260,6 +260,12 @@ export class DiceService {
         if (winners.length > 1) {
             await this.createRoundDice(gameId, losersWallets, winners);
         } else if (winners.length === 1) {
+
+            const gameDataNow = await this.gameCommonService.getGameData(gameId);
+            const activePlayerNext = await this.gameCommonService.setOrderOfThrows(gameId, activeRound);
+            const dataSend = {activeWallet: activePlayerNext, diceCounts: {}};
+            await this.sendDiceData('game_data', 'finish_game_data', gameDataNow, gameId, dataSend);
+
             await this.gameCommonService.finishGame(gameId, winners[0])
         }
 
