@@ -20,7 +20,7 @@
       <span>
         Game type: {{ (selectActiveGameData$ | async)?.type }}
       </span>
-      @if (!!(selectActiveGameData$ | async)?.createdAt && !!(selectActiveGameData$ | async)?.finishedAt && result) {
+      @if (!!(selectActiveGameData$ | async)?.createdAt && !!(selectActiveGameData$ | async)?.finishedAt && (result !== null)) {
         <span>
           Duration: {{
             calculateDuration(
@@ -33,13 +33,13 @@
       <span>
         Winner: {{ (selectNameWinner$ | async) || '' }}
       </span>
-      @if (result) {
+      @if (result !== null) {
         <span>
           Your result: {{ result }}
         </span>
       }
     </div>
-    @if (!result) {
+    @if (result === null) {
       <span class="wait-result">
           Your winnings are being calculated - please wait...
         </span>

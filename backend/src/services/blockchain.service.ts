@@ -15,11 +15,11 @@ export class BlockchainService {
     private wallet: ethers.Wallet;
     private readonly logicArtifactPath = path.resolve(
         __dirname,
-        '../../../blockchain/artifacts/contracts/GameLogic.sol/GameLogic.json',
+        '../blockchain/contracts/GameLogic.sol/GameLogic.json',
     );
     private readonly storageArtifactPath = path.resolve(
         __dirname,
-        '../../../blockchain/artifacts/contracts/Game.sol/DelegateCallGameStorage.json',
+        '../blockchain/contracts/Game.sol/DelegateCallGameStorage.json',
     );
 
     private lastGameData: { gameData: IGameDataBlockchain; players: IPlayerBlockchain[] } | null = null;

@@ -1,15 +1,37 @@
+version: "3.9"
+
 services:
   frontend:
     build:
-      context: ../frontend    # ← подняться на уровень выше
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: angular-frontend
     restart: unless-stopped
     ports:
       - "4200:4200"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: game
+      DB_USER: root
+      DB_PASSWORD: root
     volumes:
-      - ../frontend:/app      # ← правильный относительный путь
+      - .:/app
       - /app/node_modules
+    depends_on:
+      - mysql
+    command: [ "sh", "-c", "echo 'Waiting for MySQL to be ready...' && sleep 30 && echo 'Starting backend...' && node --experimental-vm-modules node_modules/.bin/nest start --watch" ]
 
   mysql:
     image: mysql:8.0
