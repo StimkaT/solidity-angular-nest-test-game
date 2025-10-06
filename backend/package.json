@@ -20,7 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate-entities": "typeorm-model-generator -h localhost -p 3306 -d game -u root -x root -e mysql -o src/entities"
+    "generate-entities": "typeorm-model-generator -h localhost -p 3306 -d game -u root -x root -e mysql -o src/entities",
+    "start:docker": "docker-compose up --build -d"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

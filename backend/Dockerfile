@@ -1,6 +1,16 @@
 FROM node:20
+
 WORKDIR /app
+
+# Копируем только package.json и устанавливаем зависимости
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
+
+# Копируем весь код
 COPY . .
-CMD ["npm", "run", "start:dev"]
+
+# Сборка NestJS в dist
+RUN npm run build
+
+# Запуск backend из dist
+CMD ["node", "dist/main.js"]

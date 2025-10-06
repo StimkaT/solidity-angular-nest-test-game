@@ -3,7 +3,7 @@ version: "3.9"
 services:
   frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: angular-frontend
     ports:
@@ -13,7 +13,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: nest-backend
     restart: unless-stopped
@@ -25,9 +25,9 @@ services:
       DB_NAME: game
       DB_USER: root
       DB_PASSWORD: root
-    volumes:
-      - .:/app
-      - /app/node_modules
+#    volumes:
+#      - .:/app
+#      - /app/node_modules
     depends_on:
       - mysql
 

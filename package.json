@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start:mysql": "npm run start:mysql --prefix backend",
+    "start:docker": "docker-compose up --build -d",
     "docker:deploy": "docker rm -f nginx-angular-monaco || true && docker run -d --name nginx-angular -p 4203:80 -v $(pwd)/dist/monacoapp/browser:/usr/share/nginx/html:ro nginx",
     "start:backend": "npm run start:dev --prefix backend",
     "start:blockchain": "npm run start --prefix blockchain",

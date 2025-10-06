@@ -2,8 +2,8 @@
 -- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Хост: mysql:3306
--- Время создания: Сен 29 2025 г., 08:10
+-- Хост: host.docker.internal:3306
+-- Время создания: Окт 06 2025 г., 12:59
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -560,7 +560,13 @@ CREATE TABLE `game_types` (
 
 INSERT INTO `game_types` (`id`, `name`, `logic_address`) VALUES
                                                              (1, 'rock-paper-scissors', '0x177F4dD6EAEd33Fad489138154de7eabeAad48eF'),
-                                                             (2, 'dice', '0xc5E21F2058E5DEF02ddb1194c20c335A315C96b7');
+                                                             (2, 'dice', '0xc5E21F2058E5DEF02ddb1194c20c335A315C96b7'),
+                                                             (3, 'roulette', ''),
+                                                             (4, 'blackjack', ''),
+                                                             (5, 'bingo', ''),
+                                                             (6, 'slots', ''),
+                                                             (7, 'poker', ''),
+                                                             (8, 'heads-and-tails', '');
 
 -- --------------------------------------------------------
 
@@ -710,7 +716,7 @@ ALTER TABLE `game_rock_paper_scissors`
 -- AUTO_INCREMENT для таблицы `game_types`
 --
 ALTER TABLE `game_types`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `migrations`
