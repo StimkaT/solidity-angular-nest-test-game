@@ -1,14 +1,13 @@
-FROM node:18-alpine
-
+# 1. Build Angular
+FROM node:18 AS build
 WORKDIR /app
-
 COPY package*.json ./
-
-RUN npm install -g @angular/cli
-RUN npm install
-
+RUN npm ci
 COPY . .
+RUN npm run build -- --configuration production
 
-EXPOSE 4200
-
-CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000", "--disable-host-check"]
+# 2. Serve via Nginx
+FROM nginx:stable-alpine
+COPY --from=build /app/dist/front /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
