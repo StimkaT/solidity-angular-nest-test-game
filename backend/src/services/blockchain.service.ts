@@ -12,7 +12,7 @@ export class BlockchainService {
     private provider = new ethers.JsonRpcProvider(process.env.INFURA_URL);
     private providerToEvents = new ethers.WebSocketProvider('wss://sepolia.infura.io/ws/v3/6113828fd8e8448f9a9e3fa7962e2cc6');
     private contract: ethers.Contract | null = null;
-    private wallet: ethers.Wallet;
+    private readonly wallet: ethers.Wallet;
     private readonly logicArtifactPath = path.resolve(
         __dirname,
         '../blockchain/contracts/GameLogic.sol/GameLogic.json',
@@ -24,9 +24,9 @@ export class BlockchainService {
 
     private lastGameData: { gameData: IGameDataBlockchain; players: IPlayerBlockchain[] } | null = null;
     private lastCallTimestamp = 0;
-    private cooldownMs = 1000; // 1 секунда между вызовами
+    private cooldownMs = 1000;
 
-    public totalCalls = 0;        // сколько раз функция вообще вызывалась
+    public totalCalls = 0;
     public totalRpcCalls = 0;
 
 
@@ -37,9 +37,6 @@ export class BlockchainService {
     }
 
     async deployGameLogicAddress(logicAddress: any) {
-        // const balance = await this.wallet.getBalance();
-        // console.log("Wallet ETH balance:", ethers.formatEther(balance));
-
         if (!logicAddress) {
             const logicArtifact = JSON.parse(
                 fs.readFileSync(this.logicArtifactPath, 'utf8'),
@@ -89,12 +86,11 @@ export class BlockchainService {
     }
 
     async getGameData(contractAddress: string) {
-        this.logCounters();
-        this.totalCalls++; // увеличиваем каждый вызов функции
+        // this.logCounters();
+        this.totalCalls++;
 
         const now = Date.now();
 
-        // если прошло меньше cooldown и есть кеш — возвращаем кеш
         if (now - this.lastCallTimestamp < this.cooldownMs && this.lastGameData) {
             return this.lastGameData;
         }
@@ -102,7 +98,7 @@ export class BlockchainService {
         this.contract = new ethers.Contract(contractAddress, DelegateCallGameStorage.abi, this.provider);
 
         try {
-            this.totalRpcCalls++; // реально идем к контракту
+            this.totalRpcCalls++;
 
             const [
                 [bettingMaxTime, gameMaxTime, createdAt, startedAt, finishedAt, isBettingComplete, isGameAborted, isGameFinished],
@@ -152,27 +148,24 @@ export class BlockchainService {
     }
 
     // функция для логирования счетчиков
-    logCounters() {
-        console.log(`Попытка: ${this.totalCalls}`);
-        console.log(`вызов: ${this.totalRpcCalls}`);
-    }
+    // logCounters() {
+    //     console.log(`Попытка: ${this.totalCalls}`);
+    //     console.log(`вызов: ${this.totalRpcCalls}`);
+    // }
 
     private paymentLocks: Record<string, Promise<void>> = {};
 
     async playerPayment(dataToPay: IDataToPay) {
         const { contractAddress } = dataToPay;
 
-        // если уже есть выполняющийся платеж для этого контракта
         while (this.paymentLocks[contractAddress]) {
             await this.paymentLocks[contractAddress];
         }
 
-        // создаем текущий lock
         let resolveLock: () => void;
         this.paymentLocks[contractAddress] = new Promise(res => resolveLock = res!);
 
         try {
-            // твоя логика approve + deposit
             const { wallet, contractBet, privateKey } = dataToPay;
 
             const playerWallet = new ethers.Wallet(privateKey, this.provider);
@@ -193,7 +186,6 @@ export class BlockchainService {
         } catch (error) {
             throw new Error(`Payment error: ${error.message}`);
         } finally {
-            // снимаем lock
             resolveLock!();
             delete this.paymentLocks[contractAddress];
         }
@@ -212,8 +204,6 @@ export class BlockchainService {
 
         return contract
     }
-
-    private finishLocks: Record<string, Promise<void>> = {};
 
     async finish(data: { contractAddress: string; playerResults: any[] }) {
         const { contractAddress, playerResults } = data;
@@ -250,22 +240,6 @@ export class BlockchainService {
                 blockNumber: null,
                 message: error.message
             };
-        }
-    }
-
-
-
-
-    async getContractBalance(contractAddress: string): Promise<bigint> {
-        try {
-            const storageArtifact = require(this.storageArtifactPath);
-            const abi = storageArtifact.abi;
-
-            const contract = new ethers.Contract(contractAddress, abi, this.provider);
-
-            return await contract.getContractBalance();
-        } catch (error) {
-            throw new Error(`Get balance error: ${error.message}`);
         }
     }
 }

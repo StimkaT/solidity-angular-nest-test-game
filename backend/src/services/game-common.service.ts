@@ -154,7 +154,6 @@ export class GameCommonService {
         return playerConnection.length > 0;
     }
 
-    //получаем статус
     async getGameStatus(gameId: number): Promise<string> {
         const game = await this.getGameDataById(gameId);
 
@@ -186,7 +185,6 @@ export class GameCommonService {
         });
     }
 
-    //кол-во человек в игре
     async getPlayersCount(gameId: number): Promise<number> {
         if (this.gamePlayersRepository) {
             return await this.gamePlayersRepository.count({
@@ -299,7 +297,6 @@ export class GameCommonService {
         const results: {wallet: string, result: number | null}[] = [];
 
         for (const round of rounds) {
-            // Исключаем записи с result = 0, но оставляем result = null
             if (round.result === 0) {
                 continue;
             }
@@ -316,12 +313,10 @@ export class GameCommonService {
     async finishGame(gameId: number, wallet: string) {
         const game = await this.getGameDataById(gameId);
 
-        // Проверяем, что game не null
         if (!game) {
             throw new Error(`Game with id ${gameId} not found`);
         }
 
-        // Проверяем, что contractAddress не null
         if (!game.contractAddress) {
             throw new Error(`Contract address for game ${gameId} is not set`);
         }

@@ -387,7 +387,6 @@ export class GameService {
   async checkCanBotsPay(gameId: number) {
     const gameData = await this.gameCommonService.getGameData(gameId);
 
-    // не оплатившие кошельки
     const unpaidWallets = gameData.players
         .filter(player => !player.bet)
         .map(player => player.wallet);

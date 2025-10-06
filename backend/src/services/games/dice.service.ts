@@ -112,7 +112,6 @@ export class DiceService {
         const dataSendAfter = {activeWallet: orderOfThrowsAfter, diceCounts: generateCounts};
         await this.sendDiceData('game_data', 'make_action', gameData, gameId, dataSendAfter);
 
-        // Автозапуск ботов, если следующий ход за ботом
         await this.playBotsIfActive(gameId, round);
 
         await this.delay(5000);
@@ -128,7 +127,6 @@ export class DiceService {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // устанавливаем сумму выпавших значений
     async setCountPlayer(data: { gameId: number, wallet: string, round: number}, counts: number[]) {
         const sumCounts = counts[0] + counts[1];
         const playerResult = await this.gameDiceRepository.findOne({
@@ -226,18 +224,15 @@ export class DiceService {
             const gameData = await this.gameCommonService.getGameData(gameId);
             const dataSend = {activeWallet: orderOfThrows, diceCounts: null};
             await this.sendDiceData('game_data', 'new_round', gameData, gameId, dataSend);
-            // Автозапуск ботов на новом раунде, если активный — бот
             await this.playBotsIfActive(gameId, nextRound);
         }
     }
 
-    // определение победителей
     async determiningWinners(gameId: number, activeRound: number) {
         const wallets = await this.gameCommonService.gamePlayerList(gameId);
         const initialLosers: string[] = [];
         const potentialWinners: string[] = [];
 
-        // Первоначальное распределение
         for (const wallet of wallets) {
             const isLoser = await this.checkLoserWallets(gameId, activeRound, wallet);
             if (isLoser) {
@@ -247,12 +242,10 @@ export class DiceService {
             }
         }
 
-        // Получаем результаты и находим максимум
         const results = await this.walletsResultList(gameId, activeRound, potentialWinners);
         const resultsArray = potentialWinners.map(wallet => results[wallet] || 0);
         const maxResult = Math.max(...resultsArray);
 
-        // Фильтруем победителей
         const winners = potentialWinners.filter(wallet => (results[wallet] || 0) === maxResult);
         const additionalLosers = potentialWinners.filter(wallet => (results[wallet] || 0) !== maxResult);
         const losersWallets = [...initialLosers, ...additionalLosers]
@@ -275,7 +268,6 @@ export class DiceService {
         };
     }
 
-    // получение списка для winnerWallets [кошелек:результат, ...];
     async walletsResultList(gameId: number, activeRound: number, wallets: string[]) {
         const result: { [key: string]: any } = {};
 
@@ -290,7 +282,6 @@ export class DiceService {
         return result;
     }
 
-    //определение кошельков которые проиграли
     async checkLoserWallets(gameId: number, activeRound: number, wallet: string) {
         let rpsRecord = await this.gameDiceRepository.findOne({
             where: {gameId, wallet: wallet, round: activeRound},
@@ -300,7 +291,6 @@ export class DiceService {
         return result === 0;
     }
 
-    // Получаем текущий активный раунд
     async getCurrentRound(gameId: number): Promise<number> {
         const lastRecord = await this.gameDiceRepository.findOne({
             where: { gameId },
@@ -318,8 +308,6 @@ export class DiceService {
         return this.gameCommonService.getRoundsInfoAlwaysWithResult(gameId, rounds)
     }
 
-    // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший
-    // то переноси этот результат и в новый раунд - тк. Этот игрок уже исключен и не может ставить
     async lastRoundResult(wallet: string, round: number, gameId: number) {
         const roundResult = await this.gameDiceRepository.findOne({
             where: {wallet: wallet, round, gameId},

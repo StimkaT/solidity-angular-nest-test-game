@@ -45,7 +45,6 @@ export class RockPaperScissorsService {
         })
     }
 
-    // сохраняем выбор игрока
     async setChoicePlayer(data: { gameId: number, data: any, wallet: string, round: number}) {
         const playerResult = await this.rpsRepository.findOne({
             where: {
@@ -165,7 +164,6 @@ export class RockPaperScissorsService {
         return Math.floor(Math.random() * 3) + 1;
     }
 
-    // определение победителей
     async determiningWinners(gameId: number, activeRound: number) {
         const wallets = await this.gamePlayerList(gameId);
         const losersWallets: string[] = [];
@@ -179,14 +177,11 @@ export class RockPaperScissorsService {
             }
         }
 
-        // получение списка для winnerWallets [кошелек:результат, ...];
         const resultsObject = await this.walletsResultList(gameId, activeRound, winnerWallets);
-        // определение кол-во вариаций результатов
         const resultVariations = this.countResultVariations(resultsObject);
 
         let finalWinners = [...winnerWallets];
 
-        // Алгоритм определения победителя
         const activePlayersCount = await this.getActivePlayersCount(gameId, activeRound);
 
         if ((resultVariations.variations >= 3 || resultVariations.variations === 1) && activePlayersCount === 0) {
@@ -237,7 +232,6 @@ export class RockPaperScissorsService {
             losersWallets.push(...losingWallets);
 
             finalWinners = finalWinners.filter(wallet => !losingWallets.includes(wallet));
-            // Если победителей > 1 И есть активные игроки, создаем новый раунд
             if (finalWinners.length > 1) {
                 await this.createRoundRockPaperScissors(gameId, losersWallets, finalWinners);
             } else {
@@ -270,12 +264,10 @@ export class RockPaperScissorsService {
     async finishGame(gameId: number, wallet: string) {
         const game = await this.gameCommonService.getGameDataById(gameId);
 
-        // Проверяем, что game не null
         if (!game) {
             throw new Error(`Game with id ${gameId} not found`);
         }
 
-        // Проверяем, что contractAddress не null
         if (!game.contractAddress) {
             throw new Error(`Contract address for game ${gameId} is not set`);
         }
@@ -297,7 +289,6 @@ export class RockPaperScissorsService {
         });
     }
 
-    // получение списка для winnerWallets [кошелек:результат, ...];
     async walletsResultList(gameId: number, activeRound: number, wallets: string[]) {
         const result: { [key: string]: any } = {};
 
@@ -312,7 +303,6 @@ export class RockPaperScissorsService {
         return result;
     }
 
-    // Функция для подсчета вариаций результатов
     private countResultVariations(resultsMap: { [key: string]: any }): {
         variations: number;
         resultCounts: { [result: string]: number };
@@ -320,7 +310,6 @@ export class RockPaperScissorsService {
     } {
         const resultCounts: { [result: string]: number } = {};
 
-        // Подсчет количества каждого результата
         for (const wallet in resultsMap) {
             const result = resultsMap[wallet] || 'unknown';
             resultCounts[result] = (resultCounts[result] || 0) + 1;
@@ -335,7 +324,6 @@ export class RockPaperScissorsService {
         };
     }
 
-    //определение кошельков которые проиграли
     async checkLoserWallets(gameId: number, activeRound: number, wallet: string) {
         let rpsRecord = await this.rpsRepository.findOne({
             where: {gameId, wallet, round: activeRound},
@@ -345,7 +333,6 @@ export class RockPaperScissorsService {
         return result === 0;
     }
 
-    // проверка, что все кошельки поставили
     async checkEveryoneBet(gameId: number, activeRound: number) {
         const rpsRecords = await this.rpsRepository.find({
             where: { gameId, round: activeRound },
@@ -364,7 +351,6 @@ export class RockPaperScissorsService {
         return true;
     }
 
-    // Получаем текущий активный раунд RPC
     async getCurrentRound(gameId: number): Promise<number> {
         const lastRecord = await this.rpsRepository.findOne({
             where: { gameId },
@@ -396,8 +382,6 @@ export class RockPaperScissorsService {
         });
     }
 
-    // Определяем результаты предыдущего раунда и если у кого-то был результат 0 == проигравший
-    // то переноси этот результат и в новый раунд - тк. Этот игрок уже исключен и не может ставить
     async lastRoundResult(wallet: string, round: number, gameId: number): Promise<string | null> {
         const roundResult = await this.rpsRepository.findOne({
             where: {wallet, round, gameId},
@@ -409,8 +393,8 @@ export class RockPaperScissorsService {
     async getLastRoundGame(gameId: number) {
         const lastRound = await this.rpsRepository.findOne({
             where: { gameId },
-            order: { round: 'DESC' }, // Сортируем по убыванию
-            select: ['round'] // Выбираем только поле round
+            order: { round: 'DESC' },
+            select: ['round']
         });
 
         return lastRound ? lastRound.round : 0;
