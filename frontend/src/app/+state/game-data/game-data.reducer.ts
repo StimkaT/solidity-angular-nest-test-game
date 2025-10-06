@@ -2,7 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import * as GameDataActions from './game-data.actions';
 import {walletListStabs} from './stabs';
 import {API} from '../../models/api';
-import {setBalancePlayer, setNameToken, setNetworkName} from './game-data.actions';
 
 export const GAME_DATA_FEATURE_KEY = 'game-data';
 
@@ -45,9 +44,11 @@ export interface IGameData {
 }
 
 export interface IGameList {
-  iconList: string[];
+  iconList?: string[];
+  svgIconList?: string[];
   title: string;
   linkGame: string;
+  readyStatus: boolean;
 }
 export interface IActiveGameList {
   id: number;
@@ -139,14 +140,64 @@ export const initialState: GameDataState = {
         'description'
       ],
       title: 'Rock-Paper-Scissors',
-      linkGame: 'rock-paper-scissors'
+      linkGame: 'rock-paper-scissors',
+      readyStatus: true,
     },
     {
       iconList: [
         'casino'
       ],
       title: 'Dice',
-      linkGame: 'dice'
+      linkGame: 'dice',
+      readyStatus: true,
+    },
+    {
+      svgIconList: [
+        'roulette'
+      ],
+      title: 'Roulette',
+      linkGame: 'roulette',
+      readyStatus: false,
+    },
+    {
+      svgIconList: [
+        'slots'
+      ],
+      title: 'Slots',
+      linkGame: 'slots',
+      readyStatus: false,
+    },
+    {
+      iconList: [
+        'style'
+      ],
+      title: 'Blackjack',
+      linkGame: 'blackjack',
+      readyStatus: false,
+    },
+    {
+      svgIconList: [
+        'bingo'
+      ],
+      title: 'bingo',
+      linkGame: 'bingo',
+      readyStatus: false,
+    },
+    {
+      svgIconList: [
+        'poker'
+      ],
+      title: 'Poker',
+      linkGame: 'poker',
+      readyStatus: false,
+    },
+    {
+      svgIconList: [
+        'heads-and-tails'
+      ],
+      title: 'Heads-And-Tails',
+      linkGame: 'heads-and-tails',
+      readyStatus: false,
     }
   ],
   activeGameList: [

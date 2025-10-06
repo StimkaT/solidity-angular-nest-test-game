@@ -1,9 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {CardGameComponent} from '../../components/card-game/card-game.component';
 import {Store} from '@ngrx/store';
-import {selectGameTypes} from '../../+state/game-data/game-data.selectors';
+import {getGameList, selectGameTypes} from '../../+state/game-data/game-data.selectors';
 import {getGameTypes} from '../../+state/game-data/game-data.actions';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {combineLatestWith} from 'rxjs/operators';
+import {IGameList} from '../../+state/game-data/game-data.reducer';
 
 @Component({
   selector: 'app-card-games-container',
@@ -19,44 +22,28 @@ export class CardGamesContainerComponent implements OnInit {
   private router = inject(Router);
 
   gameTypes: any = [];
-  activeGameDataList: any = [];
+  activeGameDataList: IGameList[] = [];
+
+  gameDataList$: Observable<IGameList[]> = this.store.select(getGameList);
 
   constructor() {
-    this.store.select(selectGameTypes).subscribe((data) => {
-      this.gameTypes = data
-      this.updateActiveGameDataList()
-    })
+    this.store.select(selectGameTypes).pipe(
+      combineLatestWith(this.gameDataList$)
+    ).subscribe(([gameTypes, gameList]) => {
+      this.gameTypes = gameTypes;
+      this.updateActiveGameDataList(gameList);
+    });
   }
 
   ngOnInit() {
     this.store.dispatch(getGameTypes());
   }
 
-
-  updateActiveGameDataList() {
-    this.activeGameDataList = this.gameDataList.filter(game => {
+  updateActiveGameDataList(gameList: IGameList[]) {
+    this.activeGameDataList = gameList.filter(game => {
       return this.gameTypes.some((type: any) => type.name === game.linkGame);
     });
   }
-
-  gameDataList = [
-    {
-      iconList: [
-        'pan_tool',
-        'content_cut',
-        'description'
-      ],
-      title: 'Rock-Paper-Scissors',
-      linkGame: 'rock-paper-scissors'
-    },
-    {
-      iconList: [
-        'casino'
-      ],
-      title: 'Dice',
-      linkGame: 'dice'
-    },
-  ];
 
   navigateTo(link: string) {
     this.router.navigate([`/game-list/${link}`]);

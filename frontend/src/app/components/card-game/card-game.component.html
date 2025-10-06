@@ -2,12 +2,20 @@
   <div class="game-content">
     <h2>{{ game.title }}</h2>
     <div class="game-options">
-      @for (icon of game.iconList; track icon) {
-        <button class="game-option">
-          <mat-icon>{{ icon }}</mat-icon>
-        </button>
+      @if (game.iconList && game.iconList.length > 0) {
+        @for (icon of game.iconList; track icon) {
+          <button class="game-option">
+            <mat-icon>{{ icon }}</mat-icon>
+          </button>
+        }
+      }
+      @if (game.svgIconList && game.svgIconList.length > 0) {
+        @for (icon of game.svgIconList; track icon) {
+          <button class="game-option">
+            <mat-icon [svgIcon]="icon"></mat-icon>
+          </button>
+        }
       }
     </div>
   </div>
 </div>
-

@@ -4,6 +4,7 @@
 <div class="list-game">
   @for (game of activeGameDataList; track game) {
   <app-card-game
+    [class.disabled-card]="!game.readyStatus"
     [game]="game"
     (click)="navigateTo(game.linkGame)"
   ></app-card-game>
