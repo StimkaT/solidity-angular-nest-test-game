@@ -1,0 +1,34 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 45.135.182.251
+          username: root
+          key: 9Sr2kv72PH5BuWJva7
+          port: 22
+          script: |
+            echo "🔄 Pull latest code"
+            cd /home/user/solidity-angular-nest-test-game
+            git reset --hard
+            git clean -fd
+            git pull origin main
+
+            echo "🐳 Build and restart containers"
+            docker-compose build
+            docker-compose up -d
+
+            echo "✅ Deployment finished"
