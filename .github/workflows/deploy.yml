@@ -22,10 +22,9 @@ jobs:
           port: 22
           script: |
             echo "🔄 Pull latest code"
-            cd /home/user/solidity-angular-nest-test-game
-            git reset --hard
-            git clean -fd
-            git pull origin main
+            cd ./solidity-angular-nest-test-game
+            echo "enter to solidity-angular-nest-test-game"
+            git pull
 
             echo "🐳 Build and restart containers"
             docker-compose build
