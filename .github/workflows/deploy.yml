@@ -18,7 +18,7 @@ jobs:
         with:
           host: 45.135.182.251
           username: root
-          key: 9Sr2kv72PH5BuWJva7
+          password: 9Sr2kv72PH5BuWJva7
           port: 22
           script: |
             echo "🔄 Pull latest code"
