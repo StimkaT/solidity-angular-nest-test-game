@@ -10,6 +10,7 @@ RUN npm install --production
 COPY . .
 
 # Сборка NestJS в dist
+RUN npm install @nestjs/cli
 RUN npx nest build
 
 # Запуск backend из dist
