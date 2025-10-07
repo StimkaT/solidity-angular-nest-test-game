@@ -27,7 +27,6 @@ jobs:
             git pull
 
             echo "🐳 Build and restart containers"
-            docker-compose build
-            docker-compose up -d
+            docker-compose up --build -d
 
             echo "✅ Deployment finished"
