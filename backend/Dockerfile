@@ -10,7 +10,7 @@ RUN npm install --production
 COPY . .
 
 # Сборка NestJS в dist
-RUN npm run build
+RUN npx nest build
 
 # Запуск backend из dist
 CMD ["node", "dist/main.js"]
